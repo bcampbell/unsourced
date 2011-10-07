@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="helpers.js"></script>
+
+        <script>
+            $(document).ready( function() {
+                var url = "http://www.dailymail.co.uk/news/article-388051/Scientists-fear-MMR-link-autism.html";
+                $('#targ').attr('src',url);
+                console.log(document);
+            });
+    </script>
+</head>
+<body>
+    <div id="content">
+        <div id="header">
+            <h1>Article Sourcing Thing</h1>
+        </div>
+        <div id="view">
+
+            <iframe id="targ" ></iframe>
+        </div>
+        <div id="editor">
+            <h1>A Page</h1>
+
+
+
+            <ul>
+                <li><q>New American research</q> - what research?</li>
+                <li></li>
+
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+html, body { margin: 0; padding: 0; height: 100%; }
+
+#header { position:absolute;
+    top: 0;
+    height: 4em;
+    background: red; }
+
+#editor
+{
+    position: absolute;
+    top: 4em; left: 50%; width: 50%; height: 100%;
+    border: 1px solid blue;
+       box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+}
+
+#view {
+       position: absolute;
+       top: 4em; left: 0; width: 50%; height: 100%;
+       border: 1px solid red;
+       box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+}
+
+#view iframe {
+    width: 100%;
+    height: 100%;
+}
