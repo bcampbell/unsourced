@@ -3,24 +3,57 @@ html, body { margin: 0; padding: 0; height: 100%; }
 #header { position:absolute;
     top: 0;
     height: 4em;
-    background: red; }
+}
 
 #editor
 {
     position: absolute;
-    top: 4em; left: 50%; width: 50%; height: 100%;
-    border: 1px solid blue;
-       box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+    top: 4em; left: 50%;
+    width: 50%;
+/*    border: 1px solid blue; */
+    padding: 1em;
 }
 
 #view {
-       position: absolute;
-       top: 4em; left: 0; width: 50%; height: 100%;
-       border: 1px solid red;
-       box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+    position: absolute;
+    top: 4em; left: 0;
+    width: 50%;
+    height: 90%;
+/*       border: 1px solid red; */
 }
 
-#view iframe {
+#view-original iframe {
+    padding: 0px;
+    margin: 0px;
+    overflow: auto;
+}
+
+#view-readable {
+    padding: 0px;
+    margin: 0px;
+    overflow: auto;
+}
+
+#view-original {
+    padding: 0px;
+    margin: 0px;
+    overflow: none;
+}
+
+.ui-tabs-panel {
+    border 1px solid #ccc;
     width: 100%;
     height: 100%;
 }
+
+#targ { width: 100%; height: 100%; }
+
+/*demo page css*/
+body{ font: 80% "Trebuchet MS", sans-serif; margin: 50px;}
+/*.demoHeaders { margin-top: 2em; }
+#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+*/
+ul#icons {margin: 0; padding: 0;}
+ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+ul#icons span.ui-icon {float: left; margin: 0 4px;}

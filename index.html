@@ -2,15 +2,31 @@
 <html>
 <head>
     <link rel="stylesheet" href="style.css" />
+    <link href="css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
+<!--    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script> -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script src="js/hacked_readability.js"></script>
+    <script src="testarticle.js"></script>
     <script src="helpers.js"></script>
 
         <script>
             $(document).ready( function() {
-                var url = "http://www.dailymail.co.uk/news/article-388051/Scientists-fear-MMR-link-autism.html";
+//                console.log(data);
+                $('#view').tabs();
+//                $('#view-readable').innerHtml = data['html'];
+                $('#view-readable').html( data['html']);
+                var url = "http://www.dailymail.co.uk/news/article-2046255/Mustard-spinach-make-fitness-fanatics-look-like-Popeye.html";
+                //var url = "Mustard-spinach-make-fitness-fanatics-look-like-Popeye.html";
                 $('#targ').attr('src',url);
-                console.log(document);
+                $('#targ').ready(function()
+                {
+//                    $('#view-readable').html( data['html']);
+                    
+                });
+
             });
+
     </script>
 </head>
 <body>
@@ -19,8 +35,12 @@
             <h1>Article Sourcing Thing</h1>
         </div>
         <div id="view">
-
-            <iframe id="targ" ></iframe>
+            <ul>
+				<li><a href="#view-readable">Readable</a></li>
+				<li><a href="#view-original">Original</a></li>
+            </ul>
+            <div id="view-readable">blahblah</div>
+            <div id="view-original"><iframe id="targ" ></iframe></div>
         </div>
         <div id="editor">
             <h1>A Page</h1>
