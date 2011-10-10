@@ -6,16 +6,52 @@
 <!--    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script> -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script src="js/jquery-ui-1.8.16.custom.min.js"></script>
-    <script src="js/hacked_readability.js"></script>
+    <script src="js/jquery.myhighlight-3.js"></script>
+    <script src="js/indicators.js"></script>
     <script src="testarticle.js"></script>
     <script src="helpers.js"></script>
 
         <script>
             $(document).ready( function() {
+
+                article_html = data['html'];
+
+                function find_indicators(html) {
+                    // strip tags and normalise whitespace
+                    html = html.replace(/<[^>]*>?/g, '');
+                    html = html.replace(/\s+/g, ' ');
+
+
+                    hits = []
+                    for(var kind in indicators) {
+
+                        pats = indicators[kind];
+                        for( var i=0; i<pats.length; ++i) {
+
+                            var pat = pats[i]
+                            var m = html.match(pat);
+                            if(m) {
+                                hits.push(m[0]);
+                            }
+                        }
+                    }
+
+                    var out = '';
+                    for(var i=0; i<hits.length; ++i) {
+                        out += '<li><q>' + hits[i] + '</q></li>';
+                    }
+                    $('ul#indicators').append(out);
+                }
+                find_indicators(article_html);
+                $('ul#indicators li q').live( 'click', function() {
+                        $('#view-readable').removeHighlight();
+                        $('#view-readable').highlight($(this).text());
+                    });
+
 //                console.log(data);
                 $('#view').tabs();
 //                $('#view-readable').innerHtml = data['html'];
-                $('#view-readable').html( data['html']);
+                $('#view-readable').html(article_html);
                 var url = "http://www.dailymail.co.uk/news/article-2046255/Mustard-spinach-make-fitness-fanatics-look-like-Popeye.html";
                 //var url = "Mustard-spinach-make-fitness-fanatics-look-like-Popeye.html";
                 $('#targ').attr('src',url);
@@ -24,9 +60,7 @@
 //                    $('#view-readable').html( data['html']);
                     
                 });
-
             });
-
     </script>
 </head>
 <body>
@@ -37,20 +71,14 @@
         <div id="view">
             <ul>
 				<li><a href="#view-readable">Readable</a></li>
-				<li><a href="#view-original">Original</a></li>
+				<li><a href="#view-original">Original (mailonline.co.uk)</a></li>
             </ul>
             <div id="view-readable">blahblah</div>
             <div id="view-original"><iframe id="targ" ></iframe></div>
         </div>
         <div id="editor">
-            <h1>A Page</h1>
-
-
-
-            <ul>
-                <li><q>New American research</q> - what research?</li>
-                <li></li>
-
+            <h1>Things that look like they might need sourcing...</h1>
+            <ul id="indicators">
             </ul>
         </div>
     </div>
