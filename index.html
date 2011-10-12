@@ -6,7 +6,7 @@
 <!--    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script> -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script src="js/jquery-ui-1.8.16.custom.min.js"></script>
-    <script src="js/jquery.myhighlight-3.js"></script>
+    <script src="js/jquery.highlight.js"></script>
     <script src="js/indicators.js"></script>
     <script src="testarticle.js"></script>
     <script src="helpers.js"></script>
@@ -23,30 +23,35 @@
 
 
                     hits = []
-                    for(var kind in indicators) {
-
+                        kind = "study";
                         pats = indicators[kind];
                         for( var i=0; i<pats.length; ++i) {
 
-                            var pat = pats[i]
+                            var pat = pats[i].pat
                             var m = html.match(pat);
                             if(m) {
                                 hits.push(m[0]);
                             }
                         }
-                    }
 
                     var out = '';
                     for(var i=0; i<hits.length; ++i) {
-                        out += '<li><q>' + hits[i] + '</q></li>';
+                        $('#view-readable').highlight(hits[i],{className: 'indicative'});
                     }
-                    $('ul#indicators').append(out);
+
+                    $('#view-readable').highlight('North Carolina State University', {className:'institution'});
+                    $('#view-readable').highlight('FASEB Journal', {className:'journal'});
+                    $('#view-readable').highlight('Dr Gerald Weissmann', {className:'person'});
+                    $('#view-readable').highlight('Dr Slavo Komarnytsky',{className:'person'});
                 }
-                find_indicators(article_html);
-                $('ul#indicators li q').live( 'click', function() {
+//                find_indicators(article_html);
+//                $('ul#indicators li q').each(function() { $('body').highlight($(this).text());});
+/*                $('ul#indicators li q').live( 'click', function() {
                         $('#view-readable').removeHighlight();
                         $('#view-readable').highlight($(this).text());
                     });
+                    */
+
 
 //                console.log(data);
                 $('#view').tabs();
@@ -57,6 +62,7 @@
                 $('#targ').attr('src',url);
                 $('#targ').ready(function()
                 {
+                    find_indicators(article_html);
 //                    $('#view-readable').html( data['html']);
                     
                 });
@@ -77,8 +83,19 @@
             <div id="view-original"><iframe id="targ" ></iframe></div>
         </div>
         <div id="editor">
-            <h1>Things that look like they might need sourcing...</h1>
+
             <ul id="indicators">
+            </ul>
+            <h2>Possibly useful links</h2>
+            <ul>
+                <li><a href="http://www.ncsu.edu/">North Carolina State University</a></li>
+                <li><a href="http://www.fasebj.org/">FASEB Journal</a></li>
+                <li>Google scholar - papers crediting:
+                    <ul>
+                        <li><a href="http://scholar.google.co.uk/scholar?as_q=&num=10&btnG=Search+Scholar&as_epq=&as_oq=&as_eq=&as_occt=any&as_sauthors=%22S+Komarnytsky%22&as_publication=FASEB+Journal&as_ylo=&as_yhi=&as_sdt=1.&as_sdtp=on&as_sdtf=&as_sdts=5&hl=en">S Komarnytsky</a></li>
+                        <li><a href="http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22G+Weissmann%22&as_publication=FASEB+Journal&btnG=Search&as_sdt=0%2C5&as_ylo=&as_vis=0">G Weissmann</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

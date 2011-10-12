@@ -10,8 +10,8 @@ body{ font-family: "Trebuchet MS", sans-serif; margin: 50px; }
 #editor
 {
     position: absolute;
-    top: 4em; left: 50%;
-    width: 50%;
+    top: 4em; left: 65%;
+    width: 35%;
 /*    border: 1px solid blue; */
     padding: 1em;
 }
@@ -19,7 +19,7 @@ body{ font-family: "Trebuchet MS", sans-serif; margin: 50px; }
 #view {
     position: absolute;
     top: 4em; left: 0;
-    width: 50%;
+    width: 65%;
     height: 90%;
 /*       border: 1px solid red; */
 }
@@ -60,7 +60,9 @@ ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; f
 ul#icons span.ui-icon {float: left; margin: 0 4px;}
 
 
-.highlight {
-    background-color: yellow;
-}
+.indicative { background-color: yellow; }
+.institution { background-color: #8f8; }
+.journal { background-color: #f88; }
+.person { background-color: #88f; }
+
 
