@@ -6,7 +6,8 @@ indicators = {
     { pat: /new \w+ research/i, txt:'what research?'},
     { pat: /tested on rats/i, txt: 'which rats? were they cute? or evil-looking?'},
     { pat: /research suggests/i, txt: 'what research? Does it really suggest this?'},
-    { pat: /team of scientists/i, txt: 'which team?'}
+    { pat: /team of scientists/i, txt: 'which team?'},
+    { pat: /according to a new study/i, txt: 'which study?'}
  ],
 
     // anonymous sources from inkstainedwretch.com:

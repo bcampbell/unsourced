@@ -4,13 +4,13 @@ body{ font-family: "Trebuchet MS", sans-serif; margin: 50px; }
 
 #header { position:absolute;
     top: 0;
-    height: 4em;
+    height: 6em;
 }
 
 #editor
 {
     position: absolute;
-    top: 4em; left: 65%;
+    top: 6em; left: 65%;
     width: 35%;
 /*    border: 1px solid blue; */
     padding: 1em;
@@ -18,7 +18,7 @@ body{ font-family: "Trebuchet MS", sans-serif; margin: 50px; }
 
 #view {
     position: absolute;
-    top: 4em; left: 0;
+    top: 6em; left: 0;
     width: 65%;
     height: 90%;
 /*       border: 1px solid red; */
@@ -65,4 +65,6 @@ ul#icons span.ui-icon {float: left; margin: 0 4px;}
 .journal { background-color: #f88; }
 .person { background-color: #88f; }
 
-
+.helptext, a.helptext { font-size: small; color: #888; font-style: italic; }
+#header code {font-size: large; padding: 0.2em; border: 1px solid black;}
+input[type="text"] { width:70%;}

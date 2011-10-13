@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/tipsy.css" />
     <link href="css/smoothness/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
 <!--    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script> -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script src="js/jquery-ui-1.8.16.custom.min.js"></script>
     <script src="js/jquery.highlight.js"></script>
+    <script src="js/jquery.tipsy.js"></script>
     <script src="js/indicators.js"></script>
     <script src="testarticle.js"></script>
     <script src="helpers.js"></script>
@@ -64,7 +66,7 @@
                 {
                     find_indicators(article_html);
 //                    $('#view-readable').html( data['html']);
-                    
+                   $('a[title]').tipsy({gravity: 'w'});
                 });
             });
     </script>
@@ -73,27 +75,55 @@
     <div id="content">
         <div id="header">
             <h1>Article Sourcing Thing</h1>
+            currently working on: <code><a href="http://www.dailymail.co.uk/news/article-2046255/Mustard-spinach-make-fitness-fanatics-look-like-Popeye.html">http://www.dailymail.co.uk/news/article-2046255/Mustard-spinach-make-fitness-fanatics-look-like-Popeye.html</a></code><br/>
         </div>
         <div id="view">
             <ul>
 				<li><a href="#view-readable">Readable</a></li>
-				<li><a href="#view-original">Original (mailonline.co.uk)</a></li>
+				<li><a href="#view-original">Original (dailymail.co.uk)</a></li>
             </ul>
             <div id="view-readable">blahblah</div>
             <div id="view-original"><iframe id="targ" ></iframe></div>
         </div>
         <div id="editor">
+            <h2 class="indicative">There appears to be a primary source missing...</h2>
 
-            <ul id="indicators">
-            </ul>
-            <h2>Possibly useful links</h2>
+            <p>This article appears to be referring to an academic paper. Can you track it down?</p>
+            <form>
+            <label for="paper_url">URL or DOI of paper:</label><br/>
+            <input id="paper_url" columns="80" type="text" />            <input type="submit" value="add it"/><br/>
+
+            <span class="helptext"><a href="#">what's a DOI?</a> <a href="#">guidelines on linking to academic papers</a></span><br/>
+ 
+            </form>
+
+            <br/>
+            <hr/>
+            <br/>
+
+            <h3>Some links which might help you:</h3>
+            <h4 class="institution">Institutions</h4>
             <ul>
-                <li><a href="http://www.ncsu.edu/">North Carolina State University</a></li>
-                <li><a href="http://www.fasebj.org/">FASEB Journal</a></li>
-                <li>Google scholar - papers crediting:
+                <li><a href="http://www.ncsu.edu/" title="Homepage for North Carolina State University">North Carolina State University</a></li>
+            </ul>
+
+            <h4 class="journal">Journals</h4>
+            <ul>
+                <li><a href="http://www.fasebj.org/" title="Homepage for FASEB Journal">FASEB Journal</a></li>
+            </ul>
+            <h4 class="person">People</h4>
+                find papers by...
+                <ul>
+                <li>Dr Slavo Komarnytsky
                     <ul>
-                        <li><a href="http://scholar.google.co.uk/scholar?as_q=&num=10&btnG=Search+Scholar&as_epq=&as_oq=&as_eq=&as_occt=any&as_sauthors=%22S+Komarnytsky%22&as_publication=FASEB+Journal&as_ylo=&as_yhi=&as_sdt=1.&as_sdtp=on&as_sdtf=&as_sdts=5&hl=en">S Komarnytsky</a></li>
-                        <li><a href="http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22G+Weissmann%22&as_publication=FASEB+Journal&btnG=Search&as_sdt=0%2C5&as_ylo=&as_vis=0">G Weissmann</a></li>
+                    <li><a href="http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22S+Komarnytsky%22&as_publication=FASEB+Journal&btnG=Search&as_sdt=0%2C5&as_ylo=&as_vis=0" title="look up on google scholar">in FASE Journal</a></li>
+                    <li><a href="http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22S+Komarnytsky%22&btnG=Search&as_sdt=0%2C5&as_ylo=&as_vis=0" title="look up on google scholar">anywhere</a></li>
+                    </ul>
+                </li>
+                <li>Dr Gerald Weissmann
+                    <ul>
+                    <li><a href="http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22G+Weissmann%22&as_publication=FASEB+Journal&btnG=Search&as_sdt=0%2C5&as_ylo=&as_vis=0" title="look up on google scholar">in FASE Journal</a></li>
+                    <li><a href="http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22G+Weissmann%22&btnG=Search&as_sdt=0%2C5&as_ylo=&as_vis=0" title="look up on google scholar">anywhere</a></li>
                     </ul>
                 </li>
             </ul>
