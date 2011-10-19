@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Sourcy{% end %}</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+<header id="pageHeader">
+    <h1>Sourcy</h1>
+    <nav>
+        <ul>
+            <li><a href="">foo</a></li>
+            <li><a href="">bar</a></li>
+            <li><a href="">wibble</a></li>
+        </ul>
+    </nav>
+    <div id="user-stuff">
+        <a href="">sign in</a>
+    </div>
+</header>
+{% block main %}
+{% end %}
+<footer>
+    <nav>
+        <ul>
+            <li><a href="">about</a></li>
+            <li><a href="">api</a></li>
+            <li><a href="">support</a></li>
+        </ul>
+        </nav>
+        <span id="site-copyright">
+            &copy; <a href="http://mediastandardstrust.org">Media Standards Trust</a> 2011
+        </span>
+</footer>
+</body>
+</html>
+

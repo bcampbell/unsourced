@@ -9,3 +9,56 @@ p, figure {margin: 1em 0;}
 a img {border: none;}
 sup, sub {line-height: 0;}
 
+
+
+body > header {
+    border-bottom: 1px solid black;
+}
+
+body > footer {
+    border-top: 1px solid black;
+}
+
+
+/* menus */
+nav ul {
+    padding: 0;
+    margin: 0;
+    list-style:none;
+}
+
+nav li {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+
+nav li a, #user-stuff a {
+  vertical-align: top;
+  padding: 0.5em 0.5em;
+  display: inline-block;
+}
+
+nav li:hover {
+  background-color: #eee;
+}
+
+
+/* header */
+
+header { position: relative; height: 4em; background-color: #ccc; }
+header h1 {
+    position: absolute;
+    margin: 0;
+    padding: 0.3em;
+}
+
+header nav { position: absolute; bottom: 0; right: 8em; }
+header #user-stuff {position: absolute; bottom: 0; right: 0; }
+
+/* footer */
+
+footer { position: relative; height: 3em; background-color: #ccc; }
+footer #site-copyright { position: absolute; top: 0; right: 0; padding: 0.5em; }
+footer nav { position: absolute; top: 0; left: 0; }
+

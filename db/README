@@ -1,0 +1,8 @@
+$ mysql -u root
+
+mysql> CREATE DATABASE sourcy;
+
+mysql> GRANT ALL PRIVILEGES ON sourcy.* TO 'sourcy'@'localhost' IDENTIFIED BY 'sourcy';
+
+$ mysql --user=sourcy --password=sourcy --database=sourcy < db/schema.sql
+
