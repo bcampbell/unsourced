@@ -3,5 +3,59 @@
 
 {% block main %}
 <h2>{{art.id}}: {{art.headline}}</h2>
+<a href="{{art.permalink}}"><code>{{art.permalink}}</code></a>
+<div id="view">
+    <p>
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    </p>
+    <p>
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    blah blah blah blah blah blah blah blah blah blah blah blah
+    </p>
+</div>
+<div id="tools">
+
+<div>
+
+  {% if sources %}
+  <h3>known sources</h3>
+  <ul>
+  {% for s in sources %}
+  <li><a href="{{s.url}}">{{s.url}}</a></li>
+  {% end %}
+  </ul>
+  {% end %}
+</div>
+   <!-- show existing sources -->
+  <div>
+    <p class="indicative">There appears to be a primary source missing...</p>
+
+    <p>This article appears to be referring to an academic paper. Can you track it down?</p>
+    <form action="/edit" method="post">
+        <label for="url">URL or DOI of paper:</label><br/>
+        <input type="hidden" name="art_id" value="{{art.id}}"/>
+        <input type="text" name="url" id="url" columns="80"/>
+        <input type="submit" value="submit"/><br/>
+        <span class="helptext"><a href="#">what's a DOI?</a> <a href="#">guidelines on linking to academic papers</a></span><br/>
+    </form>
+  </div>
+</div>
 {% end %}
 

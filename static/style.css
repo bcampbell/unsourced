@@ -33,7 +33,7 @@ nav li {
     display: inline-block;
 }
 
-nav li a, #user-stuff a {
+nav li a, #user-stuff {
   vertical-align: top;
   padding: 0.5em 0.5em;
   display: inline-block;
@@ -52,8 +52,12 @@ header h1 {
     margin: 0;
     padding: 0.3em;
 }
+header h1 a { text-decoration:none; }
+header h1 a:link { color: #000; }
+header h1 a:visited { color: #000; }
+header h1 a:hover { color: #fff; }
 
-header nav { position: absolute; bottom: 0; right: 8em; }
+header nav { position: absolute; bottom: 0; right: 12em; }
 header #user-stuff {position: absolute; bottom: 0; right: 0; }
 
 /* footer */
@@ -62,3 +66,12 @@ footer { position: relative; height: 3em; background-color: #ccc; }
 footer #site-copyright { position: absolute; top: 0; right: 0; padding: 0.5em; }
 footer nav { position: absolute; top: 0; left: 0; }
 
+/* content */
+#content { padding: 2em 2em; }
+
+
+
+/* layout */
+#view { float:left; width: 55%; }
+#tools { float:left; width: 35%; border: 1px solid black; }
+footer { clear: both; }

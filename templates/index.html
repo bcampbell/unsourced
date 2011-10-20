@@ -2,6 +2,12 @@
 {% block title %}Sourcy{% end %}
 
 {% block main %}
-<p>list of candidate articles goes here</p>
+<p>articles of interest...</p>
+<ul>
+{% for art in articles %}
+<li><a href="/art/{{art.id}}">{{art.headline}}</a></li>
+{% end %}
+</ul>
+
 {% end %}
 

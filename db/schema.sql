@@ -9,26 +9,28 @@ CREATE TABLE article (
     publication VARCHAR(512) NOT NULL,
     permalink VARCHAR(512) NOT NULL,
     pubdate DATETIME,
-    entered DATETIME NOT NULL
+    created DATETIME NOT NULL
 );
 
 
-DROP TABLE IF EXISTS user;
-CREATE TABLE user (
+DROP TABLE IF EXISTS useraccount;
+CREATE TABLE useraccount (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(128) NOT NULL UNIQUE,
     name VARCHAR(128) NOT NULL,
-    anonymous BOOLEAN NOT NULL
+    anonymous BOOLEAN NOT NULL,
+    created DATETIME NOT NULL
 );
 
 
 DROP TABLE IF EXISTS source;
 CREATE TABLE source (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    article_id INT REFERENCES article(id),
     url VARCHAR(512) NOT NULL DEFAULT '',
     doi VARCHAR(128) NOT NULL DEFAULT '',
     title VARCHAR(512) NOT NULL DEFAULT '',
-    creator INT NOT NULL REFERENCES user(id),
+    creator INT REFERENCES user(id),
     created DATETIME NOT NULL
 );
 

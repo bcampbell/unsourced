@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Log in{% end %}
+
+{% block main %}
+<form action="/login" method="post">
+    {% if 'name' in badness %}
+    <span class="err">{{badness['name']}}</span><br/>
+    {% end %}
+    <label for="name">Name:</label><input type="text" name="name" id="name" />
+<input type="submit" value="Sign in">
+</form>
+{% end %}
+
