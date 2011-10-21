@@ -1,20 +1,24 @@
+{% import util %}
 {% extends "base.html" %}
 {% block title %}Sourcy{% end %}
-
 {% block main %}
-<p>articles of interest...</p>
+<p>articles of interest...<br/>(TODO: this list will be a regular feed from journalisted or somewhere)</p>
 <ul>
 {% for art in articles %}
-<li><a href="/art/{{art.id}}">{{art.headline}}</a></li>
+<li><a href="/art/{{art.id}}">{{art.headline}}</a> ({% module domain(art.permalink) %})</li>
 {% end %}
 </ul>
 
 
 <p>or add an article:</p>
 <form action="/addarticle" method="post">
-    <label for="url">URL</label><input type="text" id="url" name="url" />
+    <label style="width:20em;" for="url">URL</label><input type="text" id="url" name="url" />
     <input type="submit" value="add"/>
 </form>
+
+<p>helper link: google news results for <a href="https://www.google.com/search?aq=f&hl=en&gl=uk&tbm=nws&btnmeta_news_search=1&q=scientists+say">"scientists say"</a>,
+<a href="https://www.google.com/search?aq=f&hl=en&gl=uk&tbm=nws&btnmeta_news_search=1&q=%22a+paper+published+today%22">"a paper published today"</a>
+</p>
 
 {% end %}
 

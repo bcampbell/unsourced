@@ -10,6 +10,7 @@ from tornado.options import define, options
 import scrape
 import util
 import analyser
+import uimodules
 
 define("port", default=8888, help="run on the given port", type=int)
 define("mysql_host", default="127.0.0.1:3306", help="database host")
@@ -31,6 +32,7 @@ class Application(tornado.web.Application):
             static_path = os.path.join(os.path.dirname(__file__), "static"),
             cookie_secret = "SuperSecretKey(tm)",
             template_path = os.path.join(os.path.dirname(__file__), "templates"),
+            ui_modules = uimodules
             )
         tornado.web.Application.__init__(self, handlers, **settings)
 
@@ -95,11 +97,14 @@ class ArticleHandler(BaseHandler):
         journals = analyser.find_journals(txt)
         institutions = analyser.find_institutions(txt)
 
+        html = util.sanitise_html(html)
+
         html = util.highlight(html,[item[0] for item in researchers], 'hilite researcher')
         html = util.highlight(html,[item[0] for item in journals], 'hilite journal')
         html = util.highlight(html,[item[0] for item in institutions], 'hilite institution')
 
-        self.render('article.html', art=art, article_content=html, sources=sources,researchers=researchers, institutions=institutions, journals=journals)
+
+        self.render('article.html', art=art, article_content=html, sources=sources,researchers=researchers, institutions=institutions, journals=journals) 
 
 
 class MainHandler(BaseHandler):
@@ -124,10 +129,12 @@ class EditHandler(BaseHandler):
 class AddArticleHandler(BaseHandler):
     def post(self):
         url = self.get_argument('url')
-        art_id = self.db.get("SELECT * FROM article WHERE permalink=%s", url)
-        if art_id is None:
+        art = self.db.get("SELECT * FROM article WHERE permalink=%s", url)
+        if art is None:
             txt,headline,byline,pubdate = scrape.scrape(url)
             art_id = self.db.execute("INSERT INTO article (headline,publication,permalink,pubdate,created) VALUES (%s,'',%s,%s,NOW())",headline,url,pubdate)
+        else:
+            art_id = art.id
         self.redirect("/art/%d" % (art_id,))
 
 def main():

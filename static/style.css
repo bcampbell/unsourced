@@ -73,7 +73,18 @@ footer nav { position: absolute; top: 0; left: 0; }
 
 /* layout */
 #view { float:left; width: 55%; }
-#tools { float:left; width: 35%; border: 1px solid black; }
+
+#tools { float:left; width: 35%; border: 1px solid black; padding: 0.5em; margin-left: 1em; }
+
+#view #original { }
+#view #original iframe { width: 100%; min-height: 30em; }
+
+#view nav a { background-color: #fff; color: #888; text-decoration: none; border: 1px solid #888; }
+#view nav a.selected { background-color: #fff; color: #000; border: 1px solid black; }
+
+#original iframe { border: 1px solid black; }
+#readable { border: 1px solid black; padding: 0.5em; }
+
 footer { clear: both; }
 
 
