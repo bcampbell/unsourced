@@ -5,45 +5,27 @@
 <h2>{{art.id}}: {{art.headline}}</h2>
 <a href="{{art.permalink}}"><code>{{art.permalink}}</code></a>
 <div id="view">
-    <p>
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    </p>
-    <p>
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    blah blah blah blah blah blah blah blah blah blah blah blah
-    </p>
+    <div id="readable">
+    {% raw article_content %}
+    </div>
+    <div id="original">
+        <iframe src="{{art.permalink}}"></iframe>
+    </div>
 </div>
 <div id="tools">
 
-<div>
 
   {% if sources %}
+  <div>
   <h3>known sources</h3>
   <ul>
   {% for s in sources %}
   <li><a href="{{s.url}}">{{s.url}}</a></li>
   {% end %}
   </ul>
+  </div>
   {% end %}
-</div>
-   <!-- show existing sources -->
+
   <div>
     <p class="indicative">There appears to be a primary source missing...</p>
 
@@ -56,6 +38,35 @@
         <span class="helptext"><a href="#">what's a DOI?</a> <a href="#">guidelines on linking to academic papers</a></span><br/>
     </form>
   </div>
+
+  <p>some links which might help...</p>
+  {% if researchers %}
+  <span class="hilite researcher">researchers:</span>
+  <ul>
+  {% for r in researchers %}
+  <li>{{r[0]}}</li>
+  {% end %}
+  </ul>
+  {% end %}
+
+  {% if institutions %}
+  <span class="hilite institution">Institutions:</span>
+  <ul>
+  {% for r in institutions %}
+  <li><a href="{{r[1]}}">{{r[0]}}</a></li>
+  {% end %}
+  </ul>
+  {% end %}
+
+  {% if journals %}
+  <span class="hilite journal">Journals:</span>
+  <ul>
+  {% for r in journals %}
+  <li><a href="{{r[1]}}">{{r[0]}}</a></li>
+  {% end %}
+  </ul>
+  {% end %}
+
 </div>
 {% end %}
 

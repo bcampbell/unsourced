@@ -7,6 +7,10 @@ import os
 from tornado.options import define, options
 
 
+import scrape
+import util
+import analyser
+
 define("port", default=8888, help="run on the given port", type=int)
 define("mysql_host", default="127.0.0.1:3306", help="database host")
 define("mysql_database", default="sourcy", help="database name")
@@ -21,6 +25,7 @@ class Application(tornado.web.Application):
             (r'/logout', LogoutHandler),
             (r"/art/([0-9]+)", ArticleHandler),
             (r"/edit", EditHandler),
+            (r"/addarticle", AddArticleHandler),
         ]
         settings = dict(
             static_path = os.path.join(os.path.dirname(__file__), "static"),
@@ -75,12 +80,26 @@ class LogoutHandler(BaseHandler):
 
 
 
+
+
+
 class ArticleHandler(BaseHandler):
     def get(self,art_id):
         art_id = int(art_id)
         art = self.db.get("SELECT * FROM article WHERE id=%s", art_id)
         sources = self.db.query("SELECT * FROM source WHERE article_id=%s", art_id)
-        self.render('article.html', art=art, sources=sources)
+        html,headline,byline,pubdate = scrape.scrape(art.permalink)
+
+        txt = util.from_html(html)
+        researchers = analyser.find_researchers(txt)
+        journals = analyser.find_journals(txt)
+        institutions = analyser.find_institutions(txt)
+
+        html = util.highlight(html,[item[0] for item in researchers], 'hilite researcher')
+        html = util.highlight(html,[item[0] for item in journals], 'hilite journal')
+        html = util.highlight(html,[item[0] for item in institutions], 'hilite institution')
+
+        self.render('article.html', art=art, article_content=html, sources=sources,researchers=researchers, institutions=institutions, journals=journals)
 
 
 class MainHandler(BaseHandler):
@@ -99,6 +118,16 @@ class EditHandler(BaseHandler):
             user_id = None
         self.db.execute("INSERT INTO source (article_id,url,doi,title,creator,created) VALUES (%s,%s,%s,%s,%s,NOW())", art_id, url,'','',user_id)
 
+        self.redirect("/art/%d" % (art_id,))
+
+
+class AddArticleHandler(BaseHandler):
+    def post(self):
+        url = self.get_argument('url')
+        art_id = self.db.get("SELECT * FROM article WHERE permalink=%s", url)
+        if art_id is None:
+            txt,headline,byline,pubdate = scrape.scrape(url)
+            art_id = self.db.execute("INSERT INTO article (headline,publication,permalink,pubdate,created) VALUES (%s,'',%s,%s,NOW())",headline,url,pubdate)
         self.redirect("/art/%d" % (art_id,))
 
 def main():

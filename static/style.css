@@ -75,3 +75,15 @@ footer nav { position: absolute; top: 0; left: 0; }
 #view { float:left; width: 55%; }
 #tools { float:left; width: 35%; border: 1px solid black; }
 footer { clear: both; }
+
+
+
+
+.hilite.indicative { background-color: yellow; }
+.hilite.institution { background-color: #8f8; }
+.hilite.journal { background-color: #f88; }
+.hilite.researcher { background-color: #88f; }
+
+.hilite.institution .hilite.journal,
+.hilite.institution .hilite.journal { background-color: #ff8; }
+
