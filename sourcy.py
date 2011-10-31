@@ -108,7 +108,22 @@ class ArticleHandler(BaseHandler):
 
         html = highlight.html_highlight(html, highlight_spans)
 
-        self.render('article.html', art=art, article_content=html, sources=sources,researchers=researchers, institutions=institutions, journals=journals) 
+        rs = []
+        for name,url,kind,spans in researchers:
+            parts = name.split()
+            initial = parts[0][0]
+            surname = parts[-1]
+
+            links = []
+            for journal,foo1,foo2,foo3 in journals:
+                url = "http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22" + initial + "+" + surname + "%22&as_publication=" + journal.lower()
+                links.append((journal,url))
+            url = "http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22" + initial + "+" + surname
+            links.append(("any journal",url))
+            rs.append((name,links))
+
+
+        self.render('article.html', art=art, article_content=html, sources=sources,researchers=rs, institutions=institutions, journals=journals) 
 
 
 class MainHandler(BaseHandler):

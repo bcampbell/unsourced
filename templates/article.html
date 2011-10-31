@@ -77,7 +77,14 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   <span class="hilite researcher">researchers:</span>
   <ul>
   {% for r in researchers %}
-  <li>{{r[0]}}</li>
+  <li>{{r[0]}}<br/>
+    search for papers by {{r[0]}} in:
+    <ul>
+    {% for lnk in r[1] %}
+    <li><a href="{{lnk[1]}}">{{lnk[0]}}</a></li>
+    {% end %}
+    </ul>
+  </li>
   {% end %}
   </ul>
   {% end %}
