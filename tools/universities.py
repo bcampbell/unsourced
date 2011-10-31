@@ -12,6 +12,11 @@ def fetchum():
     offset = 0
     limit = 2000
     while True:
+
+
+        # was using:
+        # ?university foaf:name ?name.
+        # but the language tag seemed borked
         sparql.setQuery("""
             PREFIX dbo: <http://dbpedia.org/ontology/>
             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -20,7 +25,8 @@ def fetchum():
             SELECT DISTINCT ?name,?homepage
             WHERE {
                 ?university rdf:type dbo:University.
-                ?university foaf:name ?name.
+                ?university rdfs:label ?name.
+                FILTER(langMatches(lang(?name), "en"))
                 OPTIONAL { ?university foaf:homepage ?homepage }
             }
             ORDER BY ?name
@@ -46,7 +52,7 @@ def fetchum():
 
 def main():
     data = fetchum()
-    writer = csv.writer(open('unis.csv', 'w'))
+    writer = csv.writer(open('unis_en.csv', 'w'))
     enc = 'utf-8'
     for row in data:
         row = [r.encode(enc) for r in row]

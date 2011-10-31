@@ -19,6 +19,8 @@ def fetchum():
             SELECT DISTINCT ?name ?homepage WHERE {
                  ?j rdf:type dbo:AcademicJournal.
                  ?j foaf:name ?name.
+                 ?j rdfs:label ?name.
+                 FILTER(langMatches(lang(?name), "en"))
                  OPTIONAL{ ?j foaf:homepage ?homepage }
             }
             ORDER BY ?name
@@ -44,7 +46,7 @@ def fetchum():
 
 def main():
     data = fetchum()
-    writer = csv.writer(open('journals.csv', 'w'))
+    writer = csv.writer(open('journals_en.csv', 'w'))
     enc = 'utf-8'
     for row in data:
         row = [r.encode(enc) for r in row]
