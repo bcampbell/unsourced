@@ -5,7 +5,7 @@ import tornado.database
 import tornado.options
 import os
 from tornado.options import define, options
-
+import logging
 
 import scrape
 import util
@@ -160,8 +160,7 @@ def main():
     tornado.options.parse_command_line()
     app = Application()
     app.listen(8888)
+    logging.info("start.")
     tornado.ioloop.IOLoop.instance().start()
 
-if __name__ == "__main__":
-    main()
 
