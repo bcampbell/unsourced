@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import tornado.ioloop
 import tornado.web
 import tornado.database
@@ -128,11 +127,9 @@ class ArticleHandler(BaseHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        arts = self.db.query("SELECT * FROM article")
+        arts = self.db.query("SELECT * FROM article ORDER BY RAND() LIMIT 10")
 
-
-
-        sql = """select a.id as art_id, a.headline as art_headline, a.permalink,s.id,s.url,s.created,u.name as user_name,u.id as user_id from (source s left join useraccount u ON s.creator=u.id) inner join article a on a.id=s.article_id ORDER BY created DESC LIMIT 10"""
+        sql = """select a.id as art_id, a.headline as art_headline, a.permalink as art_permalink,s.id,s.url,s.created,u.name as user_name,u.id as user_id from (source s left join useraccount u ON s.creator=u.id) inner join article a on a.id=s.article_id ORDER BY created DESC LIMIT 10"""
 
         activity = self.db.query(sql)
         self.render('index.html', articles=arts, activity=activity)
@@ -165,6 +162,7 @@ class AddArticleHandler(BaseHandler):
         self.redirect("/art/%d" % (art_id,))
 
 def main():
+    tornado.options.parse_config_file("sourcy.conf")
     tornado.options.parse_command_line()
     app = Application()
     app.listen(8888)

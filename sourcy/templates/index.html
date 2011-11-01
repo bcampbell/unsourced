@@ -2,8 +2,9 @@
 {% extends "base.html" %}
 {% block title %}Sourcy{% end %}
 {% block main %}
-<h2>articles of interest...</h2>
-(TODO: this list will be a regular feed from journalisted or somewhere)</p>
+<h2>A random selection of recent articles which might need sourcing...</h2>
+<p>These articles all contain phrases like "scientists say" or "a paper published today"
+which could indicate they might refer to academic papers (obtained via <a href="http://journalisted.com/search?type=article&q=%22scientists+say%22+OR+%22paper+published%22">Journalisted</a>)</p>
 <ul>
 {% for art in articles %}
 <li><a href="/art/{{art.id}}">{{art.headline}}</a> ({% module domain(art.permalink) %})</li>
@@ -21,7 +22,7 @@ anonymous
 {{ a.user_name }}
 {% end %}
 added a source to
-<a href="/art/{{a.art_id}}">{{a.art_headline}}</a> ({% module domain(art.permalink) %})
+<a href="/art/{{a.art_id}}">{{a.art_headline}}</a> ({% module domain(a.art_permalink) %})
 </li>
 {% end %}
 </ul>
@@ -29,7 +30,7 @@ added a source to
 
 <p>or add an article:</p>
 <form action="/addarticle" method="post">
-    <label style="width:20em;" for="url">URL</label><input type="text" id="url" name="url" />
+    <label style="width:20em;" for="url">URL</label><input type="text" id="url" name="url" /><br/>
     <input type="submit" value="add"/>
 </form>
 
