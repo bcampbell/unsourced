@@ -129,7 +129,15 @@ class ArticleHandler(BaseHandler):
 class MainHandler(BaseHandler):
     def get(self):
         arts = self.db.query("SELECT * FROM article")
-        self.render('index.html', articles=arts)
+
+
+
+        sql = """select a.id as art_id, a.headline as art_headline, a.permalink,s.id,s.url,s.created,u.name as user_name,u.id as user_id from (source s left join useraccount u ON s.creator=u.id) inner join article a on a.id=s.article_id ORDER BY created DESC LIMIT 10"""
+
+        activity = self.db.query(sql)
+        self.render('index.html', articles=arts, activity=activity)
+
+
 
 
 class EditHandler(BaseHandler):

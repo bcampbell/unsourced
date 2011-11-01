@@ -2,10 +2,27 @@
 {% extends "base.html" %}
 {% block title %}Sourcy{% end %}
 {% block main %}
-<p>articles of interest...<br/>(TODO: this list will be a regular feed from journalisted or somewhere)</p>
+<h2>articles of interest...</h2>
+(TODO: this list will be a regular feed from journalisted or somewhere)</p>
 <ul>
 {% for art in articles %}
 <li><a href="/art/{{art.id}}">{{art.headline}}</a> ({% module domain(art.permalink) %})</li>
+{% end %}
+</ul>
+
+<h2>Recent activity</h2>
+<ul>
+{% for a in activity %}
+<li>
+{{ a.created }}
+{% if a.user_id is None %}
+anonymous
+{% else %}
+{{ a.user_name }}
+{% end %}
+added a source to
+<a href="/art/{{a.art_id}}">{{a.art_headline}}</a> ({% module domain(art.permalink) %})
+</li>
 {% end %}
 </ul>
 
