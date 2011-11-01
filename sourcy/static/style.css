@@ -98,3 +98,5 @@ footer { clear: both; }
 .hilite.institution .hilite.journal,
 .hilite.institution .hilite.journal { background-color: #ff8; }
 
+
+input[id="url"] { width: 40em; }

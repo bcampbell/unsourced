@@ -2,14 +2,15 @@
 {% extends "base.html" %}
 {% block title %}Sourcy{% end %}
 {% block main %}
-<h2>A random selection of recent articles which might need sourcing...</h2>
-<p>These articles all contain phrases like "scientists say" or "a paper published today"
-which could indicate they might refer to academic papers (obtained via <a href="http://journalisted.com/search?type=article&q=%22scientists+say%22+OR+%22paper+published%22">Journalisted</a>)</p>
+<h2>A random selection of recent articles which might need sourcing:</h2>
 <ul>
 {% for art in articles %}
 <li><a href="/art/{{art.id}}">{{art.headline}}</a> ({% module domain(art.permalink) %})</li>
 {% end %}
 </ul>
+<p>These all contain phrases like "scientists say" or "a paper published today"
+which could indicate they might refer to academic papers (via <a href="http://journalisted.com/search?type=article&q=%22scientists+say%22+OR+%22paper+published%22">Journalisted</a>)</p>
+<p>Refresh the page to see more.</p>
 
 <h2>Recent activity</h2>
 <ul>
