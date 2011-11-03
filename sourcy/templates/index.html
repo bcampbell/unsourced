@@ -12,6 +12,12 @@
 which could indicate they might refer to academic papers (via <a href="http://journalisted.com/search?type=article&q=%22scientists+say%22+OR+%22paper+published%22">Journalisted</a>)</p>
 <p>Refresh the page to see more.</p>
 
+<p>or enter an article you'd like to work on:</p>
+<form action="/addarticle" method="post">
+    <label style="width:20em;" for="url">URL</label><input type="text" id="url" name="url" /><br/>
+    <input type="submit" value="add"/>
+</form>
+
 <h2>Recent activity</h2>
 <ul>
 {% for a in activity %}
@@ -29,11 +35,6 @@ added a source to
 </ul>
 
 
-<p>or add an article:</p>
-<form action="/addarticle" method="post">
-    <label style="width:20em;" for="url">URL</label><input type="text" id="url" name="url" /><br/>
-    <input type="submit" value="add"/>
-</form>
 
 <p>helper link: google news results for <a href="https://www.google.com/search?aq=f&hl=en&gl=uk&tbm=nws&btnmeta_news_search=1&q=scientists+say">"scientists say"</a>,
 <a href="https://www.google.com/search?aq=f&hl=en&gl=uk&tbm=nws&btnmeta_news_search=1&q=%22a+paper+published+today%22">"a paper published today"</a>

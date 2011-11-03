@@ -2,6 +2,12 @@
 {% block title %}Log in{% end %}
 
 {% block main %}
+
+<h2>Log in</h2>
+<p>
+NOTE: no authenication is currently performed - just enter the username you want to use and you're in :-)
+</p>
+
 <form action="/login" method="post">
     {% if 'name' in badness %}
     <span class="err">{{badness['name']}}</span><br/>
