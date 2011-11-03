@@ -67,16 +67,22 @@ researcher_pats = [
     # TODO: support other apostrophe chars for O'Shay etc...
     re.compile(r"led by\s+(?P<name>(([A-Z][-'\w]+)\b\s*){2,4})",re.UNICODE|re.DOTALL),
     re.compile(r"(?P<title>([Dd]r|(?:\w+ist)|[Pp]rofessor|[Pp]rof)[.]?)\s+(?P<name>(([A-Z][-'\w]+)\b\s*){2,4})",re.UNICODE|re.DOTALL),
-    re.compile(r"(?P<title>([Dd]r|(?:\w+ist)[Pp]rofessor|[Pp]rof)[.]?)?\s*(?P<name>(([A-Z][-'\w]+)\b\s*){2,4}),?\s+(((one of the)|a|the)\s+)?(scientist|author|researcher)",re.UNICODE|re.DOTALL)
+    re.compile(r"(?P<title>([Dd]r|(?:\w+ist)|[Pp]rofessor|[Pp]rof)[.]?)?\s*(?P<name>(([A-Z][-'\w]+)\b\s*){2,4}),?\s+(((one of the)|a|the)\s+)?(scientist|author|researcher)",re.UNICODE|re.DOTALL),
+    re.compile(r"[Rr]esearcher\s+(?P<title>([Dd]r|(?:\w+ist)|[Pp]rofessor|[Pp]rof)[.]?)?\s*(?P<name>(([A-Z][-'\w]{2,})\b\s*){2,4})",re.UNICODE|re.DOTALL),
 ]
 
 def find_researchers(txt):
-    hits = []
+    hits = {}
     for pat in researcher_pats:
         for m in pat.finditer(txt):
             name = m.group('name')
-            hits.append((name,u'','researcher',[m.span('name'),]))
-    return hits
+            if name not in hits:
+                hits[name] = []
+            hits[name].append(m.span('name'))
+
+
+    return [(name,u'','researcher',spans) for name,spans in hits.iteritems()]
+
 
 
 unis = load('tools/unis.csv')
