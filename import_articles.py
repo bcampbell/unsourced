@@ -16,7 +16,7 @@ define("mysql_password", default="sourcy", help="database password")
 
 def jl_fetch():
 
-    url = "http://journalisted.com/api/findArticles?search=%22scientists+say%22+OR+%22paper+published%22&output=js&limit=100"
+    url = "http://journalisted.com/api/findArticles?search=%22scientists+say%22+OR+%22paper+published%22&output=js&limit=1000"
     return json.load(urllib2.urlopen(url), encoding='utf-8')
 
 def main():
