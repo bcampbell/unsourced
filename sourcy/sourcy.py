@@ -117,7 +117,7 @@ class ArticleHandler(BaseHandler):
             for journal,foo1,foo2,foo3 in journals:
                 url = "http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22" + initial + "+" + surname + "%22&as_publication=" + journal.lower()
                 links.append((journal,url))
-            url = "http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22" + initial + "+" + surname
+            url = "http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22" + initial + "+" + surname + "%22"
             links.append(("any journal",url))
             rs.append((name,links))
 
