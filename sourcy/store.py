@@ -116,7 +116,7 @@ class Store(object):
             # log the action against both source and article
             action_id = self.db.execute("INSERT INTO action (what,who,performed) VALUES ('src_add',%s,NOW())", user_id)
             self.db.execute("INSERT INTO source_action (source_id,action_id) VALUES (%s,%s)",src_id,action_id)
-            self.db.execute("INSERT INTO article_action (artcle_id,action_id) VALUES (%s,%s)",art_id,action_id)
+            self.db.execute("INSERT INTO article_action (article_id,action_id) VALUES (%s,%s)",art_id,action_id)
         except Exception as e:
             self.db.execute("ROLLBACK")
             raise
