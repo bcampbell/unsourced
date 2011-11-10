@@ -2,17 +2,6 @@ SET SESSION storage_engine = "InnoDB";
 SET SESSION time_zone = "+0:00";
 ALTER DATABASE CHARACTER SET "utf8";
 
-DROP TABLE IF EXISTS article;
-CREATE TABLE article (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    headline VARCHAR(512) NOT NULL,
-    publication VARCHAR(512) NOT NULL,
-    permalink VARCHAR(512) NOT NULL,
-    pubdate DATETIME,
-    created DATETIME NOT NULL
-);
-
-
 DROP TABLE IF EXISTS useraccount;
 CREATE TABLE useraccount (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -22,16 +11,73 @@ CREATE TABLE useraccount (
     created DATETIME NOT NULL
 );
 
+DROP TABLE IF EXISTS action;
+CREATE TABLE action (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    what VARCHAR(32) NOT NULL,
+    who INT REFERENCES useraccount(id),
+    performed DATETIME NOT NULL,
+    meta TEXT NOT NULL DEFAULT ''
+);
+
+
+DROP TABLE IF EXISTS article;
+CREATE TABLE article (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    headline VARCHAR(512) NOT NULL,
+    publication VARCHAR(512) NOT NULL,
+    permalink VARCHAR(512) NOT NULL,
+    pubdate DATETIME
+);
+
+
+DROP TABLE IF EXISTS article_url;
+CREATE TABLE article_url (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    article_id INT NOT NULL REFERENCES article(id),
+    url VARCHAR(512) NOT NULL
+);
+
+
+DROP TABLE IF EXISTS article_action;
+CREATE TABLE article_action (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    article_id INT NOT NULL REFERENCES article(id),
+    action_id INT NOT NULL REFERENCES action(id)
+);
+
 
 DROP TABLE IF EXISTS source;
 CREATE TABLE source (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    article_id INT REFERENCES article(id),
+    article_id INT NOT NULL REFERENCES article(id),
     url VARCHAR(512) NOT NULL DEFAULT '',
-    doi VARCHAR(128) NOT NULL DEFAULT '',
     title VARCHAR(512) NOT NULL DEFAULT '',
-    creator INT REFERENCES user(id),
-    created DATETIME NOT NULL
+    meta TEXT NOT NULL DEFAULT ''
 );
 
+DROP TABLE IF EXISTS source_action;
+CREATE TABLE source_action(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    source_id INT NOT NULL REFERENCES source(id),
+    action_id INT NOT NULL REFERENCES action(id)
+);
+
+
+
+
+DROP TABLE IF EXISTS lookup;
+CREATE TABLE lookup (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    kind VARCHAR(16) NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    homepage VARCHAR(256) NOT NULL DEFAULT ''
+);
+
+DROP TABLE IF EXISTS lookup_action;
+CREATE TABLE lookup_action(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    lookup_id INT NOT NULL REFERENCES lookup(id),
+    action_id INT NOT NULL REFERENCES action(id)
+);
 

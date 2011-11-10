@@ -4,8 +4,8 @@ import re
 # tools to analyse text to find mentions of institutions, journals, researchers...
 # Lots of brute force string matching at the moment, so lots of scope to improve!
 
-unis = None
-journals = None
+unis = []
+journals = []
 
 def load(filename):
     out = []
@@ -84,7 +84,10 @@ def find_researchers(txt):
     return [(name,u'','researcher',spans) for name,spans in hits.iteritems()]
 
 
+def init():
+    global unis
+    global journals
 
-unis = load('tools/unis.csv')
-journals = load('tools/journals.csv')
+    unis = load('tools/unis.csv')
+    journals = load('tools/journals.csv')
 

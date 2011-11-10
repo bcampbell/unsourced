@@ -1,6 +1,5 @@
 import tornado.ioloop
 import tornado.web
-import tornado.database
 import tornado.options
 import os
 from tornado.options import define, options
@@ -11,7 +10,9 @@ import util
 import analyser
 import uimodules
 import highlight
+from store import Store
 
+define("quick", default=False, help="don't load lookup tables", type=bool)
 define("port", default=8888, help="run on the given port", type=int)
 define("mysql_host", default="127.0.0.1:3306", help="database host")
 define("mysql_database", default="sourcy", help="database name")
@@ -36,20 +37,21 @@ class Application(tornado.web.Application):
             )
         tornado.web.Application.__init__(self, handlers, **settings)
 
-        self.db = tornado.database.Connection(
-            host=options.mysql_host, database=options.mysql_database,
-            user=options.mysql_user, password=options.mysql_password)
+        self.store = Store()
+        if not options.quick:
+            analyser.init()
+
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         user_id = self.get_secure_cookie("user")
         if user_id is None:
             return None
-        return self.db.get("SELECT * FROM useraccount WHERE id=%s", int(user_id))
+        return self.store.user_get(user_id)
 
     @property
-    def db(self):
-        return self.application.db
+    def store(self):
+        return self.application.store
 
 
 class LoginHandler(BaseHandler):
@@ -62,12 +64,9 @@ class LoginHandler(BaseHandler):
             self.render('login.html', badness={'name':'Please enter your user name'})
             return
 
-        user =  self.db.get("SELECT * FROM useraccount WHERE name=%s", name)
+        user =  self.store.user_get_by_name(name)
         if user is None:
-            # create one
-            user_id = self.db.execute(
-                "INSERT INTO useraccount (email,name,anonymous,created) VALUES (%s,%s,FALSE,NOW())",
-                '', name)
+            user_id = self.store.user_create(name)
         else:
             user_id = user.id
 
@@ -88,8 +87,8 @@ class LogoutHandler(BaseHandler):
 class ArticleHandler(BaseHandler):
     def get(self,art_id):
         art_id = int(art_id)
-        art = self.db.get("SELECT * FROM article WHERE id=%s", art_id)
-        sources = self.db.query("SELECT * FROM source WHERE article_id=%s", art_id)
+        art = self.store.art_get(art_id)
+        sources = self.store.art_get_sources(art_id)
         html,headline,byline,pubdate = scrape.scrape(art.permalink)
 
         html = util.sanitise_html(html)
@@ -127,13 +126,13 @@ class ArticleHandler(BaseHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        arts = self.db.query("SELECT * FROM article ORDER BY RAND() LIMIT 10")
+        print "HELLO!"
+        arts = self.store.art_get_interesting(10)
 
-        sql = """select a.id as art_id, a.headline as art_headline, a.permalink as art_permalink,s.id,s.url,s.created,u.name as user_name,u.id as user_id from (source s left join useraccount u ON s.creator=u.id) inner join article a on a.id=s.article_id ORDER BY created DESC LIMIT 10"""
+#        sql = """select a.id as art_id, a.headline as art_headline, a.permalink as art_permalink,s.id,s.url,s.created,u.name as user_name,u.id as user_id from (source s left join useraccount u ON s.creator=u.id) inner join article a on a.id=s.article_id ORDER BY created DESC LIMIT 10"""
 
-        activity = self.db.query(sql)
-        self.render('index.html', articles=arts, activity=activity)
-
+        recent = self.store.action_get_recent(10)
+        self.render('index.html', articles=arts, recent_actions=recent)
 
 
 
@@ -145,7 +144,7 @@ class EditHandler(BaseHandler):
             user_id = self.current_user.id
         else:
             user_id = None
-        self.db.execute("INSERT INTO source (article_id,url,doi,title,creator,created) VALUES (%s,%s,%s,%s,%s,NOW())", art_id, url,'','',user_id)
+        self.store.action_add_source(user_id, art_id, url)
 
         self.redirect("/art/%d" % (art_id,))
 
@@ -153,10 +152,14 @@ class EditHandler(BaseHandler):
 class AddArticleHandler(BaseHandler):
     def post(self):
         url = self.get_argument('url')
-        art = self.db.get("SELECT * FROM article WHERE permalink=%s", url)
+        art = self.store.art_get_by_url(url)
+        if self.current_user is not None:
+            user_id = self.current_user.id
+        else:
+            user_id = None
         if art is None:
             txt,headline,byline,pubdate = scrape.scrape(url)
-            art_id = self.db.execute("INSERT INTO article (headline,publication,permalink,pubdate,created) VALUES (%s,'',%s,%s,NOW())",headline,url,pubdate)
+            art_id = self.store.action_add_article(user_id, url, headline, pubdate)
         else:
             art_id = art.id
         self.redirect("/art/%d" % (art_id,))

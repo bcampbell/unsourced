@@ -19,20 +19,7 @@ which could indicate they might refer to academic papers (via <a href="http://jo
 </form>
 
 <h2>Recent activity</h2>
-<ul>
-{% for a in activity %}
-<li>
-{{ a.created }}
-{% if a.user_id is None %}
-anonymous
-{% else %}
-{{ a.user_name }}
-{% end %}
-added a source to
-<a href="/art/{{a.art_id}}">{{a.art_headline}}</a> ({% module domain(a.art_permalink) %})
-</li>
-{% end %}
-</ul>
+{% module action_list(recent_actions) %}
 
 
 
