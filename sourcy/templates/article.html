@@ -77,11 +77,11 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   <span class="hilite researcher">researchers:</span>
   <ul>
   {% for r in researchers %}
-  <li>{{r[0]}}<br/>
+  <li><span class="researcher">{{r[0]}}</span><br/>
     search for papers by {{r[0]}} in:
     <ul>
     {% for lnk in r[1] %}
-    <li><a href="{{lnk[1]}}">{{lnk[0]}}</a></li>
+    <li><href="{{lnk[1]}}">{{lnk[0]}}</a></li>
     {% end %}
     </ul>
   </li>
@@ -93,7 +93,7 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   <span class="hilite institution">Institutions:</span>
   <ul>
   {% for r in institutions %}
-  <li><a href="{{r[1]}}">{{r[0]}}</a></li>
+  <li><a class="institution" href="{{r[1]}}">{{r[0]}}</a></li>
   {% end %}
   </ul>
   {% end %}
@@ -102,10 +102,24 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   <span class="hilite journal">Journals:</span>
   <ul>
   {% for r in journals %}
-  <li><a href="{{r[1]}}">{{r[0]}}</a></li>
+  <li><a class="journal" href="{{r[1]}}">{{r[0]}}</a></li>
   {% end %}
   </ul>
   {% end %}
+
+
+  <form action="http://scholar.google.co.uk/scholar" method="GET">
+      researchers:<br/>
+      {% for r in researchers %}
+      <input type="checkbox" name="as_sauthors" value="{{r[0]}}" id="r"/><label for="r">{{r[0]}}</label><br/>
+      {% end %}
+      journals:<br/>
+      {% for j in journals %}
+      <input type="radio" name="as_publication" value="{{j[0]}}" id="j"/><label for="j">{{j[0]}} (<a href="{{j[1]}}">web site</a>)</label><br/>
+      {% end %}
+      keywords: <input type="text" name="as_q" /><br/>
+      <input type="submit" value="Search Scholar" name="btnG" />
+  </form>
 
 </div>
 </div>

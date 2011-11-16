@@ -12,12 +12,7 @@ import uimodules
 import highlight
 from store import Store
 
-define("quick", default=False, help="don't load lookup tables", type=bool)
 define("port", default=8888, help="run on the given port", type=int)
-define("mysql_host", default="127.0.0.1:3306", help="database host")
-define("mysql_database", default="sourcy", help="database name")
-define("mysql_user", default="sourcy", help="database user")
-define("mysql_password", default="sourcy", help="database password")
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -33,13 +28,16 @@ class Application(tornado.web.Application):
             static_path = os.path.join(os.path.dirname(__file__), "static"),
             cookie_secret = "SuperSecretKey(tm)",
             template_path = os.path.join(os.path.dirname(__file__), "templates"),
-            ui_modules = uimodules
+            ui_modules = uimodules,
+            debug = True
             )
         tornado.web.Application.__init__(self, handlers, **settings)
 
         self.store = Store()
-        if not options.quick:
-            analyser.init()
+
+
+        self.institution_finder = analyser.Lookerupper(self.store,'institution')
+        self.journal_finder = analyser.Lookerupper(self.store,'journal')
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -93,8 +91,8 @@ class ArticleHandler(BaseHandler):
 
         html = util.sanitise_html(html)
         researchers = analyser.find_researchers(html)
-        journals = analyser.find_journals(html)
-        institutions = analyser.find_institutions(html)
+        journals = self.application.journal_finder.find(html)
+        institutions = self.application.institution_finder.find(html)
 
         highlight_spans = []
         for name,url,kind,spans in journals:
@@ -126,7 +124,6 @@ class ArticleHandler(BaseHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        print "HELLO!"
         arts = self.store.art_get_interesting(10)
 
 #        sql = """select a.id as art_id, a.headline as art_headline, a.permalink as art_permalink,s.id,s.url,s.created,u.name as user_name,u.id as user_id from (source s left join useraccount u ON s.creator=u.id) inner join article a on a.id=s.article_id ORDER BY created DESC LIMIT 10"""

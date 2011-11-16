@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+from sourcy.store import Store
+from tornado.options import define, options
+import csv
+import optparse
+from optparse import OptionParser
+
+
+def main():
+    s = Store()
+    parser = OptionParser()
+    (opts, args) = parser.parse_args()
+    if len(args) != 2:
+        parser.error("requires 2 args: <kind> <infile>")
+
+    (kind,infilename) = args
+    f = open(infilename)
+    rdr = csv.reader(f)
+
+    MAX_URL_LEN=200
+    MAX_NAME_LEN=200
+    enc = 'utf-8'
+
+    data = ((unicode(row[0],enc),unicode(row[1],enc)) for row in rdr)
+    data = (row for row in rdr if len(row[0])<MAX_NAME_LEN and len(row[1])<MAX_URL_LEN)
+    s.import_lookups(kind,data)
+
+
+if __name__ == "__main__":
+    main()
+

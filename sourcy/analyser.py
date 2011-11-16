@@ -1,66 +1,54 @@
 import csv
 import re
+import pickle
+import logging
+import store
 
 # tools to analyse text to find mentions of institutions, journals, researchers...
 # Lots of brute force string matching at the moment, so lots of scope to improve!
 
-unis = []
-journals = []
+class Lookerupper:
+    def __init__(self,store,kind):
+        self.kind = kind
+        self.store = store
+        self.table = {}
 
-def load(filename):
-    out = []
-    f = open(filename,'r')
-    reader = csv.reader(f)
-    for row in reader:
-        s = unicode(row[0],'utf-8').strip()
-        url = unicode(row[1],'utf-8').strip()
-        if url:
-            flags = re.UNICODE|re.IGNORECASE
-            if len(s.split())==1:
-                flags = re.UNICODE
-                pat = s
-                pat = re.escape(pat)
-                pat = ur'\bjournal[,]?\s+(' + pat + ur')\b'
-                out.append((re.compile(pat,flags),s,url))
-                pat = s
-                pat = re.escape(pat)
-                pat = ur'\b(' + pat + ur')\s+(?:journal|magazine)\b'
-                out.append((re.compile(pat,flags),s,url))
-            else:
-                pat = s
-                pat = re.escape(pat)
-                # special case because we're really searching html
-                pat = pat.replace(r'\&','&amp;')
-                pat = ur'\b(' + pat + ur')\b'
-                out.append((re.compile(pat,flags),s,url))
-    return out
+        filename = kind + ".pickle"
+        try:
+            self.table = pickle.load(open(filename,'rb'))
+            logging.info("Lookerupper for %s (from cache)" % (kind,))
+        except:
+            for l in store.lookup_iter(kind):
+                self.table[l.id] = (l.name,l.url)
+            logging.info("Lookerupper for %s" % (kind,))
+            pickle.dump(self.table, open(filename,'wb'))
 
 
-def find_institutions(txt):
-    """ returns a list of (name,url,kind,spans) tuples for matched names """
-    hits = {}
-    for pat,s,url in unis:
-        if s not in txt:
-            continue
-        spans = []
-        for m in pat.finditer(txt):
-            spans.append(m.span(1))
-        if len(spans)>0:
-            hits[s] = (s,url,'institution',spans)
-    return hits.values()
 
-def find_journals(txt):
-    """ returns a list of (name,url,kind,spans) tuples for matched names """
-    hits = {}
-    for pat,s,url in journals:
-        spans = []
-        if s not in txt:
-            continue
-        for m in pat.finditer(txt):
-            spans.append(m.span(1))
-        if len(spans)>0:
-            hits[s] = (s,url,'journal',spans)
-    return hits.values()
+
+    def find(self,html):
+        """ returns matching lookups as list of (name,url,kind,spans) tuples """
+
+        ids = []
+        for id,l in self.table.iteritems():
+            if l[0] in html:
+                ids.append(id)
+        
+        #
+        hits = {}
+        for id in ids:
+            lookup = self.table[id]
+            pat = re.compile(self.to_regex(lookup[0]))
+            spans = []
+            for m in pat.finditer(html):
+                spans.append(m.span(0))
+            if len(spans)>0:
+                # name, url, kind, spans
+                hits[lookup[0]] = (lookup[0],lookup[1],self.kind,spans)
+        return hits.values()
+
+    def to_regex(self,s):
+        return re.escape(s)
 
 
 researcher_pats = [
@@ -80,14 +68,7 @@ def find_researchers(txt):
                 hits[name] = []
             hits[name].append(m.span('name'))
 
-
     return [(name,u'','researcher',spans) for name,spans in hits.iteritems()]
 
 
-def init():
-    global unis
-    global journals
-
-    unis = load('tools/unis.csv')
-    journals = load('tools/journals.csv')
 
