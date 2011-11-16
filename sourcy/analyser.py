@@ -13,38 +13,45 @@ class Lookerupper:
         self.store = store
         self.table = {}
 
-        filename = kind + ".pickle"
-        try:
-            self.table = pickle.load(open(filename,'rb'))
-            logging.info("Lookerupper for %s (from cache)" % (kind,))
-        except:
-            for l in store.lookup_iter(kind):
-                self.table[l.id] = (l.name,l.url)
-            logging.info("Lookerupper for %s" % (kind,))
-            pickle.dump(self.table, open(filename,'wb'))
+#        filename = kind + ".pickle"
+#        try:
+#            self.table = pickle.load(open(filename,'rb'))
+#            logging.info("Lookerupper for %s (from cache)" % (kind,))
+#        except:
+#            for l in store.lookup_iter(kind):
+#                name = l.name
+#                self.table[id] = (unicode(name).lower(),name,l.url)
+#            logging.info("Lookerupper for %s" % (kind,))
+#            pickle.dump(self.table, open(filename,'wb'))
 
-
-
+        for l in store.lookup_iter(kind):
+            name = l.name
+            self.table[l.id] = (unicode(name).lower(),name,l.url)
+        logging.info("Lookerupper for %s (%d entries)" % (kind,len(self.table)))
 
     def find(self,html):
         """ returns matching lookups as list of (name,url,kind,spans) tuples """
 
-        ids = []
+        html = html.lower()
+
+        found = []
+        # first pass - find ones which are present
         for id,l in self.table.iteritems():
             if l[0] in html:
-                ids.append(id)
-        
-        #
+                found.append(id)
+
+        print found
+        # second pass - find exact spans in text (might occur more than once)
         hits = {}
-        for id in ids:
+        for id in found:
             lookup = self.table[id]
-            pat = re.compile(self.to_regex(lookup[0]))
+            pat = re.compile(self.to_regex(lookup[1]),re.I)
             spans = []
             for m in pat.finditer(html):
                 spans.append(m.span(0))
             if len(spans)>0:
                 # name, url, kind, spans
-                hits[lookup[0]] = (lookup[0],lookup[1],self.kind,spans)
+                hits[id] = (lookup[1],lookup[2],self.kind,spans)
         return hits.values()
 
     def to_regex(self,s):
