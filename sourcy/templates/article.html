@@ -115,7 +115,7 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
       {% end %}
       journals:<br/>
       {% for j in journals %}
-      <input type="radio" name="as_publication" value="{{j[0]}}" id="j"/><label for="j">{{j[0]}} (<a href="{{j[1]}}">web site</a>)</label><br/>
+      <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j"/><label for="j">{{j[0]}} (<a href="{{j[1]}}">web site</a>)</label><br/>
       {% end %}
       keywords: <input type="text" name="as_q" /><br/>
       <input type="submit" value="Search Scholar" name="btnG" />
