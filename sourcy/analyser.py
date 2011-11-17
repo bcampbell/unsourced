@@ -48,23 +48,29 @@ class Lookerupper:
             if l[0] in html:
                 found.append(id)
 
-        print found
         # second pass - find exact spans in text (might occur more than once)
         hits = {}
         for id in found:
             lookup = self.table[id]
-            pat = re.compile(self.to_regex(lookup[1]),re.I)
+            pat = self.to_regex(lookup[1])
             spans = []
             for m in pat.finditer(html):
-                spans.append(m.span(0))
+                if 'name' in m.groupdict():
+                    spans.append(m.span('name'))
+                else:
+                    spans.append(m.span('name2'))
             if len(spans)>0:
                 # name, url, kind, spans
                 hits[id] = (lookup[1],lookup[2],self.kind,spans)
         return hits.values()
 
     def to_regex(self,s):
-        return re.escape(s)
-
+        s = re.escape(s)
+        if self.kind == 'journal' and len(s.split()) <=1:
+            s = r'((journal|magazine|published in|printed in)[,]?\s+(?P<name>%s))|((?P<name2>)%s\s+(journal|magazine))' % (s,s)
+        else:
+            s = r'\b(?P<name>%s)\b' % (s,)
+        return re.compile(s,re.I)
 
 researcher_pats = [
     # TODO: support other apostrophe chars for O'Shay etc...
