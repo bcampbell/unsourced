@@ -48,23 +48,23 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
 <div id="tools">
 
 
-  {% if sources %}
   <div>
   <h3>known sources</h3>
+  {% if sources %}
   <ul>
   {% for s in sources %}
   <li><a href="{{s.url}}">{{s.url}}</a></li>
   {% end %}
   </ul>
+  {% else %}
+  <p>None<p>
   </div>
   {% end %}
 
   <div>
-    <p class="indicative">There appears to be a primary source missing...</p>
-
-    <p>This article appears to be referring to an academic paper. Can you track it down?</p>
+    <p>Add a source:</p>
     <form action="/edit" method="post">
-        <label for="url">URL or DOI of paper:</label><br/>
+        <label for="url">URL or DOI of paper</label><br/>
         <input type="hidden" name="art_id" value="{{art.id}}"/>
         <input type="text" name="url" id="url" columns="80"/><br/>
         <input type="submit" value="submit"/><br/>
@@ -74,7 +74,8 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
 
 
   {% if institutions %}
-  <span class="hilite institution">Institutions:</span>
+  <hr/>
+  <h3 class="hilite institution">Institutions:</h3>
   <ul>
   {% for r in institutions %}
   <li><a class="institution" href="{{r[1]}}">{{r[0]}}</a></li>
@@ -83,7 +84,8 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   {% end %}
 
   {% if journals %}
-  <span class="hilite journal">Journals:</span>
+  <hr/>
+  <h3 class="hilite journal">Journals:</h3>
   <ul>
   {% for r in journals %}
   <li><a class="journal" href="{{r[1]}}">{{r[0]}}</a></li>
@@ -91,26 +93,32 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   </ul>
   {% end %}
 
-
+  <hr/>
+  <h3>Search for papers...</h3>
   <form action="http://scholar.google.co.uk/scholar" method="GET">
       {% if researchers %}
-      researchers:<br/>
+      written by:<br/>
       {% for idx,r in enumerate(researchers) %}
       <input type="checkbox" name="as_sauthors" value="{{r['search_value']}}" id="r_{{idx}}"/><label for="r_{{idx}}">{{r['name']}}</label><br/>
       {% end %}
+      {% else %}
+      <label for="r">written by:</label><br/>
+      <input type="text" name="as_sauthors" id="r"/><br/>
       {% end %}
 
       {% if journals %}
-      journals:<br/>
+      published in:<br/>
       {% for idx,j in enumerate(journals) %}
       <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j_{{idx}}"/><label for="j_{{idx}}">{{j[0]}} (<a href="{{j[1]}}">web site</a>)</label><br/>
       {% end %}
       {% else %}
-      <label for="j">Journal:</label> <input type="text" name="as_publication" id="j"/><br/>
+      <label for="j">published in:</label>
+      <input type="text" name="as_publication" id="j"/><br/>
       {% end %}
 
-      keywords: <input type="text" name="as_q" /><br/>
-      <input type="submit" value="Search on Google Scholar" name="btnG" />
+      containing keywords
+      <input type="text" name="as_q" /><br/>
+      <input type="submit" value="Search" name="btnG" />
   </form>
 
 </div>
