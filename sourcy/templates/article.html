@@ -72,22 +72,6 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
     </form>
   </div>
 
-  <p>some links which might help...</p>
-  {% if researchers %}
-  <span class="hilite researcher">researchers:</span>
-  <ul>
-  {% for r in researchers %}
-  <li><span class="researcher">{{r[0]}}</span><br/>
-    search for papers by {{r[0]}} in:
-    <ul>
-    {% for lnk in r[1] %}
-    <li><href="{{lnk[1]}}">{{lnk[0]}}</a></li>
-    {% end %}
-    </ul>
-  </li>
-  {% end %}
-  </ul>
-  {% end %}
 
   {% if institutions %}
   <span class="hilite institution">Institutions:</span>
@@ -109,16 +93,24 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
 
 
   <form action="http://scholar.google.co.uk/scholar" method="GET">
+      {% if researchers %}
       researchers:<br/>
-      {% for r in researchers %}
-      <input type="checkbox" name="as_sauthors" value="{{r[0]}}" id="r"/><label for="r">{{r[0]}}</label><br/>
+      {% for idx,r in enumerate(researchers) %}
+      <input type="checkbox" name="as_sauthors" value="{{r['search_value']}}" id="r_{{idx}}"/><label for="r_{{idx}}">{{r['name']}}</label><br/>
       {% end %}
+      {% end %}
+
+      {% if journals %}
       journals:<br/>
-      {% for j in journals %}
-      <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j"/><label for="j">{{j[0]}} (<a href="{{j[1]}}">web site</a>)</label><br/>
+      {% for idx,j in enumerate(journals) %}
+      <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j_{{idx}}"/><label for="j_{{idx}}">{{j[0]}} (<a href="{{j[1]}}">web site</a>)</label><br/>
       {% end %}
+      {% else %}
+      <label for="j">Journal:</label> <input type="text" name="as_publication" id="j"/><br/>
+      {% end %}
+
       keywords: <input type="text" name="as_q" /><br/>
-      <input type="submit" value="Search Scholar" name="btnG" />
+      <input type="submit" value="Search on Google Scholar" name="btnG" />
   </form>
 
 </div>

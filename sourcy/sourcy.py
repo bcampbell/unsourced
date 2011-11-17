@@ -4,6 +4,7 @@ import tornado.options
 import os
 from tornado.options import define, options
 import logging
+import urllib
 
 import scrape
 import util
@@ -109,15 +110,7 @@ class ArticleHandler(BaseHandler):
             parts = name.split()
             initial = parts[0][0]
             surname = parts[-1]
-
-            links = []
-            for journal,foo1,foo2,foo3 in journals:
-                url = "http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22" + initial + "+" + surname + "%22&as_publication=" + journal.lower()
-                links.append((journal,url))
-            url = "http://scholar.google.co.uk/scholar?hl=en&q=author%3A%22" + initial + "+" + surname + "%22"
-            links.append(("any journal",url))
-            rs.append((name,links))
-
+            rs.append({'name': name, 'search_value': '"%s %s"' % (initial,surname)})
 
         self.render('article.html', art=art, article_content=html, sources=sources,researchers=rs, institutions=institutions, journals=journals) 
 

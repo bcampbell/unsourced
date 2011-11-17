@@ -97,7 +97,7 @@ class Store(object):
         """ add an article, return article id """
         try:
             self.db.execute("BEGIN");
-            art_id = self.db.execute("INSERT INTO article (headline,publication,permalink,pubdate) VALUES (%s,'',%s,%s)",headline,url,pubdate)
+            art_id = self.db.execute("INSERT INTO article (headline,permalink,pubdate) VALUES (%s,%s,%s)",headline,url,pubdate)
             self.db.execute("INSERT INTO article_url (article_id,url) VALUES (%s,%s)", art_id, url)
 
             # log the action
@@ -141,3 +141,13 @@ class Store(object):
             yield row
 
 
+    def art_bulk_import(self, articles):
+        """ import a bunch of articles (without creating an action) """
+        self.db.execute("BEGIN")
+
+        for art in articles:
+            if self.art_get_by_url(art['permalink']) is None:
+                art_id = self.db.execute("INSERT INTO article (headline,permalink,pubdate) VALUES (%s,%s,%s)",art['title'],art['permalink'],art['pubdate'])
+                self.db.execute("INSERT INTO article_url (article_id,url) VALUES (%s,%s)",art_id, art['permalink'])
+
+        self.db.execute("COMMIT")

@@ -25,7 +25,6 @@ DROP TABLE IF EXISTS article;
 CREATE TABLE article (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     headline VARCHAR(512) NOT NULL,
-    publication VARCHAR(512) NOT NULL,
     permalink VARCHAR(512) NOT NULL,
     pubdate DATETIME
 );
