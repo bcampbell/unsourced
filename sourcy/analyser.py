@@ -27,7 +27,15 @@ class Lookerupper:
         for l in store.lookup_iter(kind):
             name = l.name
             self.table[l.id] = (unicode(name).lower(),name,l.url)
+        store.register_lookup_listener(self)
         logging.info("Lookerupper for %s (%d entries)" % (kind,len(self.table)))
+
+    def on_lookup_added(self,lookup_id, kind, name, url):
+        if kind != self.kind:
+            return
+        logging.info("added %s: [%s](%s)", kind, name, url)
+        self.table[lookup_id] = (name.lower(),name,url)
+
 
     def find(self,html):
         """ returns matching lookups as list of (name,url,kind,spans) tuples """

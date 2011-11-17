@@ -24,6 +24,8 @@ class Application(tornado.web.Application):
             (r"/art/([0-9]+)", ArticleHandler),
             (r"/edit", EditHandler),
             (r"/addarticle", AddArticleHandler),
+            (r"/addjournal", AddJournalHandler),
+            (r"/addinstitution", AddInstitutionHandler),
         ]
         settings = dict(
             static_path = os.path.join(os.path.dirname(__file__), "static"),
@@ -153,6 +155,44 @@ class AddArticleHandler(BaseHandler):
         else:
             art_id = art.id
         self.redirect("/art/%d" % (art_id,))
+
+
+class AddInstitutionHandler(BaseHandler):
+    kind = 'institution'
+
+    def get(self):
+        self.render('addlookup.html',kind=self.kind)
+
+    def post(self):
+        name = self.get_argument('name')
+        homepage = self.get_argument('homepage')
+
+        if self.current_user is not None:
+            user_id = self.current_user.id
+        else:
+            user_id = None
+
+        self.store.action_add_lookup(user_id, self.kind, name, homepage)
+        self.redirect(self.request.path)
+
+
+class AddJournalHandler(BaseHandler):
+    kind = 'journal'
+
+    def get(self):
+        self.render('addlookup.html',kind=self.kind)
+
+    def post(self):
+        name = self.get_argument('name')
+        homepage = self.get_argument('homepage')
+
+        if self.current_user is not None:
+            user_id = self.current_user.id
+        else:
+            user_id = None
+
+        self.store.action_add_lookup(user_id, self.kind, name, homepage)
+        self.redirect(self.request.path)
 
 def main():
     tornado.options.parse_config_file("sourcy.conf")

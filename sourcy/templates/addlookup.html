@@ -1,0 +1,17 @@
+{% import util %}
+{% extends "base.html" %}
+{% block main %}
+<h2>Add {{kind}}</h2>
+
+<form action="{{request.path}}" method="post">
+
+    <label for="name">name</label>
+    <input type="text" name="name" id="name"/><br/>
+
+    <label for="homepage">home page</label>
+    <input type="text" name="homepage" id="homepage"/><br/>
+    <input type="submit" value="submit"/>
+</form>
+
+{% end %}
+

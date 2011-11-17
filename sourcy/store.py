@@ -17,7 +17,11 @@ class Store(object):
         self.db = tornado.database.Connection(
             host=options.mysql_host, database=options.mysql_database,
             user=options.mysql_user, password=options.mysql_password)
+        self.lookup_listeners = set()
 
+    def register_lookup_listener(self, listener):
+        """ register interest in lookups """
+        self.lookup_listeners.add(listener)
 
 
     def user_get(self, user_id):
@@ -127,6 +131,25 @@ class Store(object):
         self.db.execute("COMMIT")
         return src_id
 
+
+    def action_add_lookup(self,user_id, kind, name, url):
+        """ add a lookup entry, return the new lookup id"""
+        try:
+            self.db.execute("BEGIN")
+            lookup_id = self.db.execute("INSERT INTO lookup (kind,name,url) VALUES (%s,%s,%s)", kind,name,url)
+
+            # log the action against both source and article
+            action_id = self.db.execute("INSERT INTO action (what,who,performed) VALUES ('lookup_add',%s,NOW())", user_id)
+            self.db.execute("INSERT INTO lookup_action (lookup_id,action_id) VALUES (%s,%s)",lookup_id,action_id)
+
+            for l in self.lookup_listeners:
+                l.on_lookup_added(lookup_id, kind, name, url)
+
+        except Exception as e:
+            self.db.execute("ROLLBACK")
+            raise
+        self.db.execute("COMMIT")
+        return lookup_id
 
     def import_lookups(self, kind, lookups):
         self.db.execute("BEGIN")

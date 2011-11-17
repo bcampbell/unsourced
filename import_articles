@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+#import tornado.options
+#from tornado.options import define, options
+
+import urllib2
+import json
+
+from pprint import pprint
+from sourcy.store import Store
+
+
+def main():
+    s = Store()
+#    tornado.options.parse_config_file("sourcy.conf")
+#    tornado.options.parse_command_line()
+
+    url = "http://journalisted.com/api/findArticles?search=(%22scientists+say%22+OR+%22paper+published%22)+2011-01-01..&output=js&limit=1000"
+    foo = json.load(urllib2.urlopen(url), encoding='utf-8')
+    articles = foo['results']
+    s.art_bulk_import(articles)
+    
+if __name__ == "__main__":
+    main()
+
