@@ -4,6 +4,9 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from pprint import pprint
 import time
 import csv
+from optparse import OptionParser
+import logging
+import sys
 
 
 def fetchum():
@@ -12,11 +15,6 @@ def fetchum():
     offset = 0
     limit = 2000
     while True:
-
-
-        # was using:
-        # ?university foaf:name ?name.
-        # but the language tag seemed borked
         sparql.setQuery("""
             PREFIX dbo: <http://dbpedia.org/ontology/>
             PREFIX foaf: <http://xmlns.com/foaf/0.1/>
@@ -25,16 +23,18 @@ def fetchum():
             SELECT DISTINCT ?name,?homepage
             WHERE {
                 ?university rdf:type dbo:University.
-                ?university rdfs:label ?name.
-                FILTER(langMatches(lang(?name), "en"))
+                ?university foaf:name ?name.
                 OPTIONAL { ?university foaf:homepage ?homepage }
             }
             ORDER BY ?name
             LIMIT %d OFFSET %d
         """ % (limit,offset))
+
+#       rdfs:label ?name.
+
         sparql.setReturnFormat(JSON)
 
-        print "fetch %d" % (offset,)
+        logging.info("fetch %d", offset)
         results = sparql.query().convert()
 
         offset += limit
@@ -43,16 +43,39 @@ def fetchum():
 
         for result in results["results"]["bindings"]:
             if 'homepage' in result:
-                fetched.append((result["name"]["value"], result["homepage"]["value"]))
+                row = (result["name"]["value"], result["homepage"]["value"])
             else:
-                fetched.append((result["name"]["value"], u''))
+                row = (result["name"]["value"], u'')
+
+            row = (row[0].strip(), row[1].strip())
+            if row[0] != u'':
+                fetched.append(row)
         time.sleep(2)
+
+    fetched.sort(key=lambda tup: tup[0])
     return fetched
 
 
 def main():
+    parser = OptionParser()
+    parser.add_option('-v', '--verbose', action='store_true')
+    (options, args) = parser.parse_args()
+
+    log_level = logging.ERROR
+    if options.verbose:
+        log_level = logging.INFO
+    logging.basicConfig(level=log_level, format='%(message)s')
+
+    if len(args) < 1:
+        parser.error("must specify outfile")
+    if args[0] == '-':
+        outfile = sys.stdout
+    else:
+        outfile = open(args[0],'w')
+
+    writer = csv.writer(outfile)
+
     data = fetchum()
-    writer = csv.writer(open('unis_en.csv', 'w'))
     enc = 'utf-8'
     for row in data:
         row = [r.encode(enc) for r in row]
@@ -61,3 +84,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
