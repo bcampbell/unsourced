@@ -5,6 +5,7 @@ import os
 from tornado.options import define, options
 import logging
 import urllib
+import collections
 
 import scrape
 import util
@@ -94,21 +95,32 @@ class ArticleHandler(BaseHandler):
 
         html = util.sanitise_html(html)
         researchers = analyser.find_researchers(html)
+
         journals = self.application.journal_finder.find(html)
         institutions = self.application.institution_finder.find(html)
 
-        highlight_spans = []
-        for name,url,kind,spans in journals:
-            highlight_spans += [(s[0],s[1],kind) for s in spans]
-        for name,url,kind,spans in institutions:
-            highlight_spans += [(s[0],s[1],kind) for s in spans]
+        highlight_spans = journals + institutions
+        
         for name,url,kind,spans in researchers:
-            highlight_spans += [(s[0],s[1],kind) for s in spans]
+            highlight_spans += [(s[0],s[1],kind,name,url) for s in spans]
 
+        # remove spans contained within other spans
+        highlight_spans = highlight.remove_contained_spans(highlight_spans)
+
+        # mark up the html
         html = highlight.html_highlight(html, highlight_spans)
 
+        # now find the unique matches for each kind
+        uniq = collections.defaultdict(set)
+        for (start,end,kind,name,url) in highlight_spans:
+            uniq[kind].add((name,url))
+
+        researchers = uniq['researcher']
+        institutions = uniq['institution']
+        journals = uniq['journal']
+
         rs = []
-        for name,url,kind,spans in researchers:
+        for (name,url) in researchers:
             parts = name.split()
             initial = parts[0][0]
             surname = parts[-1]

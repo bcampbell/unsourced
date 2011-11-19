@@ -38,7 +38,7 @@ class Lookerupper:
 
 
     def find(self,html):
-        """ returns matching lookups as list of (name,url,kind,spans) tuples """
+        """ returns matching lookups as list of (start,end,kind,name,url) tuples """
 
         html = html.lower()
 
@@ -49,28 +49,33 @@ class Lookerupper:
                 found.append(id)
 
         # second pass - find exact spans in text (might occur more than once)
-        hits = {}
+        # we can be a bit more picky here (eg to filter out crap matches for
+        # journals with generic names (science, nature, etc))
+        hits = []
         for id in found:
             lookup = self.table[id]
             pat = self.to_regex(lookup[1])
             spans = []
             for m in pat.finditer(html):
                 if 'name' in m.groupdict():
-                    spans.append(m.span('name'))
+                    span = m.span('name')
                 else:
-                    spans.append(m.span('name2'))
-            if len(spans)>0:
-                # name, url, kind, spans
-                hits[id] = (lookup[1],lookup[2],self.kind,spans)
-        return hits.values()
+                    span = m.span('name2')
+
+                # start,end,kind,name,url
+                hits.append((span[0],span[1], self.kind, lookup[1], lookup[2]))
+        return hits
 
     def to_regex(self,s):
         s = re.escape(s)
+        # TODO: this is cheesy as hell! 
         if self.kind == 'journal' and len(s.split()) <=1:
             s = r'((journal|magazine|published in|printed in)[,]?\s+(?P<name>%s))|((?P<name2>)%s\s+(journal|magazine))' % (s,s)
         else:
             s = r'\b(?P<name>%s)\b' % (s,)
         return re.compile(s,re.I)
+
+
 
 researcher_pats = [
     # TODO: support other apostrophe chars for O'Shay etc...
@@ -92,4 +97,7 @@ def find_researchers(txt):
     return [(name,u'','researcher',spans) for name,spans in hits.iteritems()]
 
 
+# "graduate student Kim Volterman"
+# "Study leader Brian Timmons"
+# "Lead researcher Dr Maria Karayiorgou"
 

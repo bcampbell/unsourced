@@ -37,4 +37,18 @@ def html_highlight(text,spans):
     return out
 
 
+def remove_contained_spans(spans):
+    out = []
+    for i1,s1 in enumerate(spans):
+        contained = False
+
+        for i2,s2 in enumerate(spans):
+            if i1==i2:
+                continue
+            if s1[0]>=s2[0] and s1[1]<=s2[1]:
+                contained = True
+                break
+        if not contained:
+            out.append(s1)
+    return out
 
