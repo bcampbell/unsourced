@@ -100,4 +100,6 @@ def find_researchers(txt):
 # "graduate student Kim Volterman"
 # "Study leader Brian Timmons"
 # "Lead researcher Dr Maria Karayiorgou"
+# "by researchers Edith Shalev, of the Israel Institute of Technology, and Vicki G Morwitz, of New York University."
+
 
