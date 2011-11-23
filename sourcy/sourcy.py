@@ -1,13 +1,15 @@
 import tornado.ioloop
 import tornado.web
 import tornado.options
-import os
+from tornado import httpclient
 from tornado.options import define, options
+import os
 import logging
 import urllib
 import collections
+import json
+import datetime
 
-import scrape
 import util
 import analyser
 import uimodules
@@ -77,6 +79,8 @@ class LoginHandler(BaseHandler):
 
 
 class LogoutHandler(BaseHandler):
+
+
     def get(self):
         self.clear_cookie("user")
         self.redirect("/")
@@ -87,11 +91,43 @@ class LogoutHandler(BaseHandler):
 
 
 class ArticleHandler(BaseHandler):
+
+    @tornado.web.asynchronous
     def get(self,art_id):
         art_id = int(art_id)
-        art = self.store.art_get(art_id)
+        self.art = self.store.art_get(art_id)
+        
+        http = tornado.httpclient.AsyncHTTPClient()
+
+        # ask the scrapeomat for the article text
+        # TODO: don't need to scrape article metadata here...
+        params = {'url': self.art.permalink}
+        url = "http://localhost:8889/scrape?" + urllib.urlencode(params)
+
+        http.fetch(url, callback=self.on_response)
+
+    def on_response(self, response):
+        art = self.art
+        art_id = art.id
+
+        worked = True
+        if response.error:
+            worked = False
+        else:
+            results = json.loads(response.body)
+            if results['status']!=0:
+                worked = False
+
+        if not worked:
+            # sorry, couldn't add that article for some reason...
+            # TODO: provide form for manually entering details?
+            self.write("Sorry... error adding that article.")
+            self.finish()
+            return
+
+        html = results['article']['content']
+
         sources = self.store.art_get_sources(art_id)
-        html,headline,byline,pubdate = scrape.scrape(art.permalink)
 
         html = util.sanitise_html(html)
         researchers = analyser.find_researchers(html)
@@ -127,6 +163,8 @@ class ArticleHandler(BaseHandler):
             rs.append({'name': name, 'search_value': '"%s %s"' % (initial,surname)})
 
         self.render('article.html', art=art, article_content=html, sources=sources,researchers=rs, institutions=institutions, journals=journals) 
+        #self.finish()
+
 
 
 class MainHandler(BaseHandler):
@@ -154,6 +192,7 @@ class EditHandler(BaseHandler):
 
 
 class AddArticleHandler(BaseHandler):
+    @tornado.web.asynchronous
     def post(self):
         url = self.get_argument('url')
         art = self.store.art_get_by_url(url)
@@ -161,12 +200,48 @@ class AddArticleHandler(BaseHandler):
             user_id = self.current_user.id
         else:
             user_id = None
-        if art is None:
-            txt,headline,byline,pubdate = scrape.scrape(url)
-            art_id = self.store.action_add_article(user_id, url, headline, pubdate)
-        else:
+        if art is not None:
             art_id = art.id
+            self.redirect("/art/%d" % (art.id,))
+            self.finish()
+        else:
+            # need to scrape the article metadata to add it to database
+            # TODO: don't need to scrape article text here...
+            params = {'url': url}
+            scrape_url = 'http://localhost:8889/scrape?' + urllib.urlencode(params)
+            http = tornado.httpclient.AsyncHTTPClient()
+            http.fetch(scrape_url, callback=self.on_response)
+
+
+    def on_response(self, response):
+        worked = True
+        if response.error:
+            worked = False
+        else:
+            results = json.loads(response.body)
+            if results['status']!=0:
+                worked = False
+
+        if not worked:
+            # sorry, couldn't add that article for some reason...
+            # TODO: provide form for manually entering details?
+            self.write("Sorry... error grabbing text for that article.")
+            self.finish()
+            return
+
+        art = results['article']
+
+        art['scrapetime'] = datetime.datetime.fromtimestamp(art['scrapetime'])
+        art['pubdate'] = datetime.datetime.fromtimestamp(art['pubdate'])
+
+        if self.current_user is not None:
+            user_id = self.current_user.id
+        else:
+            user_id = None
+        # TODO: add non-canonical url list if any
+        art_id = self.store.action_add_article(user_id, art['permalink'], art['headline'], art['pubdate'])
         self.redirect("/art/%d" % (art_id,))
+        self.finish()
 
 
 class AddInstitutionHandler(BaseHandler):
