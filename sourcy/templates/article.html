@@ -2,54 +2,24 @@
 {% block title %}Article {{art.id}}{% end %}
 
 {% block extra_js %}
-
-function switch_tabs(obj)
-{
-	var id = obj.attr("href");
-
-	$('#readable, #original').hide();
-	$(id).show();
-
-	$('#view nav a').removeClass("selected");
-	obj.addClass("selected");
-}
-
-$('#view nav a').click(function(){
-		switch_tabs($(this));
-});
- 
-switch_tabs($('#view nav a[href="#readable"]'));
-
-$('#original iframe').css({'min-height': $('#readable').height()-10});
-
-
-
 {% end %}
 
 {% block main %}
-<h2>{{art.id}}: {{art.headline}}</h2>
-<a href="{{art.permalink}}"><code>{{art.permalink}}</code></a>
-<div>
 <div id="view">
-    <nav>
-    <ul>
-		<li><a href="#readable">Readable</a></li>
-		<li><a href="#original">Original ({% module domain(art.permalink) %})</a></li>
-	</ul>
-    </nav>
+<header>
+<h2><a href="{{art.permalink}}">{{art.headline}}</a></h2>
+<span class="pubdate">{{art.pubdate}}</span> - <span class="publication">{% module domain(art.permalink) %}</span>
 
-    <div id="readable">
+</header>
+<div class="body">
     {% raw article_content %}
-    </div>
-    <div id="original">
-      <iframe src="{{art.permalink}}"></iframe>
-    </div>
 </div>
+</div>
+
 <div id="tools">
 
-
-  <div>
-  <h3>known sources</h3>
+  <div class="sources">
+  <h2>Sources</h2>
   {% if sources %}
   <ul>
   {% for s in sources %}
@@ -58,10 +28,10 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   </ul>
   {% else %}
   <p>None<p>
-  </div>
   {% end %}
+  </div>
 
-  <div>
+  <div class="helper addsource">
     <p>Add a source:</p>
     <form action="/edit" method="post">
         <label for="url">URL or DOI of paper</label><br/>
@@ -73,9 +43,9 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   </div>
 
 
+  <div class="helper">
   {% if institutions %}
-  <hr/>
-  <h3 class="hilite institution">Institutions:</h3>
+  <h2 class="hilite institution">Institutions:</h2>
   <ul>
   {% for r in institutions %}
   <li><a class="institution" href="{{r[1]}}">{{r[0]}}</a></li>
@@ -84,8 +54,7 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   {% end %}
 
   {% if journals %}
-  <hr/>
-  <h3 class="hilite journal">Journals:</h3>
+  <h2 class="hilite journal">Journals:</h2>
   <ul>
   {% for r in journals %}
   <li><a class="journal" href="{{r[1]}}">{{r[0]}}</a></li>
@@ -93,10 +62,11 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
   </ul>
   {% end %}
   <p>(add a missing <a href="/addjournal">journal</a> or <a href="/addinstitution">institution</a>)</p>
+  </div>
 
-  <hr/>
-  <h3>Search for papers...</h3>
-  <form action="http://scholar.google.co.uk/scholar" method="GET">
+  <div class="helper">
+  <h2>Search for papers...</h2>
+  <form action="http://scholar.google.co.uk/scholar" method="GET" target="_blank">
       {% if researchers %}
       written by:<br/>
       {% for idx,r in enumerate(researchers) %}
@@ -119,10 +89,10 @@ $('#original iframe').css({'min-height': $('#readable').height()-10});
 
       containing keywords
       <input type="text" name="as_q" /><br/>
-      <input type="submit" value="Search" name="btnG" />
+      <input type="submit" value="Search" name="btnG" /> (opens in a new window)
   </form>
+  </div>
 
-</div>
-</div>
+</div> <!-- /#tools -->
 {% end %}
 
