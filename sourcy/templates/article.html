@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Article {{art.id}}{% end %}
+{% block title %}{{art.headline}}{% end %}
 
 {% block extra_js %}
 {% end %}
@@ -19,20 +19,20 @@
 <div id="tools">
 
   <div class="sources">
-  <h2>Sources</h2>
-  {% if sources %}
-  <ul>
-  {% for s in sources %}
-  <li><a href="{{s.url}}">{{s.url}}</a></li>
-  {% end %}
-  </ul>
-  {% else %}
-  <p>None<p>
-  {% end %}
+    <h2>Sources</h2>
+    {% if sources %}
+    <ul>
+    {% for s in sources %}
+      <li><a href="{{s.url}}">{{s.url}}</a></li>
+    {% end %}
+    </ul>
+    {% else %}
+    <p>None<p>
+    {% end %}
   </div>
 
   <div class="helper addsource">
-    <p>Add a source:</p>
+    <h2>Add an academic paper</h2>
     <form action="/edit" method="post">
         <label for="url">URL or DOI of paper</label><br/>
         <input type="hidden" name="art_id" value="{{art.id}}"/>
@@ -42,30 +42,8 @@
     </form>
   </div>
 
-
   <div class="helper">
-  {% if institutions %}
-  <h2 class="hilite institution">Institutions:</h2>
-  <ul>
-  {% for r in institutions %}
-  <li><a class="institution" href="{{r[1]}}">{{r[0]}}</a></li>
-  {% end %}
-  </ul>
-  {% end %}
-
-  {% if journals %}
-  <h2 class="hilite journal">Journals:</h2>
-  <ul>
-  {% for r in journals %}
-  <li><a class="journal" href="{{r[1]}}">{{r[0]}}</a></li>
-  {% end %}
-  </ul>
-  {% end %}
-  <p>(add a missing <a href="/addjournal">journal</a> or <a href="/addinstitution">institution</a>)</p>
-  </div>
-
-  <div class="helper">
-  <h2>Search for papers...</h2>
+  <h2>Search for papers</h2>
   <form action="http://scholar.google.co.uk/scholar" method="GET" target="_blank">
       {% if researchers %}
       written by:<br/>
@@ -80,7 +58,7 @@
       {% if journals %}
       published in:<br/>
       {% for idx,j in enumerate(journals) %}
-      <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j_{{idx}}"/><label for="j_{{idx}}">{{j[0]}} (<a href="{{j[1]}}">web site</a>)</label><br/>
+      <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j_{{idx}}"/><label for="j_{{idx}}">{{j[0]}}<br/>
       {% end %}
       {% else %}
       <label for="j">published in:</label>
@@ -92,6 +70,30 @@
       <input type="submit" value="Search" name="btnG" /> (opens in a new window)
   </form>
   </div>
+
+
+  <div class="helper helpful-links">
+      <h2>Helpful links</h2>
+  {% if institutions %}
+  <h3 class="institution">Institutions</h3>
+  <ul>
+  {% for r in institutions %}
+  <li><a href="{{r[1]}}">{{r[0]}}</a></li>
+  {% end %}
+  </ul>
+  {% end %}
+
+  {% if journals %}
+  <h3 class="journal">Journals</h3>
+  <ul>
+  {% for r in journals %}
+  <li><a href="{{r[1]}}">{{r[0]}}</a></li>
+  {% end %}
+  </ul>
+  {% end %}
+  <p>(add a missing <a href="/addjournal">journal</a> or <a href="/addinstitution">institution</a>)</p>
+  </div>
+
 
 </div> <!-- /#tools -->
 {% end %}

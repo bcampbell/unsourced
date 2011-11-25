@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Sourcy{% end %}</title>
+    <title>{% block title %}{% end %} - Sourcy</title>
     <link rel="stylesheet" href="/static/style.css" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     <script>
@@ -34,13 +34,9 @@ Hello, {{current_user.name}} (<a href="/logout">log out</a>)
 {% end %}
 </div>
 <footer>
-    <nav>
-        <ul>
-            <li><a href="">about</a></li>
-            <li><a href="">api</a></li>
-            <li><a href="">support</a></li>
-        </ul>
-    </nav>
+    <a href="">about</a>&nbsp;&nbsp;
+    <a href="">api</a>&nbsp;&nbsp;
+    <a href="">support</a>&nbsp;&nbsp;
     <span id="site-copyright">
         &copy; <a href="http://mediastandardstrust.org">Media Standards Trust</a> 2011
     </span>
