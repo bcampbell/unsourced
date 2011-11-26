@@ -84,10 +84,10 @@ body>header {
    background-image:      -o-linear-gradient(top, #d00, #a00);
 }
 
-body>header nav { position: absolute; bottom: 1em; right: 16em; }
+body>header nav { position: absolute; bottom: 0em; right: 2em; }
 #user-stuff {
   position: absolute;
-  bottom: 1em;
+  top: 0.5em;
   right: 2em;
   vertical-align: top;
   padding: 0.5em 0.5em;
