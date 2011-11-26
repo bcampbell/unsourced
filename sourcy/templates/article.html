@@ -58,7 +58,7 @@
       {% if journals %}
       published in:<br/>
       {% for idx,j in enumerate(journals) %}
-      <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j_{{idx}}"/><label for="j_{{idx}}">{{j[0]}}<br/>
+      <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j_{{idx}}"/><label for="j_{{idx}}">{{j[0]}}</label><br/>
       {% end %}
       {% else %}
       <label for="j">published in:</label>
