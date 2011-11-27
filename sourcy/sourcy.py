@@ -3,6 +3,7 @@ import tornado.web
 import tornado.options
 from tornado import httpclient
 from tornado.options import define, options
+import tornado.auth
 import os
 import logging
 import urllib
@@ -23,6 +24,7 @@ class Application(tornado.web.Application):
         handlers = [
             (r'/', MainHandler),
             (r'/login', LoginHandler),
+            (r'/login/google', GoogleLoginHandler),
             (r'/logout', LogoutHandler),
             (r"/art/([0-9]+)", ArticleHandler),
             (r"/edit", EditHandler),
@@ -60,26 +62,34 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class LoginHandler(BaseHandler):
     def get(self):
-        self.render('login.html',badness={})
+        next = self.get_argument("next", None);
+        self.render('login.html', next=next)
 
-    def post(self):
-        name = self.get_argument('name','').strip()
-        if name=='':
-            self.render('login.html', badness={'name':'Please enter your user name'})
+
+
+class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
+    @tornado.web.asynchronous
+    def get(self):
+        if self.get_argument("openid.mode", None):
+            self.get_authenticated_user(self.async_callback(self._on_auth))
             return
+        self.authenticate_redirect()
+    
+    def _on_auth(self, user):
+        if not user:
+            raise tornado.web.HTTPError(500, "Google auth failed")
 
-        user =  self.store.user_get_by_name(name)
-        if user is None:
-            user_id = self.store.user_create(name)
+        sourcy_user = self.store.user_get_by_email(user['email'])
+        if sourcy_user is None:
+            user_id = self.store.user_create(user['email'],user['name']);
         else:
-            user_id = user.id
-
+            user_id = sourcy_user.id
         self.set_secure_cookie("user", unicode(user_id))
-        self.redirect("/")
+        self.redirect(self.get_argument("next", "/"))
+
 
 
 class LogoutHandler(BaseHandler):
-
 
     def get(self):
         self.clear_cookie("user")
@@ -192,6 +202,7 @@ class EditHandler(BaseHandler):
 
 
 class AddArticleHandler(BaseHandler):
+    @tornado.web.authenticated
     @tornado.web.asynchronous
     def post(self):
         url = self.get_argument('url')

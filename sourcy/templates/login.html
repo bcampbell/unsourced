@@ -3,17 +3,12 @@
 
 {% block main %}
 
-<h2>Log in</h2>
-<p>
-NOTE: no authenication is currently performed - just enter the username you want to use and you're in :-)
-</p>
+<h2>Log in via...</h2>
 
-<form action="/login" method="post">
-    {% if 'name' in badness %}
-    <span class="err">{{badness['name']}}</span><br/>
-    {% end %}
-    <label for="name">Name:</label><input type="text" name="name" id="name" />
-<input type="submit" value="Sign in">
-</form>
+<ul>
+    <li><a href="/login/google">Google</a></li>
+</ul>
+<p>(support for other services is planned...)</p>
+
 {% end %}
 
