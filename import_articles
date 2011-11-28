@@ -4,21 +4,50 @@
 #from tornado.options import define, options
 
 import urllib2
+import urllib
 import json
+import datetime
+from optparse import OptionParser
 
 from pprint import pprint
 from sourcy.store import Store
 
+import tornado.options
 
-def main():
-    s = Store()
-#    tornado.options.parse_config_file("sourcy.conf")
-#    tornado.options.parse_command_line()
 
-    url = "http://journalisted.com/api/findArticles?search=(%22scientists+say%22+OR+%22paper+published%22)+2011-01-01..&output=js&limit=1000"
+def get_arts(num_days=1):
+    date_from = datetime.date.today() - datetime.timedelta(days = num_days-1)
+    date_to = datetime.date.today()
+
+    search = '("scientists say" OR "paper published") %s..%s' % (
+            date_from.strftime('%Y%m%d'), date_to.strftime('%Y%m%d'))
+
+    print search
+    params = {'search': search,
+            'limit': 1000,
+            'output': 'js',
+            }
+    url = "http://journalisted.com/api/findArticles?" + urllib.urlencode(params)
+
     foo = json.load(urllib2.urlopen(url), encoding='utf-8')
     articles = foo['results']
-    s.art_bulk_import(articles)
+    return articles
+
+def main():
+    parser = OptionParser()
+    parser.add_option("-n", type="int", dest="num_days", default=1)
+
+    (opts, args) = parser.parse_args()
+
+    arts = get_arts(opts.num_days)
+    print len(arts), 'articles found'
+
+
+    s = Store()
+    tornado.options.parse_config_file("sourcy.conf")
+#    tornado.options.parse_command_line()
+
+    s.art_bulk_import(arts)
     
 if __name__ == "__main__":
     main()
