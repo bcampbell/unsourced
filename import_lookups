@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 
 from sourcy.store import Store
-from tornado.options import define, options
+#from tornado.options import define, options
+import tornado.options
 import csv
 import optparse
 from optparse import OptionParser
 
 
 def main():
+    tornado.options.parse_config_file("sourcy.conf")
+
     s = Store()
     parser = OptionParser()
     (opts, args) = parser.parse_args()

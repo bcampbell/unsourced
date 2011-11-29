@@ -43,8 +43,8 @@ def main():
     print len(arts), 'articles found'
 
 
-    s = Store()
     tornado.options.parse_config_file("sourcy.conf")
+    s = Store()
 #    tornado.options.parse_command_line()
 
     s.art_bulk_import(arts)
