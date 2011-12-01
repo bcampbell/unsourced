@@ -23,6 +23,8 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/', MainHandler),
+            (r'/about', AboutHandler),
+            (r'/academicpapers', AcademicPapersHandler),
             (r'/login', LoginHandler),
             (r'/login/google', GoogleLoginHandler),
             (r'/logout', LogoutHandler),
@@ -185,6 +187,16 @@ class MainHandler(BaseHandler):
 
         recent = self.store.action_get_recent(10)
         self.render('index.html', articles=arts, recent_actions=recent)
+
+
+class AboutHandler(BaseHandler):
+    def get(self):
+        self.render('about.html')
+
+class AcademicPapersHandler(BaseHandler):
+    def get(self):
+        self.render('academicpapers.html')
+
 
 
 
