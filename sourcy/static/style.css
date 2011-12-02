@@ -32,10 +32,6 @@ input { border: 1px solid #ccc;
     margin: 0.2em 0;
 }
 
-input[type="checkbox"] {
-    margin-right: 0.2em;
-}
-
 
 /* link styles */
 a { text-decoration:none; }
@@ -149,23 +145,6 @@ body>footer {
     margin: 0.5em 0 0.5em 0;
 }
 
-.helpful-links h3:before {
-    content: "";
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 1px solid #ccc;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    margin-right: 0.2em;
-}
-
-.helpful-links h3.journal:before {
-    background-color: #afa;
-}
-.helpful-links h3.institution:before {
-    background-color: #ff0;
-}
 
 .helper {
     background-color: #eef;
@@ -202,17 +181,23 @@ body>footer {
 }
 
 
-input[id="url"] { width: 100%; }
+/*input[id="url"] { width: 100%; }*/
 
 .helpful-links ul {
     list-style-position: inside;
     padding-left: 0;
 }
 
-.hilite.indicative { background-color: yellow; }
-.hilite.institution { background-color: #ff0; }
-.hilite.journal { background-color: #afa; }
-.hilite.researcher { background-color: #aaf; }
+.hilite {
+    padding: 1px;
+    border: 1px solid;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.hilite.journal { background-color: #ff0; border-color: #cc0; }
+.hilite.researcher { background-color: #afa; ; border-color: #8c8; }
+.hilite.institution { background-color: #aaf; border-color: #88c; }
+
 
 
 
@@ -246,4 +231,30 @@ input[id="url"] { width: 100%; }
     color: #222;
 }
 
+.helper form>label {
+    display: inline-block;
+    width: 8em;
+    text-align: right;
+}
+.helper form>input[type="text"] { width: 20em; }
+.helper form>input[type="submit"] { margin: 0.2em 0 0.2em 7.5em; }
 
+.helper ul {
+    list-style: none;
+    margin: 0; 
+    padding: 0;
+}
+
+.helper form ul {
+    margin-left: 8em;
+}
+
+
+.helper li {
+    margin: 4px;
+    padding: 1px;
+}
+.helper form li input {
+    margin-right: 0.3em;
+}
+.helper h2 { margin-top: 0; }

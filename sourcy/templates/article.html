@@ -2,6 +2,48 @@
 {% block title %}{{art.headline}}{% end %}
 
 {% block extra_js %}
+
+    function reescape(str)
+    {
+      var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+      return str.replace(specials, "\\$&");
+    }
+
+    $('.helper form .researcher').each(function(index) {
+        var fullname = '"' + $.trim($(this).text()) + '"';
+
+        var cb = $('<input type="checkbox" />').change(function() {
+            var cur = $.trim($('#as_sauthors').val());
+            var pat = new RegExp(reescape(fullname),"ig");
+            if(this.checked) {
+               cur = cur + " " + fullname;
+            } else {
+               cur = cur.replace(pat,'');
+            }
+            $('#as_sauthors').val(cur);
+        });
+        cb.prependTo(this);
+        $(this).wrap("<label/>");
+    });
+
+    $('.helper form .journal').each(function(index) {
+        var fullname = $.trim($(this).text()); 
+
+        var cb = $('<input type="radio" name="j"/>').change(function() {
+            var cur = $.trim($('#as_publication').val());
+            var pat = new RegExp(reescape(fullname),"ig");
+            if(this.checked) {
+               cur = fullname;
+            } else {
+               cur = cur.replace(pat,'');
+            }
+            $('#as_publication').val(cur);
+        });
+        cb.prependTo(this);
+        $(this).wrap("<label/>");
+
+    });
+
 {% end %}
 
 {% block main %}
@@ -34,39 +76,37 @@
   <div class="helper addsource">
     <h2>Add an academic paper</h2>
     <form action="/edit" method="post">
-        <label for="url">URL or DOI of paper</label><br/>
+        <label for="url">URL of paper</label>
         <input type="hidden" name="art_id" value="{{art.id}}"/>
         <input type="text" name="url" id="url" columns="80"/><br/>
         <input type="submit" value="submit"/><br/>
-        <span class="helptext"><a href="#">what's a DOI?</a> <a href="#">guidelines on linking to academic papers</a></span><br/>
+        <span class="helptext"><a href="/academicpapers#doi">what's a DOI?</a> <a href="/academicpapers#linking">guidelines on linking to academic papers</a></span><br/>
     </form>
   </div>
 
   <div class="helper">
   <h2>Search for papers</h2>
+
+
   <form action="http://scholar.google.co.uk/scholar" method="GET" target="_blank">
-      {% if researchers %}
-      written by:<br/>
-      {% for idx,r in enumerate(researchers) %}
-      <input type="checkbox" name="as_sauthors" value="{{r['search_value']}}" id="r_{{idx}}"/><label for="r_{{idx}}">{{r['name']}}</label><br/>
-      {% end %}
-      {% else %}
-      <label for="r">written by:</label><br/>
-      <input type="text" name="as_sauthors" id="r"/><br/>
-      {% end %}
+      <label for="as_sauthors">written by:</label>
+      <input type="text" name="as_sauthors" id="as_sauthors"/>
+      <ul>
+          {% for r in researchers %}
+          <li><span class="hilite researcher">{{r['name']}}</span></li> <!-- {{r['search_value']}} -->
+          {% end %}<br/>
+      </ul>
 
-      {% if journals %}
-      published in:<br/>
-      {% for idx,j in enumerate(journals) %}
-      <input type="checkbox" name="as_publication" value="{{j[0]}}" id="j_{{idx}}"/><label for="j_{{idx}}">{{j[0]}}</label><br/>
-      {% end %}
-      {% else %}
-      <label for="j">published in:</label>
-      <input type="text" name="as_publication" id="j"/><br/>
-      {% end %}
+      <label for="as_publication">published in:</label>
+      <input type="text" name="as_publication" id="as_publication"/><br/>
+      <ul>
+          {% for j in journals %}
+          <li><span class="hilite journal">{{j[0]}}</span></li>
+          {% end %}
+      </ul>
 
-      containing keywords
-      <input type="text" name="as_q" /><br/>
+      <label for="as_q">keywords:</label>
+      <input type="text" name="as_q" id="as_q" /><br/>
       <input type="submit" value="Search" name="btnG" /> (opens in a new window)
   </form>
   </div>
@@ -75,19 +115,19 @@
   <div class="helper helpful-links">
       <h2>Helpful links</h2>
   {% if institutions %}
-  <h3 class="institution">Institutions</h3>
+  <h3>Institutions</h3>
   <ul>
   {% for r in institutions %}
-  <li><a href="{{r[1]}}">{{r[0]}}</a></li>
+  <li><span class="hilite institution">{{r[0]}}</span> (<a href="{{r[1]}}">homepage</a>)</li>
   {% end %}
   </ul>
   {% end %}
 
   {% if journals %}
-  <h3 class="journal">Journals</h3>
+  <h3>Journals</h3>
   <ul>
   {% for r in journals %}
-  <li><a href="{{r[1]}}">{{r[0]}}</a></li>
+  <li><span class="hilite journal">{{r[0]}}</span> (<a href="{{r[1]}}">homepage</a>)</li>
   {% end %}
   </ul>
   {% end %}
