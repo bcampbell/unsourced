@@ -194,9 +194,9 @@ body>footer {
     -moz-border-radius: 3px;
     border-radius: 3px;
 }
-.hilite.institution { background-color: #ff0; border-color: #cc0; }
-.hilite.journal { background-color: #afa; ; border-color: #8c8; }
-.hilite.researcher { background-color: #aaf; border-color: #88c; }
+.hilite.journal { background-color: #ff0; border-color: #cc0; }
+.hilite.researcher { background-color: #afa; ; border-color: #8c8; }
+.hilite.institution { background-color: #aaf; border-color: #88c; }
 
 
 

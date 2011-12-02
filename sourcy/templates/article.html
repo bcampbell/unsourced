@@ -118,7 +118,7 @@
   <h3>Institutions</h3>
   <ul>
   {% for r in institutions %}
-  <li><a class="hilite institution" href="{{r[1]}}">{{r[0]}} (homepage)</a></li>
+  <li><span class="hilite institution">{{r[0]}}</span> (<a href="{{r[1]}}">homepage</a>)</li>
   {% end %}
   </ul>
   {% end %}
@@ -127,7 +127,7 @@
   <h3>Journals</h3>
   <ul>
   {% for r in journals %}
-  <li><a class="hilite journal" href="{{r[1]}}">{{r[0]}} (homepage)</a></li>
+  <li><span class="hilite journal">{{r[0]}}</span> (<a href="{{r[1]}}">homepage</a>)</li>
   {% end %}
   </ul>
   {% end %}
