@@ -66,6 +66,11 @@ body>footer { position: relative; /* height: 3em; */ }
 }
 
 
+
+
+
+
+
 /***** PAGE HEADER *****/
 
 body>header {
@@ -120,6 +125,30 @@ body>footer {
 #site-copyright { position: absolute; top: 0; right: 2em; padding-top: 1em; }
 
 
+/* SOME BOX STYLES */
+
+/* rounded corners */
+.sources, .helper, #view, #day-overviews, #recent {
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 0em 0 1em 0;
+    padding: 0.5em 1em;
+}
+
+/* colours */
+.helper {
+    background-color: #eef;
+    border: 1px solid #ccf;
+}
+
+.sources, #view, #day-overviews, #recent
+{
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+
+
 
 /* content */
 #content { padding: 2em 2em;
@@ -136,49 +165,19 @@ body>footer {
 #tools {
 }
 
-.helper, .sources {
-    margin: 0em 0 1em 0;
-    padding: 0.5em 1em;
-}
 
 .helper h2, .sources h2 {
     margin: 0.5em 0 0.5em 0;
 }
 
 
-.helper {
-    background-color: #eef;
-    border: 1px solid #ccf;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-}
-
-.sources {
-    background-color: #fff;
-    border: 1px solid #ccc;
-/*
-    -moz-box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
-    box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
-    */
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-}
 
 /* view styling */
 #view {
     padding: 0 1em;
     margin: 0;
-    border: 1px solid #ccc;
-    background-color: #fff;
-/*
-    -moz-box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
-    box-shadow: 0 0 2px 2px rgba(0,0,0,0.1);
-    */
-    -moz-border-radius: 4px;
-    border-radius: 4px;
 }
+
 
 
 /*input[id="url"] { width: 100%; }*/
@@ -258,3 +257,36 @@ body>footer {
     margin-right: 0.3em;
 }
 .helper h2 { margin-top: 0; }
+
+
+.day-overview {
+}
+
+#recent { float: right; width: 45%; }
+#day-overviews { float: left; width: 45%; }
+
+.day-overview ul {
+    padding-left: 6em;
+}
+
+.day-progress {
+    float: left;
+    width: 6em;
+    height: 6em;
+    -moz-border-radius: 3em;
+    border-radius: 3em;
+    background-color: #d00;
+    color: #fff;
+    text-align: center;
+    font-size: 75%;
+}
+
+.day-progress .percentage {
+    padding-top: 0.8em;
+    display: block;
+    font-size: 2em;
+
+}
+
+
+

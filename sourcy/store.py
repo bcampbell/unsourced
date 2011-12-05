@@ -1,5 +1,8 @@
+import collections
+
 import tornado.database
 from tornado.options import define, options
+
 
 define("mysql_host", default="127.0.0.1:3306", help="database host")
 define("mysql_database", default="sourcy", help="database name")
@@ -61,6 +64,26 @@ class Store(object):
         """ Get a selection of acticles which look like they need work"""
         return self.db.query("SELECT * FROM article ORDER BY RAND() LIMIT %s", limit)
 
+    def art_get_by_date(self,date):
+        """ Get a selection of acticles which look like they need work"""
+
+        arts = self.db.query("SELECT * FROM article WHERE CAST(pubdate AS DATE)=%s", date.strftime('%Y-%m-%d'))
+
+        sources = self.db.query("""
+            SELECT * FROM source
+                WHERE article_id IN (
+                    SELECT id FROM article WHERE CAST(pubdate AS DATE)=%s
+                )
+                """, date.strftime('%Y-%m-%d'))
+        # add the sources to the articles
+        art_lookup = {}
+        for a in arts:
+            art_lookup[a.id] = a
+            a.sources = []
+        for s in sources:
+            art_lookup[s.article_id].sources.append(s)
+        return arts
+
 
     def action_get_recent(self,limit):
         """ return list of actions, most recent first """
@@ -102,7 +125,7 @@ class Store(object):
     def action_add_article(self,user_id,url,headline,pubdate):
         """ add an article, return article id """
         try:
-            self.db.execute("BEGIN");
+            self.db.execute("BEGIN")
             art_id = self.db.execute("INSERT INTO article (headline,permalink,pubdate) VALUES (%s,%s,%s)",headline,url,pubdate)
             self.db.execute("INSERT INTO article_url (article_id,url) VALUES (%s,%s)", art_id, url)
 

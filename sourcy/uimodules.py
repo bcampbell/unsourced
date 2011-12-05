@@ -1,9 +1,18 @@
 import tornado.web
 import util
+from pprint import pprint
+
 
 class domain(tornado.web.UIModule):
     def render(self, url):
         return util.domain(url)
+
+
+class day_overview(tornado.web.UIModule):
+    def render(self, date, arts):
+        num_sourced = sum((1 for a in arts if len(a.sources)>0))
+        return self.render_string("modules/day_overview.html", date=date, arts=arts, num_sourced=num_sourced)
+
 
 class action_list(tornado.web.UIModule):
     def render(self, actions):
