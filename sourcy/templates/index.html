@@ -2,30 +2,30 @@
 {% extends "base.html" %}
 {% block title %}Sourcy{% end %}
 {% block main %}
-<h2>A random selection of recent articles which might need sourcing:</h2>
-<ul>
-{% for art in articles %}
-<li><a href="/art/{{art.id}}">{{art.headline}}</a> ({% module domain(art.permalink) %})</li>
-{% end %}
-</ul>
-<p>These all contain phrases like "scientists say" or "a paper published today"
-which could indicate they might refer to academic papers (via <a href="http://journalisted.com/search?type=article&q=%22scientists+say%22+OR+%22paper+published%22">Journalisted</a>)</p>
-<p>Refresh the page to see more.</p>
 
-<p>or enter an article you'd like to work on:</p>
+
+<div id="day-overviews">
+<h2>Articles requiring sourcing...</h2>
+<p>These all contain phrases like "scientists say" or "a paper published today"
+which could indicate they might refer to academic papers.</p>
+{% for (date,arts) in days %}
+{% module day_overview(date,arts) %}
+{% end %}
+
+<div class="helper">
+<p>Know some other article you think might need sourcing? Add it here!</p>
 <form action="/addarticle" method="post">
-    <label style="width:20em;" for="url">URL</label><input type="text" id="url" name="url" /><br/>
+    <label style="width:20em;" for="url">Article URL</label> <input type="text" id="url" name="url" /><br/>
     <input type="submit" value="add"/>
 </form>
+</div>
 
+</div>
+
+<div id="recent">
 <h2>Recent activity</h2>
 {% module action_list(recent_actions) %}
-
-
-
-<p>helper link: google news results for <a href="https://www.google.com/search?aq=f&hl=en&gl=uk&tbm=nws&btnmeta_news_search=1&q=scientists+say">"scientists say"</a>,
-<a href="https://www.google.com/search?aq=f&hl=en&gl=uk&tbm=nws&btnmeta_news_search=1&q=%22a+paper+published+today%22">"a paper published today"</a>
-</p>
+</div>
 
 {% end %}
 

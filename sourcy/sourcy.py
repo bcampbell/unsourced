@@ -29,6 +29,7 @@ class Application(tornado.web.Application):
             (r'/login/google', GoogleLoginHandler),
             (r'/logout', LogoutHandler),
             (r"/art/([0-9]+)", ArticleHandler),
+            (r"/([0-9]{4}-[0-9]{2}-[0-9]{2})", DayHandler),
             (r"/edit", EditHandler),
             (r"/addarticle", AddArticleHandler),
             (r"/addjournal", AddJournalHandler),
@@ -181,12 +182,26 @@ class ArticleHandler(BaseHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        arts = self.store.art_get_interesting(10)
 
-#        sql = """select a.id as art_id, a.headline as art_headline, a.permalink as art_permalink,s.id,s.url,s.created,u.name as user_name,u.id as user_id from (source s left join useraccount u ON s.creator=u.id) inner join article a on a.id=s.article_id ORDER BY created DESC LIMIT 10"""
+        days = []
+        date = datetime.date.today()
+        for n in range(5):
+            arts = self.store.art_get_by_date(date)
+            days.append((date,arts))
+            date = date - datetime.timedelta(days=1)
+
+#        arts = self.store.art_get_interesting(10)
 
         recent = self.store.action_get_recent(10)
-        self.render('index.html', articles=arts, recent_actions=recent)
+        self.render('index.html', days=days, recent_actions=recent)
+
+
+class DayHandler(BaseHandler):
+    """show summary for a given day"""
+    def get(self,datestr):
+        date = datetime.datetime.strptime(datestr,'%Y-%m-%d').date()
+        arts = self.store.art_get_by_date(date)
+        self.render('day.html', date=date, arts=arts)
 
 
 class AboutHandler(BaseHandler):

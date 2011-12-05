@@ -86,8 +86,8 @@ def main():
 
 
     for doi in sys.argv[1:]:
-        body,content_type = grabit(doi)
-        meta = parseit(body, content_type, doi)
+        rdfxml,content_type = grabit(doi)
+        meta = parseit(rdfxml, doi)
         pprint(meta)
 
 
