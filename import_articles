@@ -19,8 +19,14 @@ def get_arts(num_days=1):
     date_from = datetime.date.today() - datetime.timedelta(days = num_days-1)
     date_to = datetime.date.today()
 
-    search = '("scientists say" OR "paper published") %s..%s' % (
-            date_from.strftime('%Y%m%d'), date_to.strftime('%Y%m%d'))
+    phrases = ("scientists have", "scientists say",  "paper published", "research suggests", "latest research", "researchers", "the study")
+
+    searchtxt = " OR ".join(['"'+s+'"' for s in phrases])
+
+    search = '(%s) %s..%s' % (
+            " OR ".join(['"'+s+'"' for s in phrases]),
+            date_from.strftime('%Y%m%d'),
+            date_to.strftime('%Y%m%d'))
 
     print search
     params = {'search': search,
