@@ -85,10 +85,11 @@ class Store(object):
         return arts
 
 
-    def action_get_recent(self,limit):
+    def action_get_recent(self,limit,user_id=None):
         """ return list of actions, most recent first """
 
-        actions = self.db.query("""
+        params = []
+        sql = """
             SELECT act.*,
                     article_action.article_id,
                     source_action.source_id,
@@ -96,10 +97,20 @@ class Store(object):
                 FROM action act
                     LEFT JOIN article_action ON act.id = article_action.action_id
                     LEFT JOIN source_action on act.id = source_action.action_id
-                    LEFT JOIN lookup_action on act.id = lookup_action.action_id
+                    LEFT JOIN lookup_action on act.id = lookup_action.action_id"""
+        if user_id is not None:
+            sql += """
+                WHERE who=%s
+            """
+            params.append(user_id)
+
+        sql += """
                 ORDER BY performed DESC
                 LIMIT %s
-                """, limit)
+                """
+        params.append(limit)
+
+        actions = self.db.query(sql, *params)
 
         for act in actions:
             if act.who is not None:

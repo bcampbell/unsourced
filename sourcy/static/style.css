@@ -128,7 +128,7 @@ body>footer {
 /* SOME BOX STYLES */
 
 /* rounded corners */
-.sources, .helper, #view, #day-overviews, #recent {
+.sources, .helper, #view, #day-overviews, #recent, #calendar {
     -moz-border-radius: 4px;
     border-radius: 4px;
     margin: 0em 0 1em 0;
@@ -141,10 +141,10 @@ body>footer {
     border: 1px solid #ccf;
 }
 
-.sources, #view, #day-overviews, #recent
+.sources, #view, #day-overviews, #recent, #calendar
 {
-    border: 1px solid #ccc;
     background-color: #fff;
+    border: 1px solid #ccc;
 }
 
 
@@ -265,6 +265,9 @@ body>footer {
 #recent { float: right; width: 45%; }
 #day-overviews { float: left; width: 45%; }
 
+#calendar { float: right; }
+
+
 .day-overview ul {
     padding-left: 6em;
 }
@@ -288,5 +291,21 @@ body>footer {
 
 }
 
+table.month {
+    margin: 1em;
+}
 
+table.month td {
+    border: 1px solid #eee;
+    padding: 0.2em;
+}
+
+table.month td.current {
+    background-color: #ccc;
+    border: 1px solid #888;
+}
+
+table.month th {
+    background-color: #ccc;
+}
 
