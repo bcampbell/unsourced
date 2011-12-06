@@ -16,6 +16,8 @@ import analyser
 import uimodules
 import highlight
 from store import Store
+from handlers.base import BaseHandler
+from handlers.history import HistoryHandler
 
 define("port", default=8888, help="run on the given port", type=int)
 
@@ -29,7 +31,7 @@ class Application(tornado.web.Application):
             (r'/login/google', GoogleLoginHandler),
             (r'/logout', LogoutHandler),
             (r"/art/([0-9]+)", ArticleHandler),
-            (r"/([0-9]{4}-[0-9]{2}-[0-9]{2})", DayHandler),
+            (r"/([0-9]{4}-[0-9]{2}-[0-9]{2})", HistoryHandler),
             (r"/edit", EditHandler),
             (r"/addarticle", AddArticleHandler),
             (r"/addjournal", AddJournalHandler),
@@ -51,16 +53,6 @@ class Application(tornado.web.Application):
         self.journal_finder = analyser.Lookerupper(self.store,'journal')
 
 
-class BaseHandler(tornado.web.RequestHandler):
-    def get_current_user(self):
-        user_id = self.get_secure_cookie("user")
-        if user_id is None:
-            return None
-        return self.store.user_get(user_id)
-
-    @property
-    def store(self):
-        return self.application.store
 
 
 class LoginHandler(BaseHandler):
@@ -185,23 +177,14 @@ class MainHandler(BaseHandler):
 
         days = []
         date = datetime.date.today()
-        for n in range(5):
-            arts = self.store.art_get_by_date(date)
-            days.append((date,arts))
-            date = date - datetime.timedelta(days=1)
-
-#        arts = self.store.art_get_interesting(10)
+        arts = self.store.art_get_by_date(date)
+        days.append((date,arts))
+#        date = date - datetime.timedelta(days=1)
 
         recent = self.store.action_get_recent(10)
         self.render('index.html', days=days, recent_actions=recent)
 
 
-class DayHandler(BaseHandler):
-    """show summary for a given day"""
-    def get(self,datestr):
-        date = datetime.datetime.strptime(datestr,'%Y-%m-%d').date()
-        arts = self.store.art_get_by_date(date)
-        self.render('day.html', date=date, arts=arts)
 
 
 class AboutHandler(BaseHandler):

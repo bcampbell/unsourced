@@ -12,17 +12,20 @@ which could indicate they might refer to academic papers.</p>
 {% module day_overview(date,arts) %}
 {% end %}
 
-<div class="helper">
-<p>Know some other article you think might need sourcing? Add it here!</p>
+
+<a href="/{{ (date-datetime.timedelta(days=1)).strftime('%Y-%m-%d') }}">See Yesterday's articles...</a>
+
+</div>
+
+
+<div id="recent">
+    
+    <p>Know some other article you think might need sourcing? Add it here!</p>
 <form action="/addarticle" method="post">
     <label style="width:20em;" for="url">Article URL</label> <input type="text" id="url" name="url" /><br/>
     <input type="submit" value="add"/>
 </form>
-</div>
 
-</div>
-
-<div id="recent">
 <h2>Recent activity</h2>
 {% module action_list(recent_actions) %}
 </div>

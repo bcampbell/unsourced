@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{date}}{% end %}
+{% block main %}
+<div id="day-overviews">
+{% module day_overview(date,arts) %}
+</div>
+
+<div id="calendar">
+    {% raw cal.formatmonth(2011,11,date) %}
+    {% raw cal.formatmonth(2011,12,date) %}
+</div>
+
+{% end %}
+
