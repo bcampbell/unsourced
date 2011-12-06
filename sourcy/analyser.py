@@ -102,4 +102,6 @@ def find_researchers(txt):
 # "Lead researcher Dr Maria Karayiorgou"
 # "by researchers Edith Shalev, of the Israel Institute of Technology, and Vicki G Morwitz, of New York University."
 # "Drs David Margel and Neil Fleshner, from the University of Toronto"
+# "Mathias Jucker, a senior scientist at a research centre into neuro-degenerative diseases in Tubingen, Bavaria"
+# "Lead researcher Dr Marin Strom, from the Statens Serum Institut in Copenhagen"
 
