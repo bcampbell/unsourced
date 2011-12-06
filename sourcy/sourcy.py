@@ -18,6 +18,7 @@ import highlight
 from store import Store
 from handlers.base import BaseHandler
 from handlers.history import HistoryHandler
+from handlers.user import UserHandler
 
 define("port", default=8888, help="run on the given port", type=int)
 
@@ -30,6 +31,7 @@ class Application(tornado.web.Application):
             (r'/login', LoginHandler),
             (r'/login/google', GoogleLoginHandler),
             (r'/logout', LogoutHandler),
+            (r"/user/([0-9]+)", UserHandler),
             (r"/art/([0-9]+)", ArticleHandler),
             (r"/([0-9]{4}-[0-9]{2}-[0-9]{2})", HistoryHandler),
             (r"/edit", EditHandler),

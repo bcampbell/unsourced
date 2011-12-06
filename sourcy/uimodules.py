@@ -23,7 +23,10 @@ class action_list(tornado.web.UIModule):
 
         frags = []
         for act in actions:
-            user = act.who.name if act.who is not None else u'anonymous'
+            if act.who is not None:
+                user = u'<a href="/user/%d">%s</a>' % (act.who.id, act.who.name)
+            else:
+                user = u'anonymous'
 
             if act.what == 'art_add' and act.article is not None:
                 frag = 'added an article: %s' %(art_link(act.article),)
