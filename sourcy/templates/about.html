@@ -1,22 +1,63 @@
 {% extends "base.html" %}
 {% block title %}About{% end %}
 {% block main %}
-<h2>What is all this?</h2>
+<div class="page-of-text">
+<h2>About</h2>
 
-<p>Sourcy is a tool to help you track down missing sources for news articles. So many news articles are published without properly referencing the orginal
-sources 
+<h3>What is all this?</h3>
+
+<p>So many newspaper articles are published with missing or vague references
+to their original sources. This makes it very hard for interested parties to
+find out more, or to verify that the article is accurate.
+</p>
+<p>
+Sourcy is a tool to help us all augment news articles with the stuff that
+they <em>should</em> be including but don't.
 </p>
 
 <h3>Status</h3>
 
 <p>
-We're currently focusing on articles based around academic research, where
-you can track down the published paper or (more likely) press release.
+We decided to focus on science articles to begin with. There are lots of
+examples of sloppy - or just plain wrong - science reporting, so it's an
+area that needs scrutiny.
+</p>
+<p>
+It's also a nicely formal area, in that most science stories relate to the
+publication of peer-reviewed paper in a Journal, which can be tracked down.
+</p>
+<p>
 The plan is to expand the set of tools to cover all sorts of things that
-might be sources for news stories.
+might be sources for news stories - government reports, raw data, press
+releases, etc etc...
 </p>
 
+<h3>Why are there so many articles from the UK?</h3>
 
+<p>We use the article search at
+<a href="http://journalisted.com">journalisted.com</a> to find articles
+which look like they might need sourcing. Since journalisted has a
+particular focus on the UK media, so does this site.
+</p>
+<p>
+However, you can manually enter any article you'd like, using the form on
+the <a href="/">front page</a>.
+</p>
+
+<h3>Who's responsible?</h3>
+
+<p>It's a <a href="http://mediastandardstrust.org">Media Standards Trust</a> project.</p>
+
+<dl>    
+    <dt>Coding, design:</dt>
+    <dd><a href="http://scumways.com">Ben Campbell</a></dd>
+    <dt>Original concept, design:</dt>
+    <dd>Martin Moore</dd>
+    <dt>Thanks muchly to:</dt>
+    <dd>Francis Irving</dd>
+    <dd>Michael Curran</dd>
+</dl>
+</div>
 
 {% end %}
 
