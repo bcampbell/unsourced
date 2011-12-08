@@ -51,6 +51,7 @@ class ArticleHandler(BaseHandler):
 
         if scrape_err is None:
             html = results['article']['content']
+            html = util.sanitise_html(html)
             rs,institutions,journals = self.analyse_text(html)
         else:
             html = ''
@@ -64,7 +65,6 @@ class ArticleHandler(BaseHandler):
 
 
     def analyse_text(self,html):
-        html = util.sanitise_html(html)
         researchers = analyser.find_researchers(html)
 
         journals = self.application.journal_finder.find(html)
