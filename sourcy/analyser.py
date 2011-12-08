@@ -1,6 +1,5 @@
 import csv
 import re
-import pickle
 import logging
 import store
 
@@ -12,17 +11,6 @@ class Lookerupper:
         self.kind = kind
         self.store = store
         self.table = {}
-
-#        filename = kind + ".pickle"
-#        try:
-#            self.table = pickle.load(open(filename,'rb'))
-#            logging.info("Lookerupper for %s (from cache)" % (kind,))
-#        except:
-#            for l in store.lookup_iter(kind):
-#                name = l.name
-#                self.table[id] = (unicode(name).lower(),name,l.url)
-#            logging.info("Lookerupper for %s" % (kind,))
-#            pickle.dump(self.table, open(filename,'wb'))
 
         for l in store.lookup_iter(kind):
             name = l.name
@@ -43,7 +31,7 @@ class Lookerupper:
         html = html.lower()
 
         found = []
-        # first pass - find ones which are present
+        # first pass - do naive raw text search for each lookup item
         for id,l in self.table.iteritems():
             if l[0] in html:
                 found.append(id)
@@ -55,7 +43,6 @@ class Lookerupper:
         for id in found:
             lookup = self.table[id]
             pat = self.to_regex(lookup[1])
-            spans = []
             for m in pat.finditer(html):
                 if 'name' in m.groupdict():
                     span = m.span('name')
@@ -66,14 +53,21 @@ class Lookerupper:
                 hits.append((span[0],span[1], self.kind, lookup[1], lookup[2]))
         return hits
 
+
     def to_regex(self,s):
         s = re.escape(s)
-        # TODO: this is cheesy as hell! 
-        if self.kind == 'journal' and len(s.split()) <=1:
-            s = r'((journal|magazine|published in|printed in)[,]?\s+(?P<name>%s))|((?P<name2>)%s\s+(journal|magazine))' % (s,s)
-        else:
-            s = r'\b(?P<name>%s)\b' % (s,)
-        return re.compile(s,re.I)
+        flags = re.IGNORECASE
+        pat = r'\b(?P<name>%s)\b' % (s,)
+
+        if len(s.split()) <=1:
+            # it's a single word
+            # TODO: this is cheesy as hell!
+            if self.kind == 'journal':
+                pat = r'((journal|magazine|published in|printed in)[,]?\s+(?P<name>%s))|((?P<name2>)%s\s+(journal|magazine))' % (s,s)
+            else:
+                flags = 0   # make it case sensitive
+
+        return re.compile(pat,flags)
 
 
 

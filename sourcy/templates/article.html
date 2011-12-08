@@ -54,7 +54,11 @@
 
 </header>
 <div class="body">
-    {% raw article_content %}
+{% if scrape_err %}
+<p>Sorry, but there was a problem fetching the article text: {{scrape_err}}</p>
+{% else %}
+{% raw article_content %}
+{% end %}
 </div>
 </div>
 
