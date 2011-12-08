@@ -12,7 +12,7 @@ from sourcy import util,analyser,highlight
 from sourcy.store import Store
 from base import BaseHandler
 
-
+from pprint import pprint
 
 class ArticleHandler(BaseHandler):
 
@@ -52,14 +52,33 @@ class ArticleHandler(BaseHandler):
         if scrape_err is None:
             html = results['article']['content']
             html = util.sanitise_html(html)
-            rs,institutions,journals = self.analyse_text(html)
+            highlight_spans = self.analyse_text(html)
+            # mark up the html
+            html = highlight.html_highlight(html, highlight_spans)
+
+            # now find the unique matches for each kind
+            uniq = collections.defaultdict(set)
+            for (start,end,kind,name,url) in highlight_spans:
+                uniq[kind].add((name,url))
+    
+            rs = uniq['researcher']
+            institutions = uniq['institution']
+            journals = uniq['journal']
+            researchers = []
+            for (name,url) in researchers:
+                parts = name.split()
+                initial = parts[0][0]
+                surname = parts[-1]
+                researchers.append({'name': name, 'search_value': '"%s %s"' % (initial,surname)})
+
         else:
+            # don't have any text available :-(
             html = ''
-            rs,institutions,journals = [],[],[]
+            researchers,institutions,journals = [],[],[]
 
         sources = self.store.art_get_sources(art_id)
 
-        self.render('article.html', art=art, article_content=html, sources=sources,researchers=rs, institutions=institutions, journals=journals, scrape_err=scrape_err) 
+        self.render('article.html', art=art, article_content=html, sources=sources,researchers=researchers, institutions=institutions, journals=journals, scrape_err=scrape_err) 
         #self.finish()
 
 
@@ -77,23 +96,7 @@ class ArticleHandler(BaseHandler):
 
         # remove spans contained within other spans
         highlight_spans = highlight.remove_contained_spans(highlight_spans)
+        return highlight_spans
 
-        # mark up the html
-        html = highlight.html_highlight(html, highlight_spans)
 
-        # now find the unique matches for each kind
-        uniq = collections.defaultdict(set)
-        for (start,end,kind,name,url) in highlight_spans:
-            uniq[kind].add((name,url))
-
-        researchers = uniq['researcher']
-        institutions = uniq['institution']
-        journals = uniq['journal']
-
-        rs = []
-        for (name,url) in researchers:
-            parts = name.split()
-            initial = parts[0][0]
-            surname = parts[-1]
-            rs.append({'name': name, 'search_value': '"%s %s"' % (initial,surname)})
-        return rs,institutions,journals
+        return (rs,institutions,journals)
