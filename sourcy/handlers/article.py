@@ -65,7 +65,7 @@ class ArticleHandler(BaseHandler):
             institutions = uniq['institution']
             journals = uniq['journal']
             researchers = []
-            for (name,url) in researchers:
+            for (name,url) in rs:
                 parts = name.split()
                 initial = parts[0][0]
                 surname = parts[-1]
@@ -99,4 +99,3 @@ class ArticleHandler(BaseHandler):
         return highlight_spans
 
 
-        return (rs,institutions,journals)
