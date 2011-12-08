@@ -108,6 +108,11 @@ body>header h1 a:link { color: #fff; }
 body>header h1 a:visited { color: #fff; }
 body>header h1 a:hover { color: #fff; text-decoration:none; }
 body>header h1 a:hover:visited { color: #fff; }
+body>header span { position: absolute;
+    left: 16em;
+    bottom: 2em;
+    margin: 0;
+    padding: 0; }
 
 header a { color: #fff; }
 header a:visited { color: #fff; }
