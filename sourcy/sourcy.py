@@ -151,7 +151,6 @@ class AddInstitutionHandler(BaseHandler):
             user_id = self.current_user.id
         else:
             user_id = None
-
         self.store.action_add_lookup(user_id, self.kind, name, homepage)
         self.redirect(self.request.path)
 

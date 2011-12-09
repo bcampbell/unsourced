@@ -171,6 +171,7 @@ class Store(object):
     def action_add_lookup(self,user_id, kind, name, url):
         """ add a lookup entry, return the new lookup id"""
         try:
+            assert name.strip() != u''
             self.db.execute("BEGIN")
             lookup_id = self.db.execute("INSERT INTO lookup (kind,name,url) VALUES (%s,%s,%s)", kind,name,url)
 

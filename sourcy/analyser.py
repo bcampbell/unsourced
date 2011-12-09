@@ -13,8 +13,11 @@ class Lookerupper:
         self.table = {}
 
         for l in store.lookup_iter(kind):
-            name = l.name
-            self.table[l.id] = (unicode(name).lower(),name,l.url)
+            name = unicode(l.name).strip()
+            if name == u'':
+                logging.warning("discard empty %s lookup (id %d)", kind, l.id)
+                continue
+            self.table[l.id] = (name.lower(),name,l.url)
         store.register_lookup_listener(self)
         logging.info("Lookerupper for %s (%d entries)" % (kind,len(self.table)))
 
@@ -33,6 +36,7 @@ class Lookerupper:
         found = []
         # first pass - do naive raw text search for each lookup item
         for id,l in self.table.iteritems():
+            assert l[0] != u''
             if l[0] in html:
                 found.append(id)
 
