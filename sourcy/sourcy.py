@@ -34,7 +34,7 @@ class Application(tornado.web.Application):
             (r"/user/([0-9]+)", UserHandler),
             (r"/art/([0-9]+)", ArticleHandler),
             (r"/([0-9]{4}-[0-9]{2}-[0-9]{2})", HistoryHandler),
-            (r"/edit", EditHandler),
+            (r"/addsource", AddSourceHandler),
             (r"/addarticle", AddArticleHandler),
             (r"/addjournal", AddJournalHandler),
             (r"/addinstitution", AddInstitutionHandler),
@@ -108,6 +108,7 @@ class MainHandler(BaseHandler):
 #        date = date - datetime.timedelta(days=1)
 
         recent = self.store.action_get_recent(10)
+
         self.render('index.html', days=days, recent_actions=recent)
 
 
@@ -124,15 +125,16 @@ class AcademicPapersHandler(BaseHandler):
 
 
 
-class EditHandler(BaseHandler):
+class AddSourceHandler(BaseHandler):
     def post(self):
         url = self.get_argument('url')
+        kind = self.get_argument('kind')
         art_id = int(self.get_argument('art_id'))
         if self.current_user is not None:
             user_id = self.current_user.id
         else:
             user_id = None
-        self.store.action_add_source(user_id, art_id, url)
+        self.store.action_add_source(user_id, art_id, url,kind)
 
         self.redirect("/art/%d" % (art_id,))
 

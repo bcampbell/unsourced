@@ -78,14 +78,8 @@
   </div>
 
   <div class="helper addsource">
-    <h2>Add an academic paper</h2>
-    <form action="/edit" method="post">
-        <label for="url">URL of paper</label>
-        <input type="hidden" name="art_id" value="{{art.id}}"/>
-        <input type="text" name="url" id="url" columns="80"/><br/>
-        <input type="submit" value="submit"/><br/>
-        <span class="helptext"><a href="/academicpapers#doi">what's a DOI?</a> <a href="/academicpapers#linking">guidelines on linking to academic papers</a></span><br/>
-    </form>
+    <h2>Add a source</h2>
+    {% module add_source(art) %}
   </div>
 
   <div class="helper">

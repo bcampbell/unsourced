@@ -27,7 +27,11 @@ which could indicate they might refer to academic papers.</p>
 </form>
 
 <h2>Recent activity</h2>
-{% module action_list(recent_actions) %}
+<ul>
+    {% for act in recent_actions %}
+    <li>{{act.performed}}: {% module user(act.who) %} {% module action(act) %}</li>
+    {% end %}
+</ul>
 </div>
 
 {% end %}
