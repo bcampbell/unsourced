@@ -168,17 +168,17 @@ class Store(object):
 
         action_ids = ','.join(["'%d'" % (k,) for k in action_map.keys()])
         # grab and attach sources
-        sources = self.db.query("SELECT * FROM (source s INNER JOIN source_action sa ON sa.source_id=s.id) WHERE sa.action_id IN (" + action_ids +")")
+        sources = self.db.query("SELECT s.*,sa.source_id,sa.action_id FROM (source s INNER JOIN source_action sa ON sa.source_id=s.id) WHERE sa.action_id IN (" + action_ids +")")
         for source in sources:
             action_map[source.action_id].source = source
 
         # grab and attach lookups
-        lookups = self.db.query("SELECT * FROM (lookup l INNER JOIN lookup_action la ON la.lookup_id=l.id) WHERE la.action_id IN (" + action_ids + ")") 
+        lookups = self.db.query("SELECT l.*,la.lookup_id,la.action_id FROM (lookup l INNER JOIN lookup_action la ON la.lookup_id=l.id) WHERE la.action_id IN (" + action_ids + ")") 
         for lookup in lookups:
             action_map[lookup.action_id].lookup = lookup
 
         # grab and attach articles
-        articles = self.db.query("SELECT * FROM (article a INNER JOIN article_action aa ON aa.article_id=a.id) WHERE aa.action_id IN (" + action_ids +")") 
+        articles = self.db.query("SELECT a.*,aa.article_id,aa.action_id FROM (article a INNER JOIN article_action aa ON aa.article_id=a.id) WHERE aa.action_id IN (" + action_ids +")") 
         for article in articles:
             action_map[article.action_id].article = article
 
