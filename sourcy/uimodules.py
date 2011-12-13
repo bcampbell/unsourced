@@ -50,6 +50,10 @@ class action(tornado.web.UIModule):
 
 
 
+
 class add_source(tornado.web.UIModule):
-    def render(self,art):
+    def render(self,art_id):
         return self.render_string('modules/add_source.html',art=art)
+
+
+

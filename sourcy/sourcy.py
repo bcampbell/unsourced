@@ -20,6 +20,8 @@ from handlers.user import UserHandler
 from handlers.article import ArticleHandler
 from handlers.addarticle import AddArticleHandler
 
+from forms import AddSourceForm
+
 define("port", default=8888, help="run on the given port", type=int)
 
 class Application(tornado.web.Application):
@@ -124,19 +126,24 @@ class AcademicPapersHandler(BaseHandler):
 
 
 
+from pprint import pprint
 
 class AddSourceHandler(BaseHandler):
     def post(self):
-        url = self.get_argument('url')
-        kind = self.get_argument('kind')
-        art_id = int(self.get_argument('art_id'))
-        if self.current_user is not None:
-            user_id = self.current_user.id
-        else:
-            user_id = None
-        self.store.action_add_source(user_id, art_id, url,kind)
+        form = AddSourceForm(self,None)
+        pprint(form.errs)
 
-        self.redirect("/art/%d" % (art_id,))
+        if form.is_valid():
+
+            if self.current_user is not None:
+                user_id = self.current_user.id
+            else:
+                user_id = None
+            self.store.action_add_source(user_id, art_id, form.vars['url'],form.vars['kind'])
+
+            self.redirect("/art/%d" % (art_id,))
+        else:
+            self.render('add_source.html',add_source_form=form)
 
 
 class AddInstitutionHandler(BaseHandler):
