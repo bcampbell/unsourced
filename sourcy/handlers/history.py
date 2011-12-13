@@ -17,7 +17,6 @@ class HistoryCalendar(calendar.Calendar):
             return '<td class="noday">&nbsp;</td>' # day outside month
         else:
             weekday = date.weekday()
-            print date,current_date
             if date==current_date:
                 cell = '<td class="current">%s</td>' % (date.day,)
             else:

@@ -126,12 +126,9 @@ class AcademicPapersHandler(BaseHandler):
 
 
 
-from pprint import pprint
-
 class AddSourceHandler(BaseHandler):
     def post(self):
         form = AddSourceForm(self,None)
-        pprint(form.errs)
 
         if form.is_valid():
 
