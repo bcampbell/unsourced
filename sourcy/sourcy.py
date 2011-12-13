@@ -139,6 +139,7 @@ class AddSourceHandler(BaseHandler):
                 user_id = self.current_user.id
             else:
                 user_id = None
+            art_id = form.vars['art_id']
             self.store.action_add_source(user_id, art_id, form.vars['url'],form.vars['kind'])
 
             self.redirect("/art/%d" % (art_id,))

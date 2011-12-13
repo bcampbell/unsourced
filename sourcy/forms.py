@@ -5,7 +5,6 @@ class AddSourceForm:
         self.errs = {}
         vars = {}
         if handler.request.method=='POST':
-            self.submitted = True;
             vars['art_id'] = int(handler.get_argument('art_id'))
         else:
             vars['art_id'] = int(art_id)
