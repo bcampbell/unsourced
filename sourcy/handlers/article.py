@@ -102,3 +102,7 @@ class ArticleHandler(BaseHandler):
         return highlight_spans
 
 
+handlers = [
+    (r"/art/([0-9]+)", ArticleHandler),
+]
+

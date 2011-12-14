@@ -62,3 +62,7 @@ class AddArticleHandler(BaseHandler):
 
 
 
+handlers = [
+    (r"/addarticle", AddArticleHandler),
+]
+

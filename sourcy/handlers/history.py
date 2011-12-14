@@ -5,6 +5,7 @@ from base import BaseHandler
 
 
 
+
 class HistoryCalendar(calendar.Calendar):
     # CSS classes for the day <td>s
     cssclasses = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
@@ -84,4 +85,8 @@ class HistoryHandler(BaseHandler):
         arts = self.store.art_get_by_date(date)
         cal = HistoryCalendar()
         self.render('history.html', date=date, arts=arts, cal=cal)
+
+handlers = [
+    (r"/([0-9]{4}-[0-9]{2}-[0-9]{2})", HistoryHandler),
+]
 

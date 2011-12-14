@@ -1,5 +1,10 @@
 mysql_host = "127.0.0.1:3306"
-mysql_database = "sourcy"
-mysql_user = "sourcy"
-mysql_password = "sourcy"
+mysql_database = ""
+mysql_user = ""
+mysql_password = ""
+
+cookie_secret = ""
+debug = True
+twitter_consumer_key = ""
+twitter_consumer_secret = ""
 

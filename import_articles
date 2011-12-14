@@ -13,6 +13,7 @@ from pprint import pprint
 from sourcy.store import Store
 
 import tornado.options
+from sourcy.app import parse_config_file
 
 
 def get_arts(num_days=1):
@@ -40,6 +41,9 @@ def get_arts(num_days=1):
     return articles
 
 def main():
+#    tornado.options.parse_config_file("sourcy.conf")
+    parse_config_file("sourcy.conf")
+
     parser = OptionParser()
     parser.add_option("-n", type="int", dest="num_days", default=1)
 
@@ -49,7 +53,6 @@ def main():
     print len(arts), 'articles found'
 
 
-    tornado.options.parse_config_file("sourcy.conf")
     s = Store()
 #    tornado.options.parse_command_line()
 
