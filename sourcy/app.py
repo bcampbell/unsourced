@@ -9,21 +9,10 @@ from tornado.options import define, options
 
 import uimodules
 
-from handlers import history,user,article,addarticle,front
+from handlers import history,user,article,addarticle,front,sources
 from store import Store
 import analyser
 
-
-#define("port", default=8888, help="run on the given port", type=int)
-
-#try:
-#    import sourcy
-#except ImportError:
-#    sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-#sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-#sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
-#ROOT = os.path.dirname(os.path.abspath(__file__))
-#site.addsitedir(os.path.join(ROOT,'FOOOK'))
 
 def parse_config_file(path):
     """Rewrite tornado default parse_config_file.
@@ -53,6 +42,7 @@ class Application(tornado.web.Application):
         handlers.extend(article.handlers)
         handlers.extend(addarticle.handlers)
         handlers.extend(history.handlers)
+        handlers.extend(sources.handlers)
 
         settings = dict(
             static_path = os.path.join(os.path.dirname(__file__), "static"),

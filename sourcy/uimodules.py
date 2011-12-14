@@ -13,6 +13,7 @@ class day_overview(tornado.web.UIModule):
         num_sourced = sum((1 for a in arts if len(a.sources)>0))
         return self.render_string("modules/day_overview.html", date=date, arts=arts, num_sourced=num_sourced)
 
+
 class user(tornado.web.UIModule):
     def render(self, user):
         if user is not None:
@@ -46,7 +47,6 @@ class action(tornado.web.UIModule):
         else:
             frag = u'' # just suppress
         return frag
-
 
 
 

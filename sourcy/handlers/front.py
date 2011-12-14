@@ -1,7 +1,6 @@
 import datetime
 from base import BaseHandler
 
-from sourcy.forms import AddSourceForm
 
 class MainHandler(BaseHandler):
     def get(self):
@@ -27,24 +26,6 @@ class AcademicPapersHandler(BaseHandler):
     def get(self):
         self.render('academicpapers.html')
 
-
-
-class AddSourceHandler(BaseHandler):
-    def post(self):
-        form = AddSourceForm(self,None)
-
-        if form.is_valid():
-
-            if self.current_user is not None:
-                user_id = self.current_user.id
-            else:
-                user_id = None
-            art_id = form.vars['art_id']
-            self.store.action_add_source(user_id, art_id, form.vars['url'],form.vars['kind'])
-
-            self.redirect("/art/%d" % (art_id,))
-        else:
-            self.render('add_source.html',add_source_form=form)
 
 
 class AddInstitutionHandler(BaseHandler):
@@ -89,7 +70,6 @@ handlers = [
     (r'/', MainHandler),
     (r'/about', AboutHandler),
     (r'/academicpapers', AcademicPapersHandler),
-    (r"/addsource", AddSourceHandler),
     (r"/addjournal", AddJournalHandler),
     (r"/addinstitution", AddInstitutionHandler),
     ]

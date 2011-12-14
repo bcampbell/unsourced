@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Thanks{% end %}
+{% block main %}
+<div class="page-of-text">
+{% if action.what =='src_add' %}
+
+<h2>Thanks!</h2>
+<p>Thanks for adding a source!</p>
+
+<p>Why not be like all the cool kids and tweet about it?</p>
+<p>clickytweetybuttonthinggoeshere</p>
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+<p>Go back to:<br/>
+{% module art_link(action.article) %}</p>
+{% end %}
+
+</div>
+{% end %}
+

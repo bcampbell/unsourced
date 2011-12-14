@@ -93,52 +93,13 @@ class Store(object):
         return arts
 
 
-    def OLD_action_get_recent(self,limit,user_id=None):
-        """ return list of actions, most recent first """
+    def action_get(self, action_id):
+        """ retrieve a single action """
 
-        params = []
-        sql = """
-            SELECT act.*,
-                    article_action.article_id,
-                    source_action.source_id,
-                    lookup_action.lookup_id
-                FROM action act
-                    LEFT JOIN article_action ON act.id = article_action.action_id
-                    LEFT JOIN source_action on act.id = source_action.action_id
-                    LEFT JOIN lookup_action on act.id = lookup_action.action_id"""
-        if user_id is not None:
-            sql += """
-                WHERE who=%s
-            """
-            params.append(user_id)
-
-        sql += """
-                ORDER BY performed DESC
-                LIMIT %s
-                """
-        params.append(limit)
-
-        actions = self.db.query(sql, *params)
-
-        for act in actions:
-            if act.who is not None:
-                act.who = self.db.get("SELECT * FROM useraccount WHERE id=%s",act.who)
-            if act.article_id is not None:
-                act.article = self.art_get(act.article_id)
-            else:
-                act.article = None
-
-            if act.source_id is not None:
-                act.source = self.db.get("SELECT * FROM source WHERE id=%s",act.source_id)
-            else:
-                act.source = None
-
-            if act.lookup_id is not None:
-                act.lookup = self.db.get("SELECT * FROM lookup WHERE id=%s",act.lookup_id)
-            else:
-                act.lookup = None
-        return actions
-
+        actions = self.db.query("SELECT * FROM action WHERE id=%s", action_id)
+        actions = self._augment_actions(actions)
+        assert len(actions)==1
+        return actions[0]
 
 
     def action_get_recent(self,limit,user_id=None):
@@ -153,6 +114,12 @@ class Store(object):
         params.append(limit)
         actions = self.db.query(sql, *params)
 
+        return self._augment_actions(actions)
+
+
+
+    def _augment_actions(self,actions):
+        """ attach users, articles, sources etc... to a bunch of actions"""
         #index by id
         action_map = {}
         for act in actions:
@@ -163,14 +130,16 @@ class Store(object):
 
         # grab all responsible users and attach to actions
         user_ids = set([act.who for act in actions if act.who is not None])
-        users = self.db.query("SELECT * FROM useraccount WHERE id IN (" + ','.join([str(id) for id in user_ids]) + ")")
-        user_map = {}
-        for user in users:
-            user_map[user.id] = user
-        for act in actions:
-            if act.who is not None:
-                # flesh out into full user
-                act.who = user_map[act.who]
+
+        if user_ids:
+            users = self.db.query("SELECT * FROM useraccount WHERE id IN (" + ','.join([str(id) for id in user_ids]) + ")")
+            user_map = {}
+            for user in users:
+                user_map[user.id] = user
+            for act in actions:
+                if act.who is not None:
+                    # flesh out into full user
+                    act.who = user_map[act.who]
 
         action_ids = ','.join(["'%d'" % (k,) for k in action_map.keys()])
         # grab and attach sources
@@ -210,7 +179,7 @@ class Store(object):
 
 
     def action_add_source(self,user_id, art_id, src_url, kind, doi=u''):
-        """ add a source link to an article, return the new source id"""
+        """ add a source link to an article, return the action id"""
 
         assert kind in Store.SOURCE_KINDS
         try:
@@ -225,7 +194,7 @@ class Store(object):
             self.db.execute("ROLLBACK")
             raise
         self.db.execute("COMMIT")
-        return src_id
+        return action_id
 
 
     def action_add_lookup(self,user_id, kind, name, url):
@@ -271,3 +240,9 @@ class Store(object):
                 self.db.execute("INSERT INTO article_url (article_id,url) VALUES (%s,%s)",art_id, art['permalink'])
 
         self.db.execute("COMMIT")
+
+
+    def source_get(self, source_id):
+        """ return source or None """
+        return self.db.get("SELECT * FROM source WHERE id=%s", int(source_id))
+
