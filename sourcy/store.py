@@ -33,18 +33,24 @@ class Store(object):
         """ return user or None """
         return self.db.get("SELECT * FROM useraccount WHERE id=%s", int(user_id))
 
+    def user_get_by_username(self,username):
+        """ return user or None """
+        return self.db.get("SELECT * FROM useraccount WHERE username=%s", username)
 
     def user_get_by_email(self,email):
         """ return user or None """
         return self.db.get("SELECT * FROM useraccount WHERE email=%s", email)
 
+    def user_get_by_auth_uid(self,auth_supplier,auth_uid):
+        """ return user or None """
+        return self.db.get("SELECT * FROM useraccount WHERE auth_supplier=%s AND auth_uid=%s", auth_supplier, auth_uid)
 
-    def user_create(self,email,name):
+    def user_create(self,username,prettyname,email,auth_supplier,auth_uid):
         """ return new user id """
 
         user_id = self.db.execute(
-            "INSERT INTO useraccount (email,name,anonymous,created) VALUES (%s,%s,FALSE,NOW())",
-            email, name)
+            "INSERT INTO useraccount (email,username,prettyname,anonymous,created,auth_supplier,auth_uid) VALUES (%s,%s,%s,FALSE,NOW(),%s,%s)",
+            email, username,prettyname,auth_supplier,auth_uid)
         return user_id
 
 

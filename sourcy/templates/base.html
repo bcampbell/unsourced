@@ -23,7 +23,7 @@
 {% if current_user is None %}
         <a href="/login">log in</a>
 {% else %}
-Hello, {{current_user.name}} (<a href="/logout">log out</a>)
+Hello, {{current_user.username}} (<a href="/logout">log out</a>)
 {% end %}
     </div>
 </header>

@@ -16,7 +16,7 @@ class day_overview(tornado.web.UIModule):
 class user(tornado.web.UIModule):
     def render(self, user):
         if user is not None:
-            out = u'<a href="/user/%d">%s</a>' % (user.id, user.name)
+            out = u'<a href="/user/%d">%s</a>' % (user.id, user.prettyname)
         else:
             out = u'anonymous'
         return out
