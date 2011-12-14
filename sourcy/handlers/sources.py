@@ -26,10 +26,6 @@ class ThanksHandler(BaseHandler):
     def get(self,action_id):
         action_id=int(action_id)
         action = self.store.action_get(action_id)
-
-        print "-=-----"
-        print action
-        print "-=-----"
         self.render('thanks.html',action=action)
 
 
