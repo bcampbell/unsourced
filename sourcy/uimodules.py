@@ -3,6 +3,12 @@ import util
 from pprint import pprint
 
 
+class formfield(tornado.web.UIModule):
+    def render(self, field):
+        return self.render_string("modules/formfield.html", field=field)
+        
+
+
 class domain(tornado.web.UIModule):
     def render(self, url):
         return util.domain(url)

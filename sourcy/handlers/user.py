@@ -3,9 +3,8 @@ import tornado.auth
 from base import BaseHandler
 
 
-
 class UserHandler(BaseHandler):
-    """show summary for a given day"""
+    """show summary for a given user"""
     def get(self,user_id):
         user = self.store.user_get(user_id)
 
@@ -88,11 +87,64 @@ class LogoutHandler(BaseHandler):
 
 
 
+# adaptor by James Crasta on WTForms mailing list
+class TornadoMultiDict(object):
+    def __init__(self, handler):
+        self.handler = handler
+
+    def __iter__(self):
+        return iter(self.handler.request.arguments)
+
+    def __len__(self):
+        return len(self.handler.request.arguments)
+
+    def __contains__(self, name):
+        # We use request.arguments because get_arguments always returns a
+        # value regardless of the existence of the key.
+        return (name in self.handler.request.arguments)
+
+    def getlist(self, name):
+        # get_arguments by default strips whitespace from the input data,
+        # so we pass strip=False to stop that in case we need to validate
+        # on whitespace.
+        return self.handler.get_arguments(name, strip=False)
+
+
+from wtforms import Form, BooleanField, TextField, validators
+
+class ProfileForm(Form):
+    username     = TextField('Username', [validators.Length(min=4, max=25)])
+    email        = TextField('Email Address', [validators.Length(min=6, max=35),validators.Email()])
+    accept_rules = BooleanField('I accept the site rules', [validators.Required()])
+
+
+
+class ProfileHandler(BaseHandler):
+    """profile editing"""
+
+    @tornado.web.authenticated
+    def get(self):
+        user=self.current_user
+#        user = self.store.user_get(user.id)
+
+        form = ProfileForm()
+        form.validate()
+        self.render('profile.html', user=user, form=form)
+
+    @tornado.web.authenticated
+    def post(self):
+        user=self.current_user
+
+        form = ProfileForm(TornadoMultiDict(self),user)
+        form.validate()
+        self.render('profile.html', user=user, form=form)
+
 handlers = [
     (r'/login', LoginHandler),
     (r'/login/google', GoogleLoginHandler),
     (r'/login/twitter', TwitterLoginHandler),
     (r'/logout', LogoutHandler),
     (r"/user/([0-9]+)", UserHandler),
+    (r"/profile", ProfileHandler),
 ]
 
