@@ -1,6 +1,12 @@
 import tornado.auth
+from tornado import httpclient
 
 from base import BaseHandler
+
+
+
+
+
 
 
 class UserHandler(BaseHandler):
@@ -50,7 +56,20 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
         self.redirect(self.get_argument("next", "/"))
 
 
-class TwitterLoginHandler(BaseHandler, tornado.auth.TwitterMixin):
+class MyTwitterMixin(tornado.auth.TwitterMixin):
+    """ hacked authenticate_redirect() to pass in callback uri """
+
+    def authenticate_redirect(self, callback_uri=None):
+        """Just like authorize_redirect(), but auto-redirects if authorized.
+
+        This is generally the right interface to use if you are using
+        Twitter for single-sign on.
+        """
+        http = httpclient.AsyncHTTPClient()
+        http.fetch(self._oauth_request_token_url(callback_uri=callback_uri), self.async_callback(
+            self._on_request_token, self._OAUTH_AUTHENTICATE_URL, None))
+
+class TwitterLoginHandler(BaseHandler, MyTwitterMixin):
     @tornado.web.asynchronous
     def get(self):
 
@@ -59,7 +78,9 @@ class TwitterLoginHandler(BaseHandler, tornado.auth.TwitterMixin):
             return
 
         site = self.request.protocol + "://" + self.request.host
-        self.authorize_redirect(callback_uri=site+"/login/twitter")
+#        self.authorize_redirect(callback_uri=site+"/login/twitter")
+        self.authenticate_redirect("/login/twitter")
+
 
     def _on_auth(self, twit_user):
         if not twit_user:
