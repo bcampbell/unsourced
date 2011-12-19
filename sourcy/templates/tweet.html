@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Tweet{% end %}
+{% block main %}
+<div class="page-of-text">
+{% if action.what =='src_add' %}
+
+<h3>tweet about it</h3>
+<form method="POST" action="/thanks/{{action.id}}/tweet">
+    {% for field in form %}
+    {% module formfield(field) %}
+    {% end %}
+    <input type="submit"/>
+</form>
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+<p>Go back to:<br/>
+{% module art_link(action.article) %}</p>
+{% end %}
+
+</div>
+{% end %}
+

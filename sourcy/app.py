@@ -50,6 +50,7 @@ class Application(tornado.web.Application):
             ui_modules = uimodules,
             debug=options.debug,
             cookie_secret=options.cookie_secret,
+            login_url="/login",
             # auth secret
             twitter_consumer_key=options.twitter_consumer_key,
             twitter_consumer_secret=options.twitter_consumer_secret,

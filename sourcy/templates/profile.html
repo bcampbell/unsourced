@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Edit profile{% end %}
+{% block main %}
+
+<h2>Edit your profile</h2>
+<form method="POST">
+    {% for field in form %}
+    {% module formfield(field) %}
+    {% end %}
+    <input type="submit"/>
+</form>
+
+{% end %}
+
