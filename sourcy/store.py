@@ -1,4 +1,5 @@
 import collections
+import json
 
 import tornado.database
 from tornado.options import define, options
@@ -52,6 +53,21 @@ class Store(object):
             "INSERT INTO useraccount (email,username,prettyname,anonymous,created,auth_supplier,auth_uid) VALUES (%s,%s,%s,FALSE,NOW(),%s,%s)",
             email, username,prettyname,auth_supplier,auth_uid)
         return user_id
+
+    def user_set_twitter_access_token(self,user,access_token=None):
+        """ set a twitter access_token on this user, so we can tweet on their behalf (pass None to remove token)"""
+        self.db.execute("DELETE FROM twitter_access_token WHERE user_id=%s", user.id)
+        if access_token is not None:
+            data = json.dumps(access_token)
+            self.db.execute("INSERT INTO twitter_access_token (user_id,token) VALUES (%s,%s)", user.id, data)
+
+    def user_get_twitter_access_token(self, user):
+        row = self.db.get("SELECT token FROM twitter_access_token WHERE user_id=%s", user.id)
+        if row is None:
+            return None
+        return json.loads(row.token)
+
+
 
 
     def art_get(self, art_id):

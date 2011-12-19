@@ -3,6 +3,8 @@ from base import BaseHandler
 import tornado.auth
 
 
+from pprint import pprint
+
 class MainHandler(BaseHandler):
     def get(self):
 
@@ -70,30 +72,45 @@ class TweetTestHandler(BaseHandler, tornado.auth.TwitterMixin):
     @tornado.web.asynchronous
     def get(self):
 
+        # already logged in and have access token?
+        if self.current_user is not None:
+            access_token = self.store.user_get_twitter_access_token(self.current_user)
+            if access_token is not None:
+                self.send_it(access_token)
+                return
+
         if self.get_argument("oauth_token", None):
             self.get_authenticated_user(self.async_callback(self._on_auth))
             return
 
-        site = self.request.protocol + "://" + self.request.host
-        self.authorize_redirect(callback_uri=site+"/tweet")
+        self.authorize_redirect("/tweet")
 
     def _on_auth(self, twit_user):
         if not twit_user:
             raise tornado.web.HTTPError(500, "Twitter auth failed")
+        access_token = twit_user["access_token"]
+        if self.current_user is not None:
+            # if we're logged in, store access_token
+            self.store.user_set_twitter_access_token(self.current_user, access_token)
+        self.send_it(access_token)
 
+
+    def send_it(self,access_token):
         self.twitter_request(
             "/statuses/update",
-            post_args={"status": "Tweet too."},
-            access_token=twit_user["access_token"],
+            post_args={"status": "Testing testing..."},
+            access_token=access_token,
             callback=self.async_callback(self._on_post))
 
     def _on_post(self, new_entry):
         if not new_entry:
             # Call failed; perhaps missing permission?
-            site = self.request.protocol + "://" + self.request.host
-            self.authorize_redirect(callback_uri=site+"/tweet")
+            self.authorize_redirect("/tweet")
             return
         self.finish("Posted a message!")
+
+
+
 
 
 handlers = [
