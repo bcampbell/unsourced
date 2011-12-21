@@ -122,9 +122,9 @@ class Store(object):
         """ return list of actions, most recent first """
 
         params = []
-        sql = "SELECT * FROM action"
+        sql = "SELECT * FROM action WHERE what IN ('art_add','src_add')"
         if user_id is not None:
-            sql += " WHERE who=%s"
+            sql += " AND who=%s"
             params.append(user_id)
         sql += " ORDER BY performed DESC LIMIT %s"
         params.append(limit)
@@ -136,43 +136,39 @@ class Store(object):
 
     def _augment_actions(self,actions):
         """ attach users, articles, sources etc... to a bunch of actions"""
-        #index by id
-        action_map = {}
-        for act in actions:
-            action_map[act.id] = act
-            act.source = None
-            act.article = None
-            act.lookup = None
 
         # grab all responsible users and attach to actions
-        user_ids = set([act.who for act in actions if act.who is not None])
+        cache = {}
+        for act in actions:
+            id = act.who
+            if id is not None:
+                if id not in cache:
+                    cache[id] = self.db.get("SELECT * FROM useraccount WHERE id=%s", id)
+                act.who = cache[id]
 
-        if user_ids:
-            users = self.db.query("SELECT * FROM useraccount WHERE id IN (" + ','.join([str(id) for id in user_ids]) + ")")
-            user_map = {}
-            for user in users:
-                user_map[user.id] = user
-            for act in actions:
-                if act.who is not None:
-                    # flesh out into full user
-                    act.who = user_map[act.who]
+        cache = {}
+        for act in actions:
+            id = act.source
+            if id is not None:
+                if id not in cache:
+                    cache[id] = self.db.get("SELECT * FROM source WHERE id=%s", id)
+                act['source'] = cache[id]
 
-        action_ids = ','.join(["'%d'" % (k,) for k in action_map.keys()])
-        # grab and attach sources
-        sources = self.db.query("SELECT s.*,sa.source_id,sa.action_id FROM (source s INNER JOIN source_action sa ON sa.source_id=s.id) WHERE sa.action_id IN (" + action_ids +")")
-        for source in sources:
-            action_map[source.action_id].source = source
+        cache = {}
+        for act in actions:
+            id = act.article
+            if id is not None:
+                if id not in cache:
+                    cache[id] = self.db.get("SELECT * FROM article WHERE id=%s", id)
+                act['article'] = cache[id]
 
-        # grab and attach lookups
-        lookups = self.db.query("SELECT l.*,la.lookup_id,la.action_id FROM (lookup l INNER JOIN lookup_action la ON la.lookup_id=l.id) WHERE la.action_id IN (" + action_ids + ")") 
-        for lookup in lookups:
-            action_map[lookup.action_id].lookup = lookup
-
-        # grab and attach articles
-        articles = self.db.query("SELECT a.*,aa.article_id,aa.action_id FROM (article a INNER JOIN article_action aa ON aa.article_id=a.id) WHERE aa.action_id IN (" + action_ids +")") 
-        for article in articles:
-            action_map[article.action_id].article = article
-
+        cache = {}
+        for act in actions:
+            id = act.lookup
+            if id is not None:
+                if id not in cache:
+                    cache[id] = self.db.get("SELECT * FROM lookup WHERE id=%s", id)
+                act['lookup'] = cache[id]
         return actions
 
 
@@ -184,8 +180,7 @@ class Store(object):
             self.db.execute("INSERT INTO article_url (article_id,url) VALUES (%s,%s)", art_id, url)
 
             # log the action
-            action_id = self.db.execute("INSERT INTO action (what,who,performed) VALUES ('art_add',%s,NOW())", user_id)
-            self.db.execute("INSERT INTO article_action (article_id,action_id) VALUES (%s,%s)",art_id,action_id)
+            action_id = self.db.execute("INSERT INTO action (what,who,performed,article,meta) VALUES ('art_add',%s,NOW(),%s,'')", user_id, art_id)
 
         except Exception as e:
             self.db.execute("ROLLBACK")
@@ -203,9 +198,7 @@ class Store(object):
             src_id = self.db.execute("INSERT INTO source (article_id,url,title,kind,doi) VALUES (%s,%s,%s,%s,%s)", art_id, src_url, '', kind, doi)
 
             # log the action against both source and article
-            action_id = self.db.execute("INSERT INTO action (what,who,performed) VALUES ('src_add',%s,NOW())", user_id)
-            self.db.execute("INSERT INTO source_action (source_id,action_id) VALUES (%s,%s)",src_id,action_id)
-            self.db.execute("INSERT INTO article_action (article_id,action_id) VALUES (%s,%s)",art_id,action_id)
+            action_id = self.db.execute("INSERT INTO action (what,who,performed,meta,article,source) VALUES ('src_add',%s,NOW(),'',%s,%s)", user_id, art_id, src_id)
         except Exception as e:
             self.db.execute("ROLLBACK")
             raise
@@ -221,8 +214,7 @@ class Store(object):
             lookup_id = self.db.execute("INSERT INTO lookup (kind,name,url) VALUES (%s,%s,%s)", kind,name,url)
 
             # log the action against both source and article
-            action_id = self.db.execute("INSERT INTO action (what,who,performed) VALUES ('lookup_add',%s,NOW())", user_id)
-            self.db.execute("INSERT INTO lookup_action (lookup_id,action_id) VALUES (%s,%s)",lookup_id,action_id)
+            action_id = self.db.execute("INSERT INTO action (what,who,performed,meta,lookup) VALUES ('lookup_add',%s,NOW(),'',%s)", user_id, lookup_id)
 
             for l in self.lookup_listeners:
                 l.on_lookup_added(lookup_id, kind, name, url)
