@@ -2,7 +2,7 @@ import tornado.auth
 from tornado import httpclient
 
 from base import BaseHandler
-from util import TornadoMultiDict
+from sourcy.util import TornadoMultiDict
 
 
 

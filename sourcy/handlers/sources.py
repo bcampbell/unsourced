@@ -5,7 +5,7 @@ import tornado.auth
 from wtforms import Form, BooleanField, TextField, validators
 
 from base import BaseHandler
-from util import TornadoMultiDict
+from sourcy.util import TornadoMultiDict
 from sourcy.forms import AddSourceForm
 
 
