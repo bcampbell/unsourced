@@ -71,8 +71,9 @@ class Store(object):
 
 
     def art_get(self, art_id):
-        return self.db.get("SELECT * FROM article WHERE id=%s", art_id)
-
+        art = self.db.get("SELECT * FROM article WHERE id=%s", art_id)
+        art['tags'] = self.db.query("SELECT * FROM tag WHERE article=%s", art_id)
+        return art
 
     def art_get_by_url(self, url):
         art = self.db.get("SELECT id FROM article_url WHERE url=%s", url)
@@ -83,6 +84,7 @@ class Store(object):
 
     def art_get_sources(self, art_id):
         return self.db.query("SELECT * FROM source WHERE article_id=%s", art_id)
+
 
     def art_get_interesting(self,limit):
         """ Get a selection of acticles which look like they need work"""
@@ -122,7 +124,7 @@ class Store(object):
         """ return list of actions, most recent first """
 
         params = []
-        sql = "SELECT * FROM action WHERE what IN ('art_add','src_add')"
+        sql = "SELECT * FROM action WHERE what IN ('art_add','src_add','tag_add')"
         if user_id is not None:
             sql += " AND who=%s"
             params.append(user_id)
@@ -169,6 +171,14 @@ class Store(object):
                 if id not in cache:
                     cache[id] = self.db.get("SELECT * FROM lookup WHERE id=%s", id)
                 act['lookup'] = cache[id]
+
+        cache = {}
+        for act in actions:
+            id = act.tag
+            if id is not None:
+                if id not in cache:
+                    cache[id] = self.db.get("SELECT * FROM tag WHERE id=%s", id)
+                act['tag'] = cache[id]
         return actions
 
 
@@ -242,6 +252,16 @@ class Store(object):
         self.db.execute("UPDATE source SET score=score-1 WHERE id=%s", source.id)
         action_id = self.db.execute("INSERT INTO action (what,who,performed,meta,article,source) VALUES ('src_downvote',%s,NOW(),'',%s,%s)",
             user.id, source.article_id, source.id)
+
+
+    def action_add_tag(self,user,article,tag_name):
+        existing = self.db.get("SELECT * FROM tag WHERE article=%s AND name=%s", article.id, tag_name)
+        if existing is not None:
+            return
+        tag_id = self.db.execute("INSERT INTO tag (name,article) VALUES (%s,%s)", tag_name, article.id)
+
+        self.db.execute("INSERT INTO action (what,who,performed,meta,article,tag) VALUES ('tag_add',%s,NOW(),'',%s,%s)",
+            user.id, article.id, tag_id)
 
 
 

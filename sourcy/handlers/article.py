@@ -11,7 +11,7 @@ import json
 from sourcy import util,analyser,highlight
 from sourcy.store import Store
 from base import BaseHandler
-from sourcy.forms import AddSourceForm
+from sourcy.forms import AddSourceForm,AddTagForm
 
 from pprint import pprint
 
@@ -80,8 +80,9 @@ class ArticleHandler(BaseHandler):
         sources = self.store.art_get_sources(art_id)
 
         add_source_form = AddSourceForm(self,art_id)
+        add_tag_form = AddTagForm()
 
-        self.render('article.html', art=art, article_content=html, sources=sources,researchers=researchers, institutions=institutions, journals=journals, scrape_err=scrape_err, add_source_form=add_source_form) 
+        self.render('article.html', art=art, article_content=html, sources=sources,researchers=researchers, institutions=institutions, journals=journals, scrape_err=scrape_err, add_source_form=add_source_form, add_tag_form=add_tag_form) 
         #self.finish()
 
 

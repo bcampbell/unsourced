@@ -39,7 +39,9 @@ class action(tornado.web.UIModule):
         def art_link(art):
             return '<a href="/art/%s">%s</a> (%s)' % (art.id, art.headline, util.domain(art.permalink))
 
-        if act.what == 'art_add' and act.article is not None:
+        if act.what == 'tag_add' and act.article is not None:
+            frag = u"tagged '%s' as %s" %(art_link(act.article),act.tag.name)
+        elif act.what == 'art_add' and act.article is not None:
             frag = u'added an article: %s' %(art_link(act.article),)
         elif act.what == 'src_add' and act.article is not None:
             if act.source.kind=='pr':

@@ -1,4 +1,24 @@
+from sourcy.util import TornadoMultiDict
+from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, validators
 
+TAG_CHOICES = [
+    ('science','Science'),
+    ('warn_wikipedia','Warning - Wikipedia'),
+    ('warn_anon','Warning - Based on anonymous tipoff'),
+    ('warn_soft','Warning - Soft interview'),
+    ('warn_churn','Warning - Article is churn'),
+    ('warn_pr','Warning - survey/stats sponsored by PR company'),
+]
+
+
+class AddTagForm(Form):
+
+    tag = SelectField(u'Tag', choices=TAG_CHOICES)
+
+
+
+
+# TODO: kill and replace with wtforms version...
 class AddSourceForm:
     def __init__(self, handler, art_id=None):
         self.handler = handler

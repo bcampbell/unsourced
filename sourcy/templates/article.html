@@ -77,6 +77,27 @@
     {% end %}
   </div>
 
+  <div class="helper tags">
+      <h2>Tags</h2>
+      {% if art.tags %}
+      <ul>
+      {% for tag in art.tags %}
+      <li>{{tag.name}}</li>
+      {% end %}
+      </ul>
+      {% end %}
+
+      {% if current_user %}
+      <form action="/art/{{art.id}}/addtag" method="POST">
+      {% for field in add_tag_form %}
+      {% module formfield(field) %}
+      {% end %}
+      <input type="submit" value="Apply"/>
+      </form>
+      {% else %}
+      <a href="/login?next=/art/{{art.id}}">Log in</a> to add a tag
+      {% end %}
+  </div>
   <div class="helper addsource">
       <h2>Add a source</h2>
       {% if current_user %}
