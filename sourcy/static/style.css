@@ -49,6 +49,14 @@ nav li a { vertical-align: top; padding: 0.5em 0.5em; display: inline-block;  fo
 nav li:hover { background-color: #f88; }
 
 
+/* downvoted sources */
+.downvoted a:link { color: #aaa; }
+.downvoted a:visited { color: #cac; }
+.downvoted a:hover { color: #ccc; text-decoration: underline; }
+.downvoted a:visited:hover { color: #e8e; }
+.downvoted { color: #888; }
+
+.rating { font-size: 0.75em; }
 
 /*****  PRIMARY LAYOUT *****/
 body>header { position: relative; height: 6em; }
@@ -320,4 +328,7 @@ table.month th {
     width: 50%;
 
 }
+
+
+
 

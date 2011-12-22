@@ -138,6 +138,26 @@ class TweetHandler(BaseHandler, tornado.auth.TwitterMixin):
             self.redirect("/");
 
 
+class UpvoteHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self,source_id):
+        source = self.store.source_get(source_id)
+
+        self.store.action_upvote_source(self.current_user, source)
+
+        self.redirect("/art/%s" % (source.article_id,))
+
+
+class DownvoteHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self,source_id):
+        source = self.store.source_get(source_id)
+
+        self.store.action_downvote_source(self.current_user, source)
+
+        self.redirect("/art/%s" % (source.article_id,))
 
 
 
@@ -145,5 +165,7 @@ handlers = [
     (r"/addsource", AddSourceHandler),
     (r"/thanks/(\d+)", ThanksHandler),
     (r"/thanks/(\d+)/tweet", TweetHandler),
+    (r"/source/(\d+)/upvote", UpvoteHandler),
+    (r"/source/(\d+)/downvote", DownvoteHandler),
     ]
 

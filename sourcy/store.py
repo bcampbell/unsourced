@@ -206,6 +206,45 @@ class Store(object):
         return action_id
 
 
+    def user_get_source_vote(self, user, source):
+        action = self.db.get("SELECT * FROM action WHERE who=%s AND what IN ('src_upvote','src_downvote') AND source=%s", user.id, source.id)
+        return action
+
+
+    def _remove_source_vote(self,vote):
+        scores = {'src_upvote':1,'src_downvote':-1}
+        assert vote.what in scores
+        assert vote.source is not None
+        self.db.execute("UPDATE source SET score=score-%s WHERE id=%s", scores[vote.what], vote.source)
+        self.db.execute("DELETE FROM action WHERE id=%s", vote.id)
+
+    def action_upvote_source(self, user, source):
+        # check for previous vote...
+        prev_vote = self.user_get_source_vote(user, source)
+        if prev_vote is not None:
+            if prev_vote.what != 'src_upvote':
+                self._remove_source_vote(prev_vote)
+            return
+
+
+        self.db.execute("UPDATE source SET score=score+1 WHERE id=%s", source.id)
+        action_id = self.db.execute("INSERT INTO action (what,who,performed,meta,article,source) VALUES ('src_upvote',%s,NOW(),'',%s,%s)",
+            user.id, source.article_id, source.id)
+
+    def action_downvote_source(self, user, source):
+        # check for previous vote...
+        prev_vote = self.user_get_source_vote(user, source)
+        if prev_vote is not None:
+            if prev_vote.what != 'src_downvote':
+                self._remove_source_vote(prev_vote)
+            return
+
+        self.db.execute("UPDATE source SET score=score-1 WHERE id=%s", source.id)
+        action_id = self.db.execute("INSERT INTO action (what,who,performed,meta,article,source) VALUES ('src_downvote',%s,NOW(),'',%s,%s)",
+            user.id, source.article_id, source.id)
+
+
+
     def action_add_lookup(self,user_id, kind, name, url):
         """ add a lookup entry, return the new lookup id"""
         try:

@@ -62,4 +62,44 @@ class add_source(tornado.web.UIModule):
         return self.render_string('modules/add_source.html',art=art)
 
 
+class source(tornado.web.UIModule):
+    def render(self,source):
+
+        out = '<a href="%s">%s</a>' % (source.url, source.url)
+
+
+        can_upvote = True
+        can_downvote = True
+        if self.current_user is not None:
+            action = self.handler.store.user_get_source_vote(self.current_user, source)
+            if action is not None:
+                if action.what=='src_upvote':
+                    can_upvote = False
+                if action.what=='src_downvote':
+                    can_downvote = False
+
+        upvote_url = "/source/%d/upvote" % (source.id)
+        downvote_url = "/source/%d/downvote" % (source.id)
+
+        #out = '<div>%s</div>' % (out,)
+
+        out += '<div class="rating">'
+
+        if source.score != 0:
+            out += ' %d points ' % (source.score,)
+
+        if can_upvote:
+            out += '[<a href="%s">+</a>]/' % (upvote_url,)
+        else:
+            out += '[+]/'
+
+        if can_downvote:
+            out += '[<a href="%s">-</a>]' % (downvote_url,)
+        else:
+            out += '[-]'
+        out += "</div>"
+
+        if source.score < 0:
+            out = '<div class="downvoted">%s</div>' % (out,)
+        return out
 
