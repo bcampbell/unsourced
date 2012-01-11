@@ -1,10 +1,11 @@
 import tornado.auth
+import tornado.web
 from tornado import httpclient
 
 from base import BaseHandler
 from sourcy.util import TornadoMultiDict
 
-
+from sourcy.models import Action,UserAccount
 
 
 
@@ -12,9 +13,15 @@ from sourcy.util import TornadoMultiDict
 class UserHandler(BaseHandler):
     """show summary for a given user"""
     def get(self,user_id):
-        user = self.store.user_get(user_id)
+        user = self.session.query(UserAccount).get(user_id)
+        if user is None:
+            raise tornado.web.HTTPError(404, "User not found")
 
-        actions = self.store.action_get_recent(100,user_id=user.id)
+        actions = self.session.query(Action)\
+            .filter(Action.who==user)\
+            .order_by(Action.performed.desc())\
+            .slice(0,100)\
+            .all()
         self.render('user.html', user=user, actions=actions)
 
 
@@ -45,12 +52,13 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
         username = google_user["email"].split("@")[0].replace(".", "_").lower()
 
         # TODO: the rest of this could be shared between handlers...
-        user = self.store.user_get_by_auth_uid(auth_supplier,auth_uid)
+        user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
         if user is None:
             # new user
             # TODO: should check for and handle username clashes!
-            id = self.store.user_create(username, prettyname, email, auth_supplier, auth_uid)
-            user = self.store.user_get(id)
+            user = UserAccount(username, prettyname, email, auth_supplier, auth_uid)
+            self.session.add(user)
+            self.session.commit()
 
         self.set_secure_cookie("user", unicode(user.id))
         self.redirect(self.get_argument("next", "/"))
@@ -86,14 +94,22 @@ class TwitterLoginHandler(BaseHandler, MyTwitterMixin):
         if not twit_user:
             raise tornado.web.HTTPError(500, "Twitter auth failed")
 
-        user = self.store.user_get_by_auth_uid('twitter',twit_user['username'])
+        # map the twitter data to stuff we use
+        email = u''
+        prettyname = twit_user['name']
+        auth_supplier = 'twitter'
+        auth_uid = twit_user['username']
+        username = twit_user['username']
+
+        # TODO: the rest of this could be shared between handlers...
+        user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
         if user is None:
             # new user
-            username = twit_user['username']
-            prettyname = twit_user['name']
-            email = u''
-            id = self.store.user_create(username, prettyname, email, 'twitter', twit_user['username'])
-            user = self.store.user_get(id)
+            # TODO: should check for and handle username clashes!
+
+            user = UserAccount(username, prettyname, email, auth_supplier, auth_uid)
+            self.session.add(user)
+            self.session.commit()
 
         self.set_secure_cookie("user", unicode(user.id))
         self.redirect(self.get_argument("next", "/"))
@@ -124,7 +140,6 @@ class ProfileHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user=self.current_user
-#        user = self.store.user_get(user.id)
 
         form = ProfileForm()
         form.validate()

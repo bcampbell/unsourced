@@ -6,22 +6,22 @@ from tornado import httpclient
 import urllib
 import collections
 import json
-
+from pprint import pprint
 
 from sourcy import util,analyser,highlight
-from sourcy.store import Store
-from base import BaseHandler
+from sourcy.models import Article,Source
 from sourcy.forms import AddSourceForm,AddTagForm
 
-from pprint import pprint
+from base import BaseHandler
 
 class ArticleHandler(BaseHandler):
 
     @tornado.web.asynchronous
     def get(self,art_id):
-        art_id = int(art_id)
-        self.art = self.store.art_get(art_id)
-        
+        self.art = self.session.query(Article).get(art_id)
+        if self.art is None:
+            raise tornado.web.HTTPError(404, "Article not found")
+ 
         http = tornado.httpclient.AsyncHTTPClient()
 
         # ask the scrapeomat for the article text
@@ -33,7 +33,6 @@ class ArticleHandler(BaseHandler):
 
     def on_response(self, response):
         art = self.art
-        art_id = art.id
 
         errs = {0: None,
             1: u"Error while trying to read article",
@@ -77,12 +76,18 @@ class ArticleHandler(BaseHandler):
             html = ''
             researchers,institutions,journals = [],[],[]
 
-        sources = self.store.art_get_sources(art_id)
-
-        add_source_form = AddSourceForm(self,art_id)
+        add_source_form = AddSourceForm(self,art.id)
         add_tag_form = AddTagForm()
 
-        self.render('article.html', art=art, article_content=html, sources=sources,researchers=researchers, institutions=institutions, journals=journals, scrape_err=scrape_err, add_source_form=add_source_form, add_tag_form=add_tag_form) 
+        self.render('article.html',
+            art=art,
+            article_content=html,
+            researchers=researchers,
+            institutions=institutions,
+            journals=journals,
+            scrape_err=scrape_err,
+            add_source_form=add_source_form,
+            add_tag_form=add_tag_form)
         #self.finish()
 
 

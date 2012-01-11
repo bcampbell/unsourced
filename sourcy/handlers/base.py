@@ -2,15 +2,20 @@ import sys
 
 
 import tornado.web
-from sourcy.store import Store
+
+from sourcy.models import UserAccount
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         user_id = self.get_secure_cookie("user")
         if user_id is None:
             return None
-        return self.store.user_get(user_id)
+        return self.session.query(UserAccount).filter_by(id=user_id).one()
 
     @property
     def store(self):
         return self.application.store
+
+    @property
+    def session(self):
+        return self.application.store.session

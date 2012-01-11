@@ -4,11 +4,10 @@ import json
 import tornado.database
 from tornado.options import define, options
 
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-#define("mysql_host", default="127.0.0.1:3306", help="database host")
-#define("mysql_database", default="sourcy", help="database name")
-#define("mysql_user", default="sourcy", help="database user")
-#define("mysql_password", default="sourcy", help="database password")
 
 class Store(object):
     """ the database abstraction layer!
@@ -24,6 +23,15 @@ class Store(object):
             host=options.mysql_host, database=options.mysql_database,
             user=options.mysql_user, password=options.mysql_password)
         self.lookup_listeners = set()
+        eng_url = "mysql+mysqldb://%(user)s:%(password)s@%(host)s/%(db)s?charset=utf8" % {
+            'user': options.mysql_user,
+            'password': options.mysql_password,
+            'host': options.mysql_host,
+            'db': options.mysql_database
+        }
+        engine = create_engine(eng_url, echo=False)
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
 
     def register_lookup_listener(self, listener):
         """ register interest in lookups """

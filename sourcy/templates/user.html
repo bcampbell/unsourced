@@ -7,7 +7,7 @@
 <h3>Recent activity</h3>
 <ul>
     {% for act in actions %}
-    <li>{{act.performed}}: {% module action(act) %}</li>
+    <li>{{act.performed}}: {% raw act.describe() %}</li>
     {% end %}
 </ul>
 </div>

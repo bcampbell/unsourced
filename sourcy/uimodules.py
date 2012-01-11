@@ -1,7 +1,7 @@
 import tornado.web
 import util
 from pprint import pprint
-
+from models import Source,Article,Action
 
 class formfield(tornado.web.UIModule):
     def render(self, field):
@@ -23,7 +23,7 @@ class day_overview(tornado.web.UIModule):
 class user(tornado.web.UIModule):
     def render(self, user):
         if user is not None:
-            out = u'<a href="/user/%d">%s</a>' % (user.id, user.prettyname)
+            out = u'<a href="/user/%d">%s</a>' % (user.id, user.username)
         else:
             out = u'anonymous'
         return out
@@ -33,7 +33,7 @@ class art_link(tornado.web.UIModule):
         return '<a href="/art/%s">%s</a> (%s)' % (art.id, art.headline, util.domain(art.permalink))
 
 
-class action(tornado.web.UIModule):
+class OBSOLETE_action(tornado.web.UIModule):
     def render(self, act):
 
         def art_link(art):
@@ -73,7 +73,9 @@ class source(tornado.web.UIModule):
         can_upvote = True
         can_downvote = True
         if self.current_user is not None:
-            action = self.handler.store.user_get_source_vote(self.current_user, source)
+#            action = self.handler.store.user_get_source_vote(self.current_user, source)
+            action = self.handler.session.query(Action).filter_by(who=self.current_user, source=source).first()
+
             if action is not None:
                 if action.what=='src_upvote':
                     can_upvote = False

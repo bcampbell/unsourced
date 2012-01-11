@@ -5,20 +5,18 @@ import collections
 import json
 import datetime
 
-
 from sourcy import util,analyser,highlight
-from sourcy.store import Store
 from base import BaseHandler
-
+from sourcy.models import Article,ArticleURL,Action
 
 class AddArticleHandler(BaseHandler):
     @tornado.web.authenticated
     @tornado.web.asynchronous
     def post(self):
         url = self.get_argument('url')
-        art = self.store.art_get_by_url(url)
-        if art is not None:
-            art_id = art.id
+        art_url = self.session.query(ArticleURL).filter_by(url=url).first()
+        if art_url is not None:
+            art = art_url.article
             self.redirect("/art/%d" % (art.id,))
             self.finish()
         else:
@@ -46,18 +44,17 @@ class AddArticleHandler(BaseHandler):
             self.finish()
             return
 
-        art = results['article']
+        scraped_art = results['article']
 
-        art['scrapetime'] = datetime.datetime.fromtimestamp(art['scrapetime'])
-        art['pubdate'] = datetime.datetime.fromtimestamp(art['pubdate'])
+        scraped_art['scrapetime'] = datetime.datetime.fromtimestamp(scraped_art['scrapetime'])
+        scraped_art['pubdate'] = datetime.datetime.fromtimestamp(scraped_art['pubdate'])
 
-        if self.current_user is not None:
-            user_id = self.current_user.id
-        else:
-            user_id = None
-        # TODO: add non-canonical url list if any
-        art_id = self.store.action_add_article(user_id, art['permalink'], art['headline'], art['pubdate'])
-        self.redirect("/art/%d" % (art_id,))
+        url_objs = [ArticleURL(url=u) for u in scraped_art['urls']]
+        art = Article(scraped_art['headline'],scraped_art['permalink'],scraped_art['pubdate'],url_objs)
+        self.session.add(art)
+        self.session.commit()
+
+        self.redirect("/art/%d" % (art.id,))
         self.finish()
 
 

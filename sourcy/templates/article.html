@@ -66,9 +66,9 @@
 
   <div class="sources">
     <h2>Sources</h2>
-    {% if sources %}
+    {% if art.sources %}
     <ul>
-    {% for s in sources %}
+    {% for s in art.sources %}
     <li>{% module source(s) %}</li>
     {% end %}
     </ul>

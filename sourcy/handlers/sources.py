@@ -1,5 +1,7 @@
 import functools
 import urlparse
+from pprint import pprint
+import json
 
 import tornado.auth
 from wtforms import Form, BooleanField, TextField, validators
@@ -7,7 +9,7 @@ from wtforms import Form, BooleanField, TextField, validators
 from base import BaseHandler
 from sourcy.util import TornadoMultiDict
 from sourcy.forms import AddSourceForm
-
+from sourcy.models import Source,Action,Article,TwitterAccessToken
 
 
 class AddSourceHandler(BaseHandler):
@@ -22,9 +24,21 @@ class AddSourceHandler(BaseHandler):
             else:
                 user_id = None
             art_id = form.vars['art_id']
-            action_id = self.store.action_add_source(user_id, art_id, form.vars['url'],form.vars['kind'])
 
-            self.redirect("/thanks/%d" % (action_id,))
+            art = self.session.query(Article).get(art_id)
+            assert art is not None
+
+            src = Source(article=art,
+                url=form.vars['url'],
+                kind=form.vars['kind'])
+            action = Action('src_add', self.current_user,
+                article=art,
+                source=src)
+            self.session.add(src)
+            self.session.add(action)
+            self.session.commit()
+
+            self.redirect("/thanks/%d" % (action.id,))
         else:
             self.render('add_source.html',add_source_form=form)
 
@@ -52,12 +66,12 @@ def build_action_message(site_root,action):
 class ThanksHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self,action_id):
-        action_id=int(action_id)
-        action = self.store.action_get(action_id)
+        action = self.session.query(Action).get(action_id)
+        assert action is not None
 
-        access_token = self.store.user_get_twitter_access_token(self.current_user)
+        tok = self.session.query(TwitterAccessToken).filter_by(user=self.current_user).first()
 
-        if access_token is not None:
+        if tok is not None:
             msg = build_action_message(self.request.protocol + "://" + self.request.host, action)
             form = TweetForm(message=msg)
         else:
@@ -70,12 +84,12 @@ class TweetHandler(BaseHandler, tornado.auth.TwitterMixin):
     @tornado.web.authenticated
     @tornado.web.asynchronous
     def get(self, action_id):
-        action_id=int(action_id)
-        action = self.store.action_get(action_id)
+        action = self.session.query(Action).get(action_id)
+        assert action is not None
 
         # already have access token?
-        access_token = self.store.user_get_twitter_access_token(self.current_user)
-        if access_token is None:
+        tok = self.session.query(TwitterAccessToken).filter_by(user=self.current_user).first()
+        if tok is None:
             if self.get_argument("oauth_token", None):
                 self.get_authenticated_user(functools.partial(self._on_auth, action=action))
             else:
@@ -94,21 +108,25 @@ class TweetHandler(BaseHandler, tornado.auth.TwitterMixin):
     def _on_auth(self, twit_user,action):
         if not twit_user:
             raise tornado.web.HTTPError(500, "Twitter auth failed")
-        access_token = twit_user["access_token"]
 
         # store access_token with the user
-        self.store.user_set_twitter_access_token(self.current_user, access_token)
+        self.session.query(TwitterAccessToken).filter_by(user=self.current_user).delete()
+        tok = TwitterAccessToken(user=self.current_user, token=json.dumps(twit_user['access_token']))
+        self.session.add(tok)
+        pprint(tok)
+        self.session.commit()
+
         self.redirect(self.request.uri)
 
 
     @tornado.web.authenticated
     @tornado.web.asynchronous
     def post(self, action_id):
-        action_id=int(action_id)
-        action = self.store.action_get(action_id)
+        action = self.session.query(Action).get(action_id)
+        assert action is not None
 
-        access_token = self.store.user_get_twitter_access_token(self.current_user)
-        if access_token is None:
+        tok = self.session.query(TwitterAccessToken).filter_by(user=self.current_user).first()
+        if tok is None:
             raise tornado.web.HTTPError(500, "Unexpected lack of Twitter authorisation")
 
         form = TweetForm(TornadoMultiDict(self))
@@ -117,7 +135,7 @@ class TweetHandler(BaseHandler, tornado.auth.TwitterMixin):
             self.twitter_request(
                 "/statuses/update",
                 post_args={"status": message},
-                access_token=access_token,
+                access_token=json.loads(tok.token),
                 callback=functools.partial(self._on_post,action=action))
             return
         else:

@@ -1,9 +1,11 @@
 import datetime
 import calendar
+from sqlalchemy import Date
+from sqlalchemy.sql.expression import cast
 
 from base import BaseHandler
 
-
+from sourcy.models import Article
 
 
 class HistoryCalendar(calendar.Calendar):
@@ -82,7 +84,7 @@ class HistoryHandler(BaseHandler):
     """show summary for a given day"""
     def get(self,datestr):
         date = datetime.datetime.strptime(datestr,'%Y-%m-%d').date()
-        arts = self.store.art_get_by_date(date)
+        arts = self.session.query(Article).filter(cast(Article.pubdate, Date)== date).all()
         cal = HistoryCalendar()
         self.render('history.html', date=date, arts=arts, cal=cal)
 

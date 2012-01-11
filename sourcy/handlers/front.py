@@ -2,6 +2,9 @@ import datetime
 from base import BaseHandler
 import tornado.auth
 
+from sourcy.models import Article,Action,Lookup
+from sqlalchemy import Date
+from sqlalchemy.sql.expression import cast
 
 from pprint import pprint
 
@@ -10,11 +13,12 @@ class MainHandler(BaseHandler):
 
         days = []
         date = datetime.date.today()
-        arts = self.store.art_get_by_date(date)
-        days.append((date,arts))
-#        date = date - datetime.timedelta(days=1)
 
-        recent = self.store.action_get_recent(10)
+        arts = self.session.query(Article).filter(cast(Article.pubdate, Date)== date).all()
+
+        days.append((date,arts))
+
+        recent = self.session.query(Action).order_by(Action.performed.desc()).slice(0,10).all()
 
         self.render('index.html', days=days, recent_actions=recent)
 
@@ -45,7 +49,12 @@ class AddInstitutionHandler(BaseHandler):
             user_id = self.current_user.id
         else:
             user_id = None
-        self.store.action_add_lookup(user_id, self.kind, name, homepage)
+
+        lookup = Lookup(self.kind, name, homepage)
+        action = Action('lookup_add', self.current_user, lookup=lookup)
+        self.session.add(lookup)
+        self.session.add(action)
+        self.session.commit()
         self.redirect(self.request.path)
 
 
@@ -64,7 +73,11 @@ class AddJournalHandler(BaseHandler):
         else:
             user_id = None
 
-        self.store.action_add_lookup(user_id, self.kind, name, homepage)
+        lookup = Lookup(self.kind, name, homepage)
+        action = Action('lookup_add', self.current_user, lookup=lookup)
+        self.session.add(lookup)
+        self.session.add(action)
+        self.session.commit()
         self.redirect(self.request.path)
 
 

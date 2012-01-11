@@ -9,7 +9,7 @@ from tornado.options import define, options
 
 import uimodules
 
-from handlers import history,user,article,addarticle,front,sources,tags
+from handlers import history,user,article,addarticle,front,sources,tagging
 from store import Store
 import analyser
 
@@ -43,7 +43,7 @@ class Application(tornado.web.Application):
         handlers.extend(addarticle.handlers)
         handlers.extend(history.handlers)
         handlers.extend(sources.handlers)
-        handlers.extend(tags.handlers)
+        handlers.extend(tagging.handlers)
 
         settings = dict(
             static_path = os.path.join(os.path.dirname(__file__), "static"),
