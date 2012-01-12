@@ -171,10 +171,9 @@ class UpvoteHandler(BaseHandler):
         # perform the vote
         vote = Action('src_vote',who=self.current_user, value=1, source=source, article=source.article)
         self.session.add(vote)
-        # update the score
-        source.score = self.session.query(func.sum(Action.value)).filter((Action.what=='vote') & (Action.source==source)).as_scalar()
+        # update the score on the source
+        source.score = self.session.query(func.sum(Action.value)).filter((Action.what=='src_vote') & (Action.source==source)).scalar()
 
-        print "NEW SCORE: ", source.score
         self.session.commit()
 
         self.redirect("/art/%s" % (source.article.id,))
@@ -184,12 +183,20 @@ class DownvoteHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self,source_id):
-        source = self.store.source_get(source_id)
+        source = self.session.query(Source).get(source_id)
+        assert source is not None
 
-        self.store.action_downvote_source(self.current_user, source)
+        # zap any previous votes
+        self.session.query(Action).filter_by(what='src_vote',source=source,who=self.current_user).delete()
+        # perform the vote
+        vote = Action('src_vote',who=self.current_user, value=-1, source=source, article=source.article)
+        self.session.add(vote)
+        # update the score on the source
+        source.score = self.session.query(func.sum(Action.value)).filter((Action.what=='src_vote') & (Action.source==source)).scalar()
 
-        self.redirect("/art/%s" % (source.article_id,))
+        self.session.commit()
 
+        self.redirect("/art/%s" % (source.article.id,))
 
 
 handlers = [

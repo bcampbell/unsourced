@@ -29,8 +29,8 @@ class Store(object):
             'host': options.mysql_host,
             'db': options.mysql_database
         }
-        engine = create_engine(eng_url, echo=False)
-        Session = sessionmaker(bind=engine)
+        self.engine = create_engine(eng_url, echo=False)
+        Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
     def register_lookup_listener(self, listener):

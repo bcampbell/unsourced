@@ -10,7 +10,7 @@ class BaseHandler(tornado.web.RequestHandler):
         user_id = self.get_secure_cookie("user")
         if user_id is None:
             return None
-        return self.session.query(UserAccount).filter_by(id=user_id).one()
+        return self.session.query(UserAccount).filter_by(id=user_id).first()
 
     @property
     def store(self):
