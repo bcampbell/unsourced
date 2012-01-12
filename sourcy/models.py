@@ -38,25 +38,21 @@ class Action(Base):
 
     who_id = Column(Integer, ForeignKey('useraccount.id'),name="who")
     performed = Column(DateTime, nullable=False, default=func.current_timestamp())
-    meta = Column(String, nullable=False, default='')
+#    meta = Column(String, nullable=False, default='')
     article_id = Column(Integer, ForeignKey('article.id'), name="article")
     source_id = Column(Integer, ForeignKey('source.id'), name="source")
     lookup_id = Column(Integer, ForeignKey('lookup.id'), name="lookup")
     tag_id = Column(Integer, ForeignKey('tag.id'),name="tag")
+    value = Column(Integer, nullable=False, default=0)
 
     who = relationship("UserAccount", backref="actions", uselist=False )
 
     def __init__(self, what, who, **kw):
         self.what=what
         self.who=who
-        if 'article' in kw:
-            self.article = kw['article']
-        if 'lookup' in kw:
-            self.lookup = kw['lookup']
-        if 'tag' in kw:
-            self.tag = kw['tag']
-        if 'source' in kw:
-            self.source = kw['source']
+        for key,value in kw.iteritems():
+            assert key in ('article','lookup','tag','source','value')
+            setattr(self,key,value)
 
     def __repr__(self):
         return "<Action(%s, %s: %s)>" % (self.who,self.performed, self.what)
@@ -85,12 +81,19 @@ class Action(Base):
         elif self.what == 'lookup_add':
             if self.lookup is not None:
                 frag = u'added a %s: %s' %(self.lookup.kind, self.lookup.name)
-        elif self.what == 'src_upvote':
+#        elif self.what == 'src_upvote':
+#            if self.article is not None:
+#                frag = u'voted up a source on %s' % (art_link(self.article))
+#        elif self.what == 'src_downvote':
+#            if self.article is not None:
+#                frag = u'voted down a source on %s' % (art_link(self.article))
+        elif self.what == 'src_vote':
             if self.article is not None:
-                frag = u'voted up a source on %s' % (art_link(self.article))
-        elif self.what == 'src_downvote':
-            if self.article is not None:
-                frag = u'voted down a source on %s' % (art_link(self.article))
+                assert self.value != 0
+                if self.value<0:
+                    frag = u'voted down a source on %s' % (art_link(self.article))
+                else: 
+                    frag = u'voted up a source on %s' % (art_link(self.article))
 
         if frag is None:
             frag = "err (id=%d)" % (self.id,)
@@ -146,14 +149,14 @@ class Source(Base):
     kind = Column(String, nullable=False)
     doi = Column(String, nullable=False, default='')
     meta = Column(String, nullable=False, default='')
-    score = Column(Integer, default=0)
+    score = Column(Integer, nullable=False, default=0)
 
     actions = relationship("Action", backref="source")
 
     def __init__(self, **kw):
         for key,value in kw.iteritems():
-            if key in ('url','article','title','doi','score','kind'):
-                setattr(self,key,value)
+            assert(key in ('url','article','title','doi','score','kind'))
+            setattr(self,key,value)
 
 
     def __repr__(self):

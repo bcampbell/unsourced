@@ -51,7 +51,9 @@ class AddArticleHandler(BaseHandler):
 
         url_objs = [ArticleURL(url=u) for u in scraped_art['urls']]
         art = Article(scraped_art['headline'],scraped_art['permalink'],scraped_art['pubdate'],url_objs)
+        action = Action('art_add', self.current_user, article=art)
         self.session.add(art)
+        self.session.add(action)
         self.session.commit()
 
         self.redirect("/art/%d" % (art.id,))

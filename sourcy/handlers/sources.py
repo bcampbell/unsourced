@@ -6,6 +6,9 @@ import json
 import tornado.auth
 from wtforms import Form, BooleanField, TextField, validators
 
+from sqlalchemy.sql import func
+
+
 from base import BaseHandler
 from sourcy.util import TornadoMultiDict
 from sourcy.forms import AddSourceForm
@@ -160,11 +163,21 @@ class UpvoteHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self,source_id):
-        source = self.store.source_get(source_id)
+        source = self.session.query(Source).get(source_id)
+        assert source is not None
 
-        self.store.action_upvote_source(self.current_user, source)
+        # zap any previous votes
+        self.session.query(Action).filter_by(what='src_vote',source=source,who=self.current_user).delete()
+        # perform the vote
+        vote = Action('src_vote',who=self.current_user, value=1, source=source, article=source.article)
+        self.session.add(vote)
+        # update the score
+        source.score = self.session.query(func.sum(Action.value)).filter((Action.what=='vote') & (Action.source==source)).as_scalar()
 
-        self.redirect("/art/%s" % (source.article_id,))
+        print "NEW SCORE: ", source.score
+        self.session.commit()
+
+        self.redirect("/art/%s" % (source.article.id,))
 
 
 class DownvoteHandler(BaseHandler):
