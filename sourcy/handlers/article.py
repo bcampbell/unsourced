@@ -98,13 +98,15 @@ class ArticleHandler(BaseHandler):
         journals = self.application.journal_finder.find(html)
         institutions = self.application.institution_finder.find(html)
 
-        highlight_spans = journals + institutions
-        
+        highlight_spans = [] 
         for name,url,kind,spans in researchers:
             highlight_spans += [(s[0],s[1],kind,name,url) for s in spans]
+        highlight_spans += journals
+        highlight_spans += institutions
 
         # remove spans contained within other spans
         highlight_spans = highlight.remove_contained_spans(highlight_spans)
+
         return highlight_spans
 
 

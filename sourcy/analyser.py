@@ -1,24 +1,25 @@
 import csv
 import re
 import logging
-import store
+
+from models import Lookup
 
 # tools to analyse text to find mentions of institutions, journals, researchers...
 # Lots of brute force string matching at the moment, so lots of scope to improve!
 
 class Lookerupper:
-    def __init__(self,store,kind):
+    def __init__(self,session,kind):
         self.kind = kind
-        self.store = store
         self.table = {}
 
-        for l in store.lookup_iter(kind):
+        lookups = session.query(Lookup).filter_by(kind=kind).all()
+        for l in lookups:
             name = unicode(l.name).strip()
             if name == u'':
                 logging.warning("discard empty %s lookup (id %d)", kind, l.id)
                 continue
             self.table[l.id] = (name.lower(),name,l.url)
-        store.register_lookup_listener(self)
+        # TODO: implement listening, so new lookups are added to the Lookerupper!
         logging.info("Lookerupper for %s (%d entries)" % (kind,len(self.table)))
 
     def on_lookup_added(self,lookup_id, kind, name, url):
@@ -37,6 +38,7 @@ class Lookerupper:
         # first pass - do naive raw text search for each lookup item
         for id,l in self.table.iteritems():
             assert l[0] != u''
+
             if l[0] in html:
                 found.append(id)
 
@@ -79,7 +81,7 @@ researcher_pats = [
     # TODO: support other apostrophe chars for O'Shay etc...
     re.compile(r"led by\s+(?P<name>(([A-Z][-'\w]+)\b\s*){2,4})",re.UNICODE|re.DOTALL),
     re.compile(r"(?P<title>([Dd]r|(?:\w+ist)|[Pp]rofessor|[Pp]rof)[.]?)\s+(?P<name>(([A-Z][-'\w]+)\b\s*){2,4})",re.UNICODE|re.DOTALL),
-    re.compile(r"(?P<title>([Dd]r|(?:\w+ist)|[Pp]rofessor|[Pp]rof)[.]?)?\s*(?P<name>(([A-Z][-'\w]+)\b\s*){2,4}),?\s+(((one of the)|a|the)\s+)?(scientist|author|researcher)",re.UNICODE|re.DOTALL),
+    re.compile(r"(?P<title>([Dd]r|(?:\w+ist)|[Pp]rofessor|[Pp]rof)[.]?)?\s*(?P<name>(([A-Z][-'\w]+)\b\s*){2,4})\s*,\s+(((one of the)|a|the)\s+)?(scientist|author|researcher)",re.UNICODE|re.DOTALL),
     re.compile(r"[Rr]esearcher\s+(?P<title>([Dd]r|(?:\w+ist)|[Pp]rofessor|[Pp]rof)[.]?)?\s*(?P<name>(([A-Z][-'\w]{2,})\b\s*){2,4})",re.UNICODE|re.DOTALL),
 ]
 

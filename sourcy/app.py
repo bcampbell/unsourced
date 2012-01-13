@@ -65,8 +65,8 @@ class Application(tornado.web.Application):
         self.store = Store()
 
 
-        self.institution_finder = analyser.Lookerupper(self.store,'institution')
-        self.journal_finder = analyser.Lookerupper(self.store,'journal')
+        self.institution_finder = analyser.Lookerupper(self.store.session,'institution')
+        self.journal_finder = analyser.Lookerupper(self.store.session,'journal')
 
 
 def main():
