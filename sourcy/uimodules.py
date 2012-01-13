@@ -33,29 +33,6 @@ class art_link(tornado.web.UIModule):
         return '<a href="/art/%s">%s</a> (%s)' % (art.id, art.headline, util.domain(art.permalink))
 
 
-class OBSOLETE_action(tornado.web.UIModule):
-    def render(self, act):
-
-        def art_link(art):
-            return '<a href="/art/%s">%s</a> (%s)' % (art.id, art.headline, util.domain(art.permalink))
-
-        if act.what == 'tag_add' and act.article is not None:
-            frag = u"tagged '%s' as %s" %(art_link(act.article),act.tag.name)
-        elif act.what == 'art_add' and act.article is not None:
-            frag = u'added an article: %s' %(art_link(act.article),)
-        elif act.what == 'src_add' and act.article is not None:
-            if act.source.kind=='pr':
-                thing = u'a press release'
-            elif act.source.kind=='paper':
-                thing = u'an academic paper'
-            else:
-                thing = u'a source'
-
-            frag = u'added %s to %s' %(thing,art_link(act.article),)
-        else:
-            frag = u'' # just suppress
-        return frag
-
 
 
 
@@ -65,45 +42,20 @@ class add_source(tornado.web.UIModule):
 
 
 class source(tornado.web.UIModule):
-    def render(self,source):
+    def render(self,source, element_type='div'):
 
         out = '<a href="%s">%s</a>' % (source.url, source.url)
 
-
-        can_upvote = True
-        can_downvote = True
+        can_upvote = False
+        can_downvote = False
         if self.current_user is not None:
-#            action = self.handler.store.user_get_source_vote(self.current_user, source)
-            action = self.handler.session.query(Action).filter_by(who=self.current_user, source=source).first()
+            prev_vote = self.handler.session.query(Action).filter_by(what='src_vote',who=self.current_user, source=source).first()
 
-            if action is not None:
-                if action.what=='src_upvote':
-                    can_upvote = False
-                if action.what=='src_downvote':
-                    can_downvote = False
+            if prev_vote is None or prev_vote.value>0:
+                can_downvote = True
+            if prev_vote is None or prev_vote.value<0:
+                can_upvote = True
 
-        upvote_url = "/source/%d/upvote" % (source.id)
-        downvote_url = "/source/%d/downvote" % (source.id)
+        return self.render_string("modules/source.html", src=source, can_upvote=can_upvote, can_downvote=can_downvote, element_type=element_type)
 
-        #out = '<div>%s</div>' % (out,)
-
-        out += '<div class="rating">'
-
-        if source.score != 0:
-            out += ' %d points ' % (source.score,)
-
-        if can_upvote:
-            out += '[<a href="%s">+</a>]/' % (upvote_url,)
-        else:
-            out += '[+]/'
-
-        if can_downvote:
-            out += '[<a href="%s">-</a>]' % (downvote_url,)
-        else:
-            out += '[-]'
-        out += "</div>"
-
-        if source.score < 0:
-            out = '<div class="downvoted">%s</div>' % (out,)
-        return out
 

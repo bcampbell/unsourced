@@ -56,7 +56,16 @@ nav li:hover { background-color: #f88; }
 .downvoted a:visited:hover { color: #e8e; }
 .downvoted { color: #888; }
 
-.rating { font-size: 0.75em; }
+.score { }
+.score:before {content: "[";}
+.score:after {content: "]";}
+/* voting arrows */
+.vote a:link { color: #444; }
+.vote a:visited { color: #444; }
+.vote a:hover { color: #000; }
+.vote a:visited:hover { color: #000; }
+.vote a:active {outline: none; -moz-outline-style: none;}
+.vote a { text-decoration: none; }
 
 /*****  PRIMARY LAYOUT *****/
 body>header { position: relative; height: 6em; }

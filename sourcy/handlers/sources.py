@@ -159,18 +159,21 @@ class TweetHandler(BaseHandler, tornado.auth.TwitterMixin):
             self.redirect("/");
 
 
-class UpvoteHandler(BaseHandler):
+class SrcVoteHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self,source_id):
         source = self.session.query(Source).get(source_id)
         assert source is not None
 
-        # zap any previous votes
-        self.session.query(Action).filter_by(what='src_vote',source=source,who=self.current_user).delete()
-        # perform the vote
-        vote = Action('src_vote',who=self.current_user, value=1, source=source, article=source.article)
-        self.session.add(vote)
+        prev = self.session.query(Action).filter_by(what='src_vote',source=source,who=self.current_user).first()
+        if prev:
+            self.session.delete(prev)
+        else:
+            # perform the vote
+            vote = Action('src_vote',who=self.current_user, value=self.VALUE, source=source, article=source.article)
+            self.session.add(vote)
+
         # update the score on the source
         source.score = self.session.query(func.sum(Action.value)).filter((Action.what=='src_vote') & (Action.source==source)).scalar()
 
@@ -179,24 +182,11 @@ class UpvoteHandler(BaseHandler):
         self.redirect("/art/%s" % (source.article.id,))
 
 
-class DownvoteHandler(BaseHandler):
+class UpvoteHandler(SrcVoteHandler):
+    VALUE = 1
 
-    @tornado.web.authenticated
-    def get(self,source_id):
-        source = self.session.query(Source).get(source_id)
-        assert source is not None
-
-        # zap any previous votes
-        self.session.query(Action).filter_by(what='src_vote',source=source,who=self.current_user).delete()
-        # perform the vote
-        vote = Action('src_vote',who=self.current_user, value=-1, source=source, article=source.article)
-        self.session.add(vote)
-        # update the score on the source
-        source.score = self.session.query(func.sum(Action.value)).filter((Action.what=='src_vote') & (Action.source==source)).scalar()
-
-        self.session.commit()
-
-        self.redirect("/art/%s" % (source.article.id,))
+class DownvoteHandler(SrcVoteHandler):
+    VALUE = -1
 
 
 handlers = [
