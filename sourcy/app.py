@@ -4,32 +4,18 @@ import logging
 
 import tornado.ioloop
 import tornado.web
-import tornado.options
-from tornado.options import define, options
+#import tornado.options
+from tornado.options import define, options, parse_command_line
+
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 import uimodules
 
 from handlers import history,user,article,addarticle,front,sources,tagging
-from store import Store
 import analyser
-
-
-def parse_config_file(path):
-    """Rewrite tornado default parse_config_file.
-    
-    Parses and loads the Python config file at the given path.
-    
-    This version allow customize new options which are not defined before
-    from a configuration file.
-    """
-    config = {}
-    execfile(path, config, config)
-    for name in config:
-        if name in options:
-            options[name].set(config[name])
-        else:
-            define(name, config[name])
-
+from util import parse_config_file
 
 
 
@@ -62,18 +48,25 @@ class Application(tornado.web.Application):
             )
         tornado.web.Application.__init__(self, handlers, **settings)
 
-        self.store = Store()
+        eng_url = "mysql+mysqldb://%(user)s:%(password)s@%(host)s/%(db)s?charset=utf8" % {
+            'user': options.mysql_user,
+            'password': options.mysql_password,
+            'host': options.mysql_host,
+            'db': options.mysql_database
+        }
+        engine = create_engine(eng_url, echo=False)
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
 
-
-        self.institution_finder = analyser.Lookerupper(self.store.session,'institution')
-        self.journal_finder = analyser.Lookerupper(self.store.session,'journal')
+        self.institution_finder = analyser.Lookerupper(self.session,'institution')
+        self.journal_finder = analyser.Lookerupper(self.session,'journal')
 
 
 def main():
     config_file = os.path.join(os.path.dirname(__file__), "../sourcy.conf")
-    #tornado.options.parse_config_file(config_file)
     parse_config_file(config_file)
-    tornado.options.parse_command_line()
+    parse_command_line()
+
     app = Application()
     app.listen(8888)
     logging.info("start.")

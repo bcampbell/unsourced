@@ -9,7 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-class Store(object):
+class OLD_Store(object):
     """ the database abstraction layer!
     
     All db interaction should happen through here.

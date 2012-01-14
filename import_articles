@@ -9,11 +9,15 @@ import json
 import datetime
 from optparse import OptionParser
 
-from pprint import pprint
-from sourcy.store import Store
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-import tornado.options
-from sourcy.app import parse_config_file
+from pprint import pprint
+from sourcy.models import Article
+from sourcy.util import parse_config_file
+
+from tornado.options import define, options
 
 
 def get_arts(num_days=1):
@@ -41,7 +45,6 @@ def get_arts(num_days=1):
     return articles
 
 def main():
-#    tornado.options.parse_config_file("sourcy.conf")
     parse_config_file("sourcy.conf")
 
     parser = OptionParser()
@@ -49,15 +52,35 @@ def main():
 
     (opts, args) = parser.parse_args()
 
-    arts = get_arts(opts.num_days)
-    print len(arts), 'articles found'
+#    arts = get_arts(opts.num_days)
 
 
-    s = Store()
-#    tornado.options.parse_command_line()
+    eng_url = "mysql+mysqldb://%(user)s:%(password)s@%(host)s/%(db)s?charset=utf8" % {
+        'user': options.mysql_user,
+        'password': options.mysql_password,
+        'host': options.mysql_host,
+        'db': options.mysql_database
+    }
+    engine = create_engine(eng_url, echo=False)
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
-    s.art_bulk_import(arts)
+    for art in session.query(Article).all():
+        print art.headline
+
+#    s.art_bulk_import(arts)
     
+    def art_bulk_import(self, articles):
+        """ import a bunch of articles (without creating an action) """
+        self.db.execute("BEGIN")
+
+        for art in articles:
+            if self.art_get_by_url(art['permalink']) is None:
+                art_id = self.db.execute("INSERT INTO article (headline,permalink,pubdate) VALUES (%s,%s,%s)",art['title'],art['permalink'],art['pubdate'])
+                self.db.execute("INSERT INTO article_url (article_id,url) VALUES (%s,%s)",art_id, art['permalink'])
+
+        self.db.execute("COMMIT")
+
 if __name__ == "__main__":
     main()
 

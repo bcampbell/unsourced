@@ -12,10 +12,8 @@ class BaseHandler(tornado.web.RequestHandler):
             return None
         return self.session.query(UserAccount).filter_by(id=user_id).first()
 
-    @property
-    def store(self):
-        return self.application.store
 
     @property
     def session(self):
-        return self.application.store.session
+        return self.application.session
+

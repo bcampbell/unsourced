@@ -2,6 +2,7 @@ import re
 import HTMLParser
 from urlparse import urlparse
 import lxml.html
+from tornado.options import define, options
 
 htmlparser = HTMLParser.HTMLParser()
 
@@ -110,3 +111,20 @@ class TornadoMultiDict(object):
         # on whitespace.
         return self.handler.get_arguments(name, strip=False)
 
+
+
+def parse_config_file(path):
+    """Rewrite tornado default parse_config_file.
+    
+    Parses and loads the Python config file at the given path.
+    
+    This version allow customize new options which are not defined before
+    from a configuration file.
+    """
+    config = {}
+    execfile(path, config, config)
+    for name in config:
+        if name in options:
+            options[name].set(config[name])
+        else:
+            define(name, config[name])
