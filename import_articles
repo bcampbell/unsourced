@@ -13,7 +13,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from pprint import pprint
-from sourcy.models import Article
+from sourcy.models import Article,ArticleURL,Tag
 from sourcy.util import parse_config_file
 
 from tornado.options import define, options
@@ -38,10 +38,12 @@ def get_arts(num_days=1):
             'output': 'js',
             }
     url = "http://journalisted.com/api/findArticles?" + urllib.urlencode(params)
-
+    print url
     foo = json.load(urllib2.urlopen(url), encoding='utf-8')
     articles = foo['results']
     return articles
+
+
 
 def main():
     parse_config_file("sourcy.conf")
@@ -51,7 +53,6 @@ def main():
 
     (opts, args) = parser.parse_args()
 
-#    arts = get_arts(opts.num_days)
 
 
     eng_url = "mysql+mysqldb://%(user)s:%(password)s@%(host)s/%(db)s?charset=utf8" % {
@@ -64,21 +65,23 @@ def main():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    for art in session.query(Article).all():
-        print art.headline
 
-#    s.art_bulk_import(arts)
-    
-    def art_bulk_import(self, articles):
-        """ import a bunch of articles (without creating an action) """
-        self.db.execute("BEGIN")
+    found_arts = get_arts(opts.num_days)
 
-        for art in articles:
-            if self.art_get_by_url(art['permalink']) is None:
-                art_id = self.db.execute("INSERT INTO article (headline,permalink,pubdate) VALUES (%s,%s,%s)",art['title'],art['permalink'],art['pubdate'])
-                self.db.execute("INSERT INTO article_url (article_id,url) VALUES (%s,%s)",art_id, art['permalink'])
+    print "found %d articles" % (len(found_arts),)
+    for src in found_arts:
+        # TODO: JL should serve up urls...
+        print "load %s" % (src['permalink'],)
+        urls = [src['permalink']]
+        url_objs = [ArticleURL(url=u) for u in urls]
+        art = Article(src['title'],src['permalink'],src['pubdate'],url_objs)
+        for u in url_objs:
+            session.add(u)
+        session.add(art)
 
-        self.db.execute("COMMIT")
+    print "committing"
+    session.commit()
+
 
 if __name__ == "__main__":
     main()
