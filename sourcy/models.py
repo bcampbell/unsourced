@@ -36,26 +36,26 @@ class Action(Base):
     # 'src_downvote',
     # 'src_upvote',
 
-    who_id = Column(Integer, ForeignKey('useraccount.id'),name="who")
+    user_id = Column(Integer, ForeignKey('useraccount.id'))
     performed = Column(DateTime, nullable=False, default=func.current_timestamp())
 #    meta = Column(String, nullable=False, default='')
-    article_id = Column(Integer, ForeignKey('article.id'), name="article")
-    source_id = Column(Integer, ForeignKey('source.id'), name="source")
-    lookup_id = Column(Integer, ForeignKey('lookup.id'), name="lookup")
-    tag_id = Column(Integer, ForeignKey('tag.id'),name="tag")
+    article_id = Column(Integer, ForeignKey('article.id'))
+    source_id = Column(Integer, ForeignKey('source.id'))
+    lookup_id = Column(Integer, ForeignKey('lookup.id'))
+    tag_id = Column(Integer, ForeignKey('tag.id'))
     value = Column(Integer, nullable=False, default=0)
 
-    who = relationship("UserAccount", backref="actions", uselist=False )
+    user = relationship("UserAccount", backref="actions", uselist=False )
 
-    def __init__(self, what, who, **kw):
+    def __init__(self, what, user, **kw):
         self.what=what
-        self.who=who
+        self.user=user
         for key,value in kw.iteritems():
             assert key in ('article','lookup','tag','source','value')
             setattr(self,key,value)
 
     def __repr__(self):
-        return "<Action(%s, %s: %s)>" % (self.who,self.performed, self.what)
+        return "<Action(%s, %s, %s)>" % (self.what,self.performed, self.user)
 
 
     def describe(self):
@@ -183,7 +183,7 @@ class Tag(Base):
     __tablename__ = 'tag'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    article_id = Column(Integer, ForeignKey('article.id'),name="article")
+    article_id = Column(Integer, ForeignKey('article.id'),name="article_id")
 
     actions = relationship("Action", backref="tag")
 

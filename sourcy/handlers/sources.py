@@ -166,12 +166,12 @@ class SrcVoteHandler(BaseHandler):
         source = self.session.query(Source).get(source_id)
         assert source is not None
 
-        prev = self.session.query(Action).filter_by(what='src_vote',source=source,who=self.current_user).first()
+        prev = self.session.query(Action).filter_by(what='src_vote',source=source,user=self.current_user).first()
         if prev:
             self.session.delete(prev)
         else:
             # perform the vote
-            vote = Action('src_vote',who=self.current_user, value=self.VALUE, source=source, article=source.article)
+            vote = Action('src_vote',user=self.current_user, value=self.VALUE, source=source, article=source.article)
             self.session.add(vote)
 
         # update the score on the source

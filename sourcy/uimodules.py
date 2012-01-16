@@ -49,7 +49,7 @@ class source(tornado.web.UIModule):
         can_upvote = False
         can_downvote = False
         if self.current_user is not None:
-            prev_vote = self.handler.session.query(Action).filter_by(what='src_vote',who=self.current_user, source=source).first()
+            prev_vote = self.handler.session.query(Action).filter_by(what='src_vote',user_id=self.current_user.id, source=source).first()
 
             if prev_vote is None or prev_vote.value>0:
                 can_downvote = True

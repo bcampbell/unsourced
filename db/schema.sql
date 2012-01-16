@@ -25,12 +25,12 @@ DROP TABLE IF EXISTS `action`;
 CREATE TABLE `action` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `what` varchar(32) NOT NULL,
-  `who` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `performed` datetime NOT NULL,
-  `article` int(11) DEFAULT NULL,
-  `source` int(11) DEFAULT NULL,
-  `lookup` int(11) DEFAULT NULL,
-  `tag` int(11) DEFAULT NULL,
+  `article_id` int(11) DEFAULT NULL,
+  `source_id` int(11) DEFAULT NULL,
+  `lookup_id` int(11) DEFAULT NULL,
+  `tag_id` int(11) DEFAULT NULL,
   `value` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8;
@@ -113,7 +113,7 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) DEFAULT NULL,
-  `article` int(11) NOT NULL,
+  `article_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
