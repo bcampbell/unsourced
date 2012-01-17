@@ -59,3 +59,7 @@ class source(tornado.web.UIModule):
         return self.render_string("modules/source.html", src=source, can_upvote=can_upvote, can_downvote=can_downvote, element_type=element_type)
 
 
+class league_table(tornado.web.UIModule):
+    def render(self, rows, heading, action_desc):
+        return self.render_string('modules/league_table.html',rows=rows, heading=heading, action_desc=action_desc)
+

@@ -22,7 +22,14 @@ class AddTagHandler(BaseHandler):
         article = self.session.query(Article).get(article_id)
         form = AddTagForm(TornadoMultiDict(self))
         if form.validate():
-            tag = Tag(article,form.tag.data)
+            tag_name = form.tag.data
+            if tag_name in [t.name for t in article.tags]:
+                # already got it!
+                self.redirect("/art/%s" % (article_id,))
+                return
+
+
+            tag = Tag(article,tag_name)
             action = Action('tag_add', self.current_user, article=article, tag=tag)
             self.session.add(tag)
             self.session.add(action)

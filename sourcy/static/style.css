@@ -338,6 +338,9 @@ table.month th {
 
 }
 
-
+/* league tables */
+.leaguetable { width: 33%; float: left; }
+.leaguetable table { border-collapse: collapse; }
+.leaguetable td, .leaguetable th { padding: 0.1em 0.3em; }
 
 
