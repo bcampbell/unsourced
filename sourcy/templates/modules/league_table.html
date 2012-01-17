@@ -1,0 +1,13 @@
+<div class="leaguetable">
+<h4>{{heading}}</h4>
+{% if rows %}
+<table class="leaguetable">
+<tbody>
+    {% for u,cnt in rows %}
+    <tr><td><a href="/user/{{u.id}}">{{u.username}}</a></td><td>{{cnt}}</td></tr>
+    {% end %}
+</tbody>
+</table>
+{% end %}
+</div>
+

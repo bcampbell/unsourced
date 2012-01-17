@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}League Tables{% end %}
+{% block main %}
+<div class="page-of-text">
+<h2>Top sourcers</h2>
+{% module league_table(top5_sourcers_today,"Today", "sources") %}
+{% module league_table(top5_sourcers_7day,"Last 7 days", "sources") %}
+{% module league_table(top5_sourcers_30day,"Last 30 days", "sources") %}
+<div style="clear:both;"></div>
+
+<h2>Top taggers</h2>
+{% module league_table(top5_taggers_today,"Today", "tags") %}
+{% module league_table(top5_taggers_7day,"Last 7 days", "tags") %}
+{% module league_table(top5_taggers_30day,"Last 30 days", "tags") %}
+<div style="clear:both;"></div>
+
+<h2>Top voters</h2>
+{% module league_table(top5_voters_today,"Today", "votes") %}
+{% module league_table(top5_voters_7day,"Last 7 days", "votes") %}
+{% module league_table(top5_voters_30day,"Last 30 days", "votes") %}
+<div style="clear:both;"></div>
+</div>
+{% end %}
+
