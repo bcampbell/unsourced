@@ -94,6 +94,14 @@ class Action(Base):
                     frag = u'voted down a source on %s' % (art_link(self.article))
                 else: 
                     frag = u'voted up a source on %s' % (art_link(self.article))
+        elif self.what == 'tag_vote':
+            if self.article is not None:
+                assert self.value != 0
+                if self.value<0:
+                    frag = u"voted down '%s' tag on %s" % (self.tag.name,art_link(self.article))
+                else: 
+                    frag = u"voted up '%s' tag on %s" % (self.tag.name,art_link(self.article))
+
 
         if frag is None:
             frag = "err (id=%d)" % (self.id,)
@@ -184,6 +192,7 @@ class Tag(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     article_id = Column(Integer, ForeignKey('article.id'),name="article_id")
+    score = Column(Integer, nullable=False, default=0)
 
     actions = relationship("Action", backref="tag")
 

@@ -82,7 +82,7 @@
       {% if art.tags %}
       <ul>
       {% for tag in art.tags %}
-      <li>{{tag.name}}</li>
+      {% module tag(tag, element_type="li") %}
       {% end %}
       </ul>
       {% end %}
@@ -92,7 +92,7 @@
       {% for field in add_tag_form %}
       {% module formfield(field) %}
       {% end %}
-      <input type="submit" value="Apply"/>
+      <input type="submit" value="Add"/>
       </form>
       {% else %}
       <a href="/login?next=/art/{{art.id}}">Log in</a> to add a tag

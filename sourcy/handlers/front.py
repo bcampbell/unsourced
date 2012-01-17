@@ -115,7 +115,7 @@ class LeagueTablesHandler(BaseHandler):
         top5_taggers_7day = top_n(self.session,today-datetime.timedelta(days=7),today,kinds,5)
         top5_taggers_30day = top_n(self.session,today-datetime.timedelta(days=30),today,kinds,5)
 
-        kinds = ('src_vote',)
+        kinds = ('src_vote','tag_vote')
         top5_voters_today = top_n(self.session,today,today,kinds,5)
         top5_voters_7day = top_n(self.session,today-datetime.timedelta(days=7),today,kinds,5)
         top5_voters_30day = top_n(self.session,today-datetime.timedelta(days=30),today,kinds,5)
