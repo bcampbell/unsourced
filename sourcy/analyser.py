@@ -105,4 +105,8 @@ def find_researchers(txt):
 # "Mathias Jucker, a senior scientist at a research centre into neuro-degenerative diseases in Tubingen, Bavaria"
 # "Lead researcher Dr Marin Strom, from the Statens Serum Institut in Copenhagen"
 # "Dr Lynne Hampson, co-author of the study published in the journal Antiviral Therapy and carried out by PhD student Gavin Batman, added"
-
+# "Lead researcher Dr Ingela Lindh, from Gothenburg University"
+# "The research, led by Dr Tony Hoare and Rosanna Munn at University of Bristol, attempted to quantify the effectiveness of the scheme."
+# "The research team, led by Dr Scott Boback from Dickinson College in the US state of Pennsylvania"
+# "Sociologists Hui-Tzu Grace Chou and Nicholas Edge interviewed 425 undergraduate students about their happiness and that of their friends."
+# "Jim Thornton, professor of obstetrics and gynaecology at the University of Nottingham, said"
