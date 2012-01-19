@@ -4,7 +4,7 @@
 <span class="day-progress"><span class="percentage">{{int(100.0 * num_sourced/len(arts))}}%</span> sourced</span>
 <ul>
 {% for art in arts %}
-<li><a href="/art/{{art.id}}">{{art.headline}}</a> ({% module domain(art.permalink) %}) - {{len(art.sources)}} sources</li>
+<li>{{ ','.join([tag.name for tag in art.tags])}}<a href="/art/{{art.id}}">{{art.headline}}</a> ({% module domain(art.permalink) %}) - {{len(art.sources)}} sources</li>
 {% end %}
 </ul>
 {% else %}

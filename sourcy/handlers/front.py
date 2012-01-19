@@ -1,13 +1,17 @@
 import datetime
 from base import BaseHandler
 import tornado.auth
+import itertools
 
 from sourcy.models import Article,Action,Lookup,Tag,UserAccount
 from sqlalchemy import Date
 from sqlalchemy.sql.expression import cast
 from sqlalchemy.sql.expression import func
+from sqlalchemy.orm import subqueryload
 
 from pprint import pprint
+
+
 
 class MainHandler(BaseHandler):
     def get(self):
@@ -15,11 +19,17 @@ class MainHandler(BaseHandler):
         days = []
         date = datetime.date.today()
 
-        arts = self.session.query(Article).filter(cast(Article.pubdate, Date)== date).all()
+        arts = self.session.query(Article).\
+            options(subqueryload('tags'), subqueryload('sources')).\
+            filter(cast(Article.pubdate, Date)== date).\
+            all()
 
         days.append((date,arts))
 
-        recent = self.session.query(Action).order_by(Action.performed.desc()).slice(0,10).all()
+        foo = self.session.query(Action).order_by(Action.performed.desc()).slice(0,10).all()
+
+        # group by day
+        recent = [(day,list(g)) for day,g in itertools.groupby(foo, lambda action:action.performed.date())]
 
         self.render('index.html', days=days, recent_actions=recent)
 
