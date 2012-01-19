@@ -18,7 +18,7 @@ class UserHandler(BaseHandler):
             raise tornado.web.HTTPError(404, "User not found")
 
         actions = self.session.query(Action)\
-            .filter(Action.who==user)\
+            .filter(Action.user==user)\
             .order_by(Action.performed.desc())\
             .slice(0,100)\
             .all()
