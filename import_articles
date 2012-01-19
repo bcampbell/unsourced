@@ -71,8 +71,15 @@ def main():
     print "found %d articles" % (len(found_arts),)
     for src in found_arts:
         # TODO: JL should serve up urls...
-        print "load %s" % (src['permalink'],)
         urls = [src['permalink']]
+
+        got = session.query(ArticleURL).filter(ArticleURL.url.in_(urls)).all()
+        if len(got)>0:
+            print "got %s" % (src['permalink'],)
+            # TODO: add any newly-discovered urls
+            continue
+
+        print "load %s" % (src['permalink'],)
         url_objs = [ArticleURL(url=u) for u in urls]
         art = Article(src['title'],src['permalink'],src['pubdate'],url_objs)
         for u in url_objs:
