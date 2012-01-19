@@ -54,7 +54,11 @@ class source(tornado.web.UIModule):
             if prev_vote is None or prev_vote.value<0:
                 can_upvote = True
 
-        return self.render_string("modules/source.html", src=source, can_upvote=can_upvote, can_downvote=can_downvote, element_type=element_type)
+        info = {'paper': {'icon':'paper_icon.png', 'desc':'Academic paper'},
+                'pr': {'icon':'recycle_icon.png', 'desc':'Press release'},
+                'other': {'icon':'chain_icon.png', 'desc':'Other link'}}
+
+        return self.render_string("modules/source.html", src=source, can_upvote=can_upvote, can_downvote=can_downvote, element_type=element_type, kind_info=info[source.kind])
 
 
 class tag(tornado.web.UIModule):

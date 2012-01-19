@@ -1,6 +1,6 @@
 {% comment output a source link and voting widget %}
-<{{element_type}} class="source{{' downvoted' if src.score<0 else ''}}">
-    <a href="{{src.url}}">{{src.url}}</a>
+<{{element_type}} class="source {{src.kind}}{{' downvoted' if src.score<0 else ''}}">
+<img src="/static/{{kind_info['icon']}}" title="{{kind_info['desc']}}" /><a href="{{src.url}}">{{src.url}}</a>
     {% if src.score != 0 %}
     <span class="score">{{src.score}}</span>
     {% end %}

@@ -60,10 +60,10 @@ nav li:hover { background-color: #f88; }
 .score:before {content: "[";}
 .score:after {content: "]";}
 /* voting arrows */
-.vote a:link { color: #444; }
-.vote a:visited { color: #444; }
-.vote a:hover { color: #000; }
-.vote a:visited:hover { color: #000; }
+.vote a:link { color: #888; }
+.vote a:visited { color: #888; }
+.vote a:hover { color: #444; }
+.vote a:visited:hover { color: #444; }
 .vote a:active {outline: none; -moz-outline-style: none;}
 .vote a { text-decoration: none; }
 
@@ -343,4 +343,7 @@ table.month th {
 .leaguetable table { border-collapse: collapse; }
 .leaguetable td, .leaguetable th { padding: 0.1em 0.3em; }
 
+/* source icons */
+.sources ul { list-style-type: none; padding-left: 0px; }
+.sources .source img { padding-right: 4px;}
 
