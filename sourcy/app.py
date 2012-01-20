@@ -54,7 +54,7 @@ class Application(tornado.web.Application):
             'host': options.mysql_host,
             'db': options.mysql_database
         }
-        self.engine = create_engine(eng_url, echo=False)
+        self.engine = create_engine(eng_url, echo=False, pool_recycle=3600)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
