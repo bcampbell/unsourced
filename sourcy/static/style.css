@@ -345,5 +345,5 @@ table.month th {
 
 /* source icons */
 .sources ul { list-style-type: none; padding-left: 0px; }
-.sources .source img { padding-right: 4px;}
+.sources .source img { padding-right: 4px; vertical-align:middle; }
 
