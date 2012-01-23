@@ -55,11 +55,11 @@ class Application(tornado.web.Application):
             'db': options.mysql_database
         }
         self.engine = create_engine(eng_url, echo=False, pool_recycle=3600)
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        self.Session = sessionmaker(bind=self.engine)
 
-        self.institution_finder = analyser.Lookerupper(self.session,'institution')
-        self.journal_finder = analyser.Lookerupper(self.session,'journal')
+        session = self.Session()
+        self.institution_finder = analyser.Lookerupper(session,'institution')
+        self.journal_finder = analyser.Lookerupper(session,'journal')
 
 
 def main():
