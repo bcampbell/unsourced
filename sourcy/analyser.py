@@ -110,3 +110,5 @@ def find_researchers(txt):
 # "The research team, led by Dr Scott Boback from Dickinson College in the US state of Pennsylvania"
 # "Sociologists Hui-Tzu Grace Chou and Nicholas Edge interviewed 425 undergraduate students about their happiness and that of their friends."
 # "Jim Thornton, professor of obstetrics and gynaecology at the University of Nottingham, said"
+# "Daniel Kruger, a research fellow at the University of Michigan, and lead author of the study"
+# "Professor Mark van Vugt, from the Institute for Cognitive and Evolutionary Anthropology at Oxford University, said"
