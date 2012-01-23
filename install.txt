@@ -1,0 +1,19 @@
+set up python virtualenv and various packages:
+
+$ sudo easy_install virtualenv
+$ virtualenv --no-site-packages /srv/sourcy/sourcy-env
+$ . /srv/sourcy/env/bin/activate
+$ pip install tornado lxml WTForms SQLAlchemy python-dateutil rdflib rdfextras
+
+# (unsure about MySQL-python )
+
+
+TODO: pack up metareadability and decruft into pip-installable form
+
+$ git clone git@github.com:bcampbell/sourcy.git
+$ git clone git@github.com:bcampbell/metareadability.git
+$ git clone git@github.com:bcampbell/decruft.git
+
+(scrapeomat requires decruft and metareadability
+symlink decruft and metareadability into scrapeomat)
+
