@@ -162,7 +162,22 @@ class TweetHandler(BaseHandler, tornado.auth.TwitterMixin):
         else:
             self.redirect("/");
 
+class DeleteHandler(BaseHandler):
 
+    @tornado.web.authenticated
+    def post(self,source_id):
+        source = self.session.query(Source).get(source_id)
+        assert source is not None
+        if source.creator != self.current_user:
+            raise tornado.web.HTTPError(403)
+
+        art_id = source.article.id
+        self.session.delete(source)
+        self.session.commit()
+        self.redirect("/art/%s" % (art_id,))
+
+
+# TODO: votes should be handled via POSTs
 class SrcVoteHandler(BaseHandler):
 
     @tornado.web.authenticated
@@ -199,5 +214,6 @@ handlers = [
     (r"/thanks/(\d+)/tweet", TweetHandler),
     (r"/source/(\d+)/upvote", UpvoteHandler),
     (r"/source/(\d+)/downvote", DownvoteHandler),
+    (r"/source/(\d+)/delete", DeleteHandler),
     ]
 

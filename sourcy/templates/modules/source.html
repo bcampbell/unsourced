@@ -13,6 +13,9 @@
         <a class="down" href="/source/{{src.id}}/downvote" title="vote down">&#9660;</a>
         {% end %}
     </span>
+    {% if src.creator==current_user %}
+    <form action="/source/{{src.id}}/delete" method="POST"><input type="submit" name="submit" value="delete"/></form>
+    {% end %}
     {% end %}
 </{{element_type}}>
 

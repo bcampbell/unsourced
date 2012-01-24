@@ -134,7 +134,7 @@ class Article(Base):
     tags = relationship("Tag", backref="article")
     urls = relationship("ArticleURL", backref="article")
 
-    actions = relationship("Action", backref="article")
+    actions = relationship("Action", backref="article", cascade="all, delete-orphan")
 
     def __init__(self, headline, permalink, pubdate, urls):
         self.headline = headline
@@ -160,7 +160,7 @@ class Source(Base):
     meta = Column(String, nullable=False, default='')
     score = Column(Integer, nullable=False, default=0)
 
-    actions = relationship("Action", backref="source")
+    actions = relationship("Action", backref="source", cascade="all, delete-orphan")
     creator = relationship("UserAccount")
 
     def __init__(self, **kw):
