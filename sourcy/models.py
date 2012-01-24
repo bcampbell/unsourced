@@ -151,7 +151,8 @@ class Source(Base):
     __tablename__ = 'source'
 
     id = Column(Integer, primary_key=True)
-    article_id = Column(Integer, ForeignKey('article.id'))
+    article_id = Column(Integer, ForeignKey('article.id'),nullable=False)
+    creator_id = Column(Integer, ForeignKey('useraccount.id'),nullable=True)
     url = Column(String, nullable=False)
     title = Column(String, nullable=False, default='')
     kind = Column(String, nullable=False)
@@ -160,10 +161,11 @@ class Source(Base):
     score = Column(Integer, nullable=False, default=0)
 
     actions = relationship("Action", backref="source")
+    creator = relationship("UserAccount")
 
     def __init__(self, **kw):
         for key,value in kw.iteritems():
-            assert(key in ('url','article','title','doi','score','kind'))
+            assert(key in ('creator','url','article','title','doi','score','kind'))
             setattr(self,key,value)
 
 

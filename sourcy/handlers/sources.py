@@ -35,6 +35,7 @@ class AddSourceHandler(BaseHandler):
             assert art is not None
 
             src = Source(article=art,
+                creator=self.current_user,
                 url=form.vars['url'],
                 kind=form.vars['kind'])
             action = Action('src_add', self.current_user,

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.58, for debian-linux-gnu (i686)
+-- MySQL dump 10.13  Distrib 5.1.49, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: sourcy
 -- ------------------------------------------------------
--- Server version	5.1.58-1ubuntu1
+-- Server version	5.1.49-1ubuntu8.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,7 +33,7 @@ CREATE TABLE `action` (
   `tag_id` int(11) DEFAULT NULL,
   `value` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=163 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +49,7 @@ CREATE TABLE `article` (
   `permalink` varchar(512) NOT NULL,
   `pubdate` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2571 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3167 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,7 +64,7 @@ CREATE TABLE `article_url` (
   `article_id` int(11) NOT NULL,
   `url` varchar(512) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2571 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3167 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `lookup` (
   `name` varchar(256) NOT NULL,
   `url` varchar(256) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64146 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=113254 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,14 +93,17 @@ DROP TABLE IF EXISTS `source`;
 CREATE TABLE `source` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `article_id` int(11) NOT NULL,
+  `creator_id` int(11) DEFAULT NULL,
   `url` varchar(512) NOT NULL DEFAULT '',
   `title` varchar(512) NOT NULL DEFAULT '',
   `kind` varchar(32) NOT NULL DEFAULT 'other',
   `doi` varchar(32) NOT NULL DEFAULT '',
   `meta` text NOT NULL,
   `score` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `creator_id` (`creator_id`),
+  CONSTRAINT `source_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `useraccount` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,7 +119,7 @@ CREATE TABLE `tag` (
   `article_id` int(11) NOT NULL,
   `score` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +153,7 @@ CREATE TABLE `useraccount` (
   `auth_uid` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -162,4 +165,4 @@ CREATE TABLE `useraccount` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-01-12 14:55:32
+-- Dump completed on 2012-01-24 21:56:57
