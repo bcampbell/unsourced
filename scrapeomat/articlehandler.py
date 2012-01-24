@@ -54,6 +54,12 @@ class ArticleCache(object):
 
 
 
+class Status(object):
+    SUCCESS = 0
+    NET_ERROR = 1
+    BAD_REQ = 2
+    PAYWALLED = 3
+    PARSE_ERROR = 4
 
 
 
@@ -70,7 +76,7 @@ class ArticleHandler(tornado.web.RequestHandler):
         o = urlparse.urlparse(self.url)
         domain = re.compile('^www[.]',re.I).sub('',o.hostname)
         if domain in paywall_domains:
-            results = {'status': 3}   # 3=paywall site
+            results = {'status': Status.PAYWALLED}   # 3=paywall site
             self.write(results)
             self.finish()
             return
@@ -78,7 +84,7 @@ class ArticleHandler(tornado.web.RequestHandler):
 
         logging.debug( "%s: fetching...", self.url)
         if self.url == '':
-            results = {'status': 2}   # 2=bad req
+            results = {'status': Status.BAD_REQ}   # 2=bad req
             self.write(results)
             self.finish()
             return
@@ -86,7 +92,7 @@ class ArticleHandler(tornado.web.RequestHandler):
         art = self.application.artcache.fetch(self.url)
         if art is not None:
             logging.debug('%s: retrieved from cache', self.url)
-            results = {'status': 0, 'article': art}   # 0=success
+            results = {'status': Status.SUCCESS, 'article': art}   # 0=success
             self.write(results)
             self.finish()
             return
@@ -98,7 +104,7 @@ class ArticleHandler(tornado.web.RequestHandler):
 
     def on_response(self, response):
         if response.error:
-            results = {'status':1}  # net error
+            results = {'status':Status.NET_ERROR}  # net error
         else:
             try:
                 scrape_time = datetime.datetime.utcnow()
@@ -127,10 +133,10 @@ class ArticleHandler(tornado.web.RequestHandler):
                     'urls': urls,
                     'scrapetime':scrape_time }
                 self.application.artcache.stash(art)
-                results = {'status':0, 'article':art}
+                results = {'status':Status.SUCCESS, 'article':art}
             except Exception as e:
                 logging.error("%s: exception: %s", self.url, e)
-                results = {'status':4}   # error during parse
+                results = {'status':Status.PARSE_ERROR}   # error during parse
 
         self.write(results)
         self.finish()

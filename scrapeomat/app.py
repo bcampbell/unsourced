@@ -27,7 +27,8 @@ import tornado.ioloop
 import tornado.web
 from tornado.options import define, options, parse_command_line
 
-from article import ArticleCache,ArticleHandler
+from articlehandler import ArticleCache,ArticleHandler
+from doihandler import DOIHandler
 
 define("port", default=8889, help="run on the given port", type=int)
 define("cachefile", default=".scrapecache", help="file to dump the cache into", type=str)
@@ -42,6 +43,7 @@ class Application(tornado.web.Application):
 
         handlers = [
             (r'/scrape', ArticleHandler),
+            (r'/doi', DOIHandler),
         ]
 
         settings = dict(

@@ -4,6 +4,7 @@ from rdflib import plugin, Namespace
 from StringIO import StringIO
 from pprint import pprint
 import sys
+import re
 
 plugin.register(
     'sparql', rdflib.query.Processor,
@@ -82,13 +83,32 @@ def grabit(doi):
     return body,content_type
 
 
+def find_doi(html):
+    doi_pat = re.compile(r'(10.(\d)+/([^(\s\>\"\<)])+)')
+#    doc = lxml.html.document_fromstring(html)
+#"DOI: 10.1016/j.breast.2006.09.003"
+    m = doi_pat.search(html)
+    if m:
+        return m.group(0)
+    else:
+        return None
+
+
 def main():
 
 
     for doi in sys.argv[1:]:
-        rdfxml,content_type = grabit(doi)
-        meta = parseit(rdfxml, doi)
-        pprint(meta)
+
+        if doi.startswith('http://'):
+            url = doi
+            html = urllib2.urlopen(url).read()
+            doi = find_doi(html)
+
+            print url,": ", doi
+        else:
+            rdfxml,content_type = grabit(doi)
+            meta = parseit(rdfxml, doi)
+            pprint(meta)
 
 
 
