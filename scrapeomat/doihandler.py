@@ -1,8 +1,8 @@
-
-import functools
+#import functools
 import urlparse
 import json
-import copy
+import re
+import logging
 
 import tornado.web
 from tornado import httpclient
@@ -39,33 +39,29 @@ class DOIHandler(tornado.web.RequestHandler):
             self.done(Status.BAD_REQ,msg="Missing url")
             return
 
-
         o = urlparse.urlparse(url)
-        scheme = o.scheme.lower()
-        if scheme == 'doi':
-            doi = o.path
+        if o.scheme.lower() not in ('http','https'):
+            self.done(Status.BAD_URL,msg="url has bad scheme '%s'"%(scheme,))
+            return
+
+        if o.netloc.lower() == 'dx.doi.org':
+            # doi given directly - skip the scraping step
+            doi = re.sub('^/','',o.path)
             self.fetch_by_doi(doi)
             return
-        elif scheme in ('http','https'):
-            # TODO: some sites (eg scopus.com) do redirects and cookie checks. Gah.
-            # To fetch pages we need to follow the redirects and collect the cookies.
-            # There is some talk about this on the tornado mailing list (and even a
-            # patch to do it).
-            # but for now we just won't bother.
-            http = tornado.httpclient.AsyncHTTPClient()
-            http.fetch(url, callback=self.on_got_page)
-        else:
-            self.done(Status.BAD_URL,msg="url has bad scheme '%s'"%(scheme,))
 
+        # if we get this far, then we want to fetch the url and scan the page for
+        # a doi
 
-    def fetch_by_doi(self,doi):
-        # look up metadata using the doi
-        dx_url = 'http://dx.doi.org/' + doi
-        headers = {'Accept': 'application/rdf+xml'}
+        # TODO: some sites (eg scopus.com) do redirects and cookie checks. Gah.
+        # To fetch pages we need to follow the redirects and collect the cookies.
+        # There is some talk about this on the tornado mailing list (and even a
+        # patch to do it).
+        # but for now we just won't bother.
         http = tornado.httpclient.AsyncHTTPClient()
-        req = tornado.httpclient.HTTPRequest(dx_url,headers=headers)
-        self.doi = doi  # save for on_got_rdfxml
-        http.fetch(req, callback=self.on_got_rdfxml)
+        logging.info("fetch %s for scanning" % (url,))
+        http.fetch(url, callback=self.on_got_page)
+
 
 
     def on_got_page(self,response):
@@ -84,6 +80,16 @@ class DOIHandler(tornado.web.RequestHandler):
         else:
             self.done(Status.NO_DOI_ON_PAGE)
 
+
+    def fetch_by_doi(self,doi):
+        logging.info("Look up doi %s" % (doi,))
+        # look up metadata using the doi
+        dx_url = 'http://dx.doi.org/' + doi
+        headers = {'Accept': 'application/rdf+xml'}
+        http = tornado.httpclient.AsyncHTTPClient()
+        req = tornado.httpclient.HTTPRequest(dx_url,headers=headers)
+        self.doi = doi  # save for on_got_rdfxml
+        http.fetch(req, callback=self.on_got_rdfxml)
 
 
     def on_got_rdfxml(self,response):
@@ -110,6 +116,7 @@ class DOIHandler(tornado.web.RequestHandler):
 
         rdfxml = response.body
         mt = doihelpers.parseit(rdfxml, self.doi)
+        # keep the original doi we passed in - the one returned by dx.doi.org can't be trusted
         mt['doi'] = self.doi
 
         self.done(Status.SUCCESS, metadata=mt)
