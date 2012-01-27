@@ -1,6 +1,6 @@
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Date, Boolean
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship, backref
@@ -155,9 +155,10 @@ class Source(Base):
     creator_id = Column(Integer, ForeignKey('useraccount.id'),nullable=True)
     url = Column(String, nullable=False)
     title = Column(String, nullable=False, default='')
+    pubdate = Column(Date)
     kind = Column(String, nullable=False)
     doi = Column(String, nullable=False, default='')
-    meta = Column(String, nullable=False, default='')
+    publication = Column(String, nullable=False,default='')
     score = Column(Integer, nullable=False, default=0)
 
     actions = relationship("Action", backref="source", cascade="all, delete-orphan")
@@ -165,7 +166,7 @@ class Source(Base):
 
     def __init__(self, **kw):
         for key,value in kw.iteritems():
-            assert(key in ('creator','url','article','title','doi','score','kind'))
+            assert(key in ('creator','url','article','title','pubdate','doi','score','kind','publication'))
             setattr(self,key,value)
 
 

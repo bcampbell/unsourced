@@ -6,7 +6,12 @@ from models import Source,Article,Action
 class formfield(tornado.web.UIModule):
     def render(self, field):
         return self.render_string("modules/formfield.html", field=field)
-        
+
+
+class form(tornado.web.UIModule):
+    def render(self, form):
+        return self.render_string("modules/form.html", form=form)
+
 
 
 class domain(tornado.web.UIModule):
@@ -36,9 +41,9 @@ class art_link(tornado.web.UIModule):
 
 
 
-class add_source(tornado.web.UIModule):
-    def render(self,art_id):
-        return self.render_string('modules/add_source.html',art=art)
+#class add_source(tornado.web.UIModule):
+#    def render(self,art_id):
+#        return self.render_string('modules/add_source.html',art=art)
 
 
 class source(tornado.web.UIModule):

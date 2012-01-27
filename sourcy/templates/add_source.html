@@ -3,8 +3,12 @@
 
 
 
-<h2>Add a source</h2>
-{% raw add_source_form.render() %}
+<h2>Add a source to article '{{art.headline}}'</h2>
+<form action="/art/{{art.id}}/addsource" method="post">
+{% module form(add_source_form) %}
+<input type="submit" name="submit" value="add" />
+or <a href="/art/{{art.id}}">cancel</a>
+</form>
 
 {% end %}
 

@@ -3,9 +3,14 @@ set up python virtualenv and various packages:
 $ sudo easy_install virtualenv
 $ virtualenv --no-site-packages /srv/sourcy/sourcy-env
 $ . /srv/sourcy/env/bin/activate
-$ pip install tornado lxml WTForms SQLAlchemy python-dateutil rdflib rdfextras
+$ pip install tornado lxml WTForms SQLAlchemy python-dateutil rdflib rdfextras MySQL-python
 
 # (unsure about MySQL-python )
+lxml requires compiler and headers from python, libxml2 and libxslt, eg:
+ $ sudo apt-get install python-dev libxml2-dev libxslt-dev
+
+# MySQL-python requires mysql headers:
+ $ sudo apt-get install libmysqlclient-dev
 
 
 TODO: pack up metareadability and decruft into pip-installable form

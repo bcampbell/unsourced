@@ -1,5 +1,7 @@
+import urlparse
 from sourcy.util import TornadoMultiDict
 from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, validators
+
 
 TAG_CHOICES = [
     ('science','Science'),
@@ -17,9 +19,27 @@ class AddTagForm(Form):
 
 
 
+def fix_url(url):
+    if url is None:
+        return url
+    o = urlparse.urlparse(url)
+    if not o[0]:
+        url = 'http://' + url
+    return url
+
+
+class AddSourceForm(Form):
+    KIND_CHOICES = [
+        ('paper','Academic paper'),
+        ('pr','Press release'),
+        ('other','Other')]
+    kind = SelectField(u'Kind', choices=KIND_CHOICES)
+    url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url], description="eg http://sdsfsd or doi:....")
+
+
 
 # TODO: kill and replace with wtforms version...
-class AddSourceForm:
+class OLDAddSourceForm:
     def __init__(self, handler, art_id=None):
         self.handler = handler
         self.errs = {}

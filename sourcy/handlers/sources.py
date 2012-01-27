@@ -1,8 +1,10 @@
 import functools
 import urlparse
+import urllib
 from pprint import pprint
 import json
-import copy
+import logging
+import datetime
 
 import tornado.auth
 from tornado import httpclient
@@ -16,9 +18,73 @@ from sourcy.util import TornadoMultiDict
 from sourcy.forms import AddSourceForm
 from sourcy.models import Source,Action,Article,TwitterAccessToken
 
-
-
 class AddSourceHandler(BaseHandler):
+    @tornado.web.authenticated
+    @tornado.web.asynchronous
+    def post(self,art_id):
+        self.art = self.session.query(Article).get(art_id)
+        if self.art is None:
+            raise tornado.web.HTTPError(404, "Article not found")
+
+        form = AddSourceForm(TornadoMultiDict(self))
+
+        if form.validate():
+            kind = form.kind.data
+            if kind == 'paper':
+                logging.debug("add paper %s"%(form.url.data,))
+                self.find_doi(form.url.data)
+                return
+
+            # not a paper - just add as a bare url
+            action = self.create_source(kind=form.kind.data, url=form.url.data)
+
+            self.redirect("/thanks/%d" % (action.id,))
+        else:
+            self.render('add_source.html',add_source_form=form, art=self.art)
+
+    def find_doi(self,url):
+        """ retreive doi and metadata from url """
+
+        self.url = url  # save for later
+        params = {'url': url}
+        scrapeomat_url = "http://localhost:8889/doi?" + urllib.urlencode(params)
+        http = tornado.httpclient.AsyncHTTPClient()
+        http.fetch(scrapeomat_url, callback=self.on_got_doi_data)
+
+
+    def on_got_doi_data(self,response):
+
+        details = {'url':self.url}
+        if not response.error:
+            results = json.loads(response.body)
+            if results['status']==0:
+                #success!
+                meta = results['metadata']
+                details['doi'] = meta['doi']
+                details['title'] = meta['title']
+                details['publication'] = meta['journal']
+                details['pubdate'] = datetime.datetime.strptime(meta['date'], '%Y-%m-%dZ').date()
+
+        action = self.create_source('paper',**details)
+        self.redirect("/thanks/%d" % (action.id,))
+
+
+    def create_source(self, kind,**details):
+        src = Source(article=self.art,
+            creator=self.current_user,
+            kind=kind,
+            **details)
+        action = Action('src_add', self.current_user,
+            article=self.art,
+            source=src)
+        self.session.add(src)
+        self.session.add(action)
+        self.session.commit()
+        return action
+
+
+
+class OLDAddSourceHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         form = AddSourceForm(self,None)
@@ -209,7 +275,7 @@ class DownvoteHandler(SrcVoteHandler):
 
 
 handlers = [
-    (r"/addsource", AddSourceHandler),
+    (r"/art/([0-9]+)/addsource", AddSourceHandler),
     (r"/thanks/(\d+)", ThanksHandler),
     (r"/thanks/(\d+)/tweet", TweetHandler),
     (r"/source/(\d+)/upvote", UpvoteHandler),

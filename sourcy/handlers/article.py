@@ -10,7 +10,7 @@ from pprint import pprint
 
 from sourcy import util,analyser,highlight
 from sourcy.models import Article,Source
-from sourcy.forms import AddSourceForm,AddTagForm
+from sourcy.forms import AddSourceForm, AddTagForm
 
 from base import BaseHandler
 
@@ -76,7 +76,7 @@ class ArticleHandler(BaseHandler):
             html = ''
             researchers,institutions,journals = [],[],[]
 
-        add_source_form = AddSourceForm(self,art.id)
+        add_source_form = AddSourceForm()
         add_tag_form = AddTagForm()
 
         self.render('article.html',
