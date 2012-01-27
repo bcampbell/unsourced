@@ -34,7 +34,7 @@ class AddSourceForm(Form):
         ('pr','Press release'),
         ('other','Other')]
     kind = SelectField(u'Kind', choices=KIND_CHOICES)
-    url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url], description="eg http://sdsfsd or doi:....")
+    url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url])
 
 
 

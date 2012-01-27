@@ -41,6 +41,16 @@ a:hover { color: #00f; text-decoration: underline; }
 a:visited:hover { color: #90f; }
 
 
+/* generic form styling */
+
+.errormsg { color: red; font-style: bold; }
+.errors { }
+.help { display: block;
+    font-size: x-small;
+    color: #888;
+    font-style: italic;
+}
+.errors input, .errors select { border: 1px solid red; }
 
 /* base menus (horizontal) */
 nav ul { padding: 0; margin: 0; list-style:none; }
@@ -62,6 +72,9 @@ nav li:hover { background-color: #f88; }
 .moderation a:hover { color:#444; }
 .moderation a:visited { color:#888; }
 .moderation a:visited:hover { color:#444; }
+
+.source .publication { padding-left: 24px; color:#444; font-size:x-small; display:block; }
+.source .moderation { padding-left: 24px; }
 
 /* voting arrows */
 .vote a:link { color: #888; }
@@ -249,7 +262,6 @@ body>footer {
     font-size: small;
 }
 
-.source .publication { color:#444; font-size:x-small; display:block; }
 
 #view h1, #view h2, #view h3, #view h4, #view h5, #view h6 {
     font-style: normal;
@@ -353,3 +365,4 @@ table.month th {
 .sources ul { list-style-type: none; padding-left: 0px; }
 .sources .source img { padding-right: 4px; vertical-align:middle; }
 
+li.source { margin-top: 0.5em; }
