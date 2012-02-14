@@ -34,11 +34,13 @@
 {% end %}
 
 {% if src.creator %}
-<span class="creator">added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
-
+<span class="creator">added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a>
 {% if src.creator==current_user %}
-<form action="/source/{{src.id}}/delete" method="POST"><input type="submit" name="submit" value="delete"/></form>
+<form class="delete" action="/source/{{src.id}}/delete" method="POST"><input type="submit" name="submit" value="delete"/></form>
 {% end %}
+
+</span>
+
 {% end %}
 
 
