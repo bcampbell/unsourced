@@ -66,15 +66,17 @@ nav li:hover { background-color: #f88; }
 .downvoted a:visited:hover { color: #e8e; }
 .downvoted { color: #888; }
 
-/* moderation info (user, score, voting etc) */
+/* moderation info (score/voting) */
 .moderation { color:#888; font-size:x-small; }
 .moderation a:link { color:#888; }
 .moderation a:hover { color:#444; }
 .moderation a:visited { color:#888; }
 .moderation a:visited:hover { color:#444; }
 
-.source .publication { padding-left: 24px; color:#444; font-size:x-small; display:block; }
-.source .moderation { padding-left: 24px; }
+.source .publication { padding-left: 24px; color:#444; font-size:x-small; } 
+.source .creator { padding-left: 24px; color:#888; font-size:x-small; display: block; } 
+.source form {padding-left: 24px; }
+
 
 /* voting arrows */
 .vote a:link { color: #888; }
@@ -366,3 +368,15 @@ table.month th {
 .sources .source img { padding-right: 4px; vertical-align:middle; }
 
 li.source { margin-top: 0.5em; }
+li.source:after {
+   content: ".";
+   visibility: hidden;
+   display: block;
+   height: 0;
+   clear: both;
+}
+
+.source .moderation { float: right; text-align: right; }
+.source .publication { padding-left: 24px; display: block; }
+.source .creator { display:block; }
+

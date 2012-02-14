@@ -1,24 +1,9 @@
 {% comment output a source link and voting widget %}
 <{{element_type}} class="source {{src.kind}}{{' downvoted' if src.score<0 else ''}}">
-<img src="/static/{{kind_info['icon']}}" title="{{kind_info['desc']}}" />
-{% if src.title %}
-<a href="{{src.url}}">{{src.title}}</a>
-{% else %}
-<a href="{{src.url}}">{{src.url}}</a>
-{% end %}
 
-{% if src.publication %}
-{% if src.pubdate %}
-<span class="publication">{{src.publication}}, {{src.pubdate.strftime('%d %b, %Y')}}</span>
-{% else %}
-<span class="publication">{{src.publication}}</span>
-{% end %}
-{% end %}
 
-<div class="moderation">{{src.score}} points
-{% if src.creator %}
-added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a>
-{% end %}
+<div class="moderation">
+{{src.score}} points
 {% if current_user %}
 <span class="vote">
     {% if can_upvote %}
@@ -28,10 +13,34 @@ added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a>
     <a class="down" href="/source/{{src.id}}/downvote" title="vote down">&#9660;</a>
     {% end %}
 </span>
+{% end %}
+</div>
+
+<img src="/static/{{kind_info['icon']}}" title="{{kind_info['desc']}}" />
+{% if src.title %}
+<a href="{{src.url}}">{{src.title}}</a>
+{% else %}
+<a href="{{src.url}}">{{src.url}}</a>
+{% end %}
+
+
+
+{% if src.publication %}
+{% if src.pubdate %}
+<span class="publication">{{src.publication}}, {{src.pubdate.strftime('%d %b, %Y')}}</span>
+{% else %}
+<span class="publication">{{src.publication}}</span>
+{% end %}
+{% end %}
+
+{% if src.creator %}
+<span class="creator">added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
+
 {% if src.creator==current_user %}
 <form action="/source/{{src.id}}/delete" method="POST"><input type="submit" name="submit" value="delete"/></form>
 {% end %}
 {% end %}
-</div>
+
+
 </{{element_type}}>
 
