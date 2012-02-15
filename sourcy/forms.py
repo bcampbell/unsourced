@@ -4,7 +4,7 @@ from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, val
 
 
 TAG_CHOICES = [
-    ('science','Science'),
+#    ('science','Science'),
     ('warn_wikipedia','Warning - Wikipedia'),
     ('warn_anon','Warning - Based on anonymous tipoff'),
     ('warn_soft','Warning - Soft interview'),

@@ -383,3 +383,22 @@ li.source:after {
 .source .publication { padding-left: 24px; display: block; }
 .source .creator { display:block; }
 
+.warning-label img { float:left; padding-right: 1em; }
+.warning-label {
+   position:relative;
+   width:30%;
+   padding:1em 1.5em;
+   margin:2em auto;
+   background: #eee;
+  }
+
+.warning-label:before {
+   content:"";
+   position:absolute;
+   top:0;
+   right:0;
+   border-width:0 1.5em 1.5em 0;
+   border-style:solid;
+   border-color: #ccc #fff;
+}
+

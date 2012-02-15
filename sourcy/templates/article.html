@@ -54,6 +54,13 @@
 
 </header>
 <div class="body">
+
+{% if warnings %}
+{% for w in warnings %}
+<div class="warning-label"><img src="{{w[1]}}"/><b>WARNING</b><br/>{{w[0]}}</div>
+{% end %}
+{% end %}
+
 {% if scrape_err %}
 <p>Sorry, but there was a problem fetching the article text: {{scrape_err}}</p>
 {% else %}
@@ -137,7 +144,7 @@
       <input type="submit" value="Search" name="btnG" /> (opens in a new window)
   </form>
   </div>
-<!--
+
   <div class="helper tags">
       <h2>Tags</h2>
       {% if art.tags %}
@@ -159,7 +166,6 @@
       <a href="/login?next=/art/{{art.id}}">Log in</a> to add a tag
       {% end %}
   </div>
--->
 
 
 </div> <!-- /#tools -->

@@ -82,6 +82,7 @@ class ArticleHandler(BaseHandler):
         self.render('article.html',
             art=art,
             article_content=html,
+            warnings = self.cook_warnings(art),
             researchers=researchers,
             institutions=institutions,
             journals=journals,
@@ -91,6 +92,20 @@ class ArticleHandler(BaseHandler):
         #self.finish()
 
 
+    def cook_warnings(self,art):
+        details = {
+            'warn_wikipedia': ('This article contains unsourced, unverified information from Wikipedia.',),
+            'warn_anon':('This article is based on an unverified, anonymous tipoff.',),
+            'warn_soft':('To ensure future interviews with subject, important questions were not asked.',),
+            'warn_churn':('This article is basically just a press release, copied and pasted.',),
+            'warn_pr': ('Statistics, survey results and/or equations in this article were sponsored by a PR company.',) }
+
+        warns = []
+        for tag in art.tags:
+            warn = tag.name
+            if warn in details:
+                warns.append((details[warn][0],'/static/%s.png' %(warn,)))
+        return warns
 
     def analyse_text(self,html):
         researchers = analyser.find_researchers(html)
