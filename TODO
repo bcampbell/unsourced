@@ -1,0 +1,42 @@
+Sourcy TODOs
+------------
+
+In rough order of priority:
+
+[DONE] Fix bad wording on points
+
+Warning labels
+
+[DONE] collapse identical stories
+
+fix up google academic search box
+
+League tables on front page
+ - table of users who've performed the most popular actions
+
+Should we have an option along the lines of 'no source required' or 'Opinion - no source absent'?
+ - idea: could be implemented with tagging (or lack of a "source-missing" tag)
+ - How should the UI work?
+
+Link to churnalism
+ - tool to pick up most likely press releases and easily add them (with any metadata).
+
+
+Fix thankyou page (or get rid of it all together)
+ - try out a popup box...
+
+
+Add more logon options
+ - support generic openid providers?
+ - idea: share accounts with journalisted
+ - facebook.
+
+front page: show small tag icons beside articles
+
+allow users to delete tags they added
+
+Batch operations: apply a source to a set of articles
+ - how should the UI work?
+
+Allow manual pasting of article text on paywalled sites (or just when the scraper gets it really wrong)
+
