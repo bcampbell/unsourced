@@ -93,6 +93,7 @@ class ArticleHandler(BaseHandler):
 
 
     def cook_warnings(self,art):
+        # TODO: move all this crud into a tag definition in the database
         details = {
             'warn_wikipedia': ('This article contains unsourced, unverified information from Wikipedia.',),
             'warn_anon':('This article is based on an unverified, anonymous tipoff.',),
@@ -103,6 +104,8 @@ class ArticleHandler(BaseHandler):
         warns = []
         for tag in art.tags:
             warn = tag.name
+            if tag.score < 0:
+                continue    # skip downvoted tags
             if warn in details:
                 warns.append((details[warn][0],'/static/%s.png' %(warn,)))
         return warns
