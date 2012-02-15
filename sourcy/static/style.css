@@ -386,7 +386,7 @@ li.source:after {
 .warning-label img { float:left; padding-right: 1em; }
 .warning-label {
    position:relative;
-   width:30%;
+   width:25em;
    padding:1em 1.5em;
    margin:2em auto;
    background: #eee;
