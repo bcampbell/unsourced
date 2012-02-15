@@ -63,7 +63,11 @@ class AddSourceHandler(BaseHandler):
                 details['doi'] = meta['doi']
                 details['title'] = meta['title']
                 details['publication'] = meta['journal']
-                details['pubdate'] = datetime.datetime.strptime(meta['date'], '%Y-%m-%dZ').date()
+                try:
+                    details['pubdate'] = datetime.datetime.strptime(meta['date'], '%Y-%m-%dZ').date()
+                except ValueError:
+                    # TODO: sometimes there's a year, which we should grab
+                    details['pubdate'] = None
 
         action = self.create_source('paper',**details)
         self.redirect("/thanks/%d" % (action.id,))
