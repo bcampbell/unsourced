@@ -11,6 +11,8 @@ from optparse import OptionParser
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Date
+from sqlalchemy.sql.expression import cast
 
 from pprint import pprint
 from sourcy.models import Article,ArticleURL,Tag
@@ -68,6 +70,10 @@ def main():
 
     found_arts = get_arts(opts.num_days)
 
+    n_had = 0
+    n_dupes = 0
+    n_added = 0
+
     print "found %d articles" % (len(found_arts),)
     for src in found_arts:
         # TODO: JL should serve up urls...
@@ -75,8 +81,22 @@ def main():
 
         got = session.query(ArticleURL).filter(ArticleURL.url.in_(urls)).all()
         if len(got)>0:
-            print "got %s" % (src['permalink'],)
+            n_had += 1
+#            print "got %s" % (src['permalink'],)
             # TODO: add any newly-discovered urls
+            continue
+
+        # kludge to reduce duplicates (should be handled by journalisted)
+        title = src['title']
+        day = datetime.datetime.strptime(src['pubdate'],'%Y-%m-%d %H:%M:%S').date()
+        got = session.query(Article).\
+            filter(Article.headline == title).\
+            filter(cast(Article.pubdate, Date) == day).\
+            filter(cast(Article.pubdate, Date) == day).\
+            all()
+        if len(got)>0:
+            n_dupes += 1
+            print "skip duplicate '%s' %s" % (title,src['permalink'])
             continue
 
         print "load %s" % (src['permalink'],)
@@ -85,6 +105,9 @@ def main():
         for u in url_objs:
             session.add(u)
         session.add(art)
+        n_added += 1
+
+    print "%d new, %d already had, %d dupes skipped" % (n_added,n_had,n_dupes)
 
     print "committing"
     session.commit()
