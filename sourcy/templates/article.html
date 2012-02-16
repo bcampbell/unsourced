@@ -167,6 +167,22 @@
       {% end %}
   </div>
 
+  <div>
+    <ul>
+{% for cmt in art.comments %}
+    <li>{{cmt.author.username}}: {{cmt.content}}</li>
+{% end %}
+    </ul>
+    {% if current_user %}
+    <form action="/art/{{art.id}}/postcomment" method="POST">
+    <input type="text" name="msg" />
+    <input type="submit" value="Post comment"/>
+    </form>
+    {% else %}
+    <a href="/login?next=/art/{{art.id}}">Log in</a> to add a comment
+    {% end %}
+  </div>
+
 
 </div> <!-- /#tools -->
 {% end %}

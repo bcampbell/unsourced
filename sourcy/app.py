@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 
 import uimodules
 
-from handlers import history,user,article,addarticle,front,sources,tagging
+from handlers import history,user,article,addarticle,front,sources,tagging,comments
 import analyser
 from util import parse_config_file
 
@@ -30,6 +30,7 @@ class Application(tornado.web.Application):
         handlers.extend(history.handlers)
         handlers.extend(sources.handlers)
         handlers.extend(tagging.handlers)
+        handlers.extend(comments.handlers)
 
         settings = dict(
             static_path = os.path.join(os.path.dirname(__file__), "static"),

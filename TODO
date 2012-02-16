@@ -5,9 +5,11 @@ In rough order of priority:
 
 [DONE] Fix bad wording on points
 
-Warning labels
+[DONEish] Warning labels
 
 [DONE] collapse identical stories
+
+add a comments system
 
 fix up google academic search box
 
@@ -39,4 +41,13 @@ Batch operations: apply a source to a set of articles
  - how should the UI work?
 
 Allow manual pasting of article text on paywalled sites (or just when the scraper gets it really wrong)
+
+Tidy up adding of lookups (institutions, journals)
+
+Add browsing/moderation system for journal/institution lookups
+
+extract already-present sources from articles and give credit
+
+User profile-editing page (eg to set username)
+
 
