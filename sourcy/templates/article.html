@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{art.headline}}{% end %}
 
+
 {% block extra_js %}
 
     function reescape(str)
@@ -55,10 +56,8 @@
 </header>
 <div class="body">
 
-{% if warnings %}
-{% for w in warnings %}
-<div class="warning-label"><img src="{{w[1]}}"/><b>WARNING</b><br/>{{w[0]}}</div>
-{% end %}
+{% for w in [t for t in art.tags if t.kind==TagKind.WARNING] %}
+<div class="warning-label"><img src="{{w.big_icon()}}"/><b>WARNING</b><br/>{{w.description}}</div>
 {% end %}
 
 {% if scrape_err %}
@@ -146,25 +145,20 @@
   </div>
 
   <div class="helper tags">
-      <h2>Tags</h2>
-      {% if art.tags %}
-      <ul>
-      {% for tag in art.tags %}
-      {% module tag(tag, element_type="li") %}
-      {% end %}
-      </ul>
-      {% end %}
-
-      {% if current_user %}
-      <form action="/art/{{art.id}}/addtag" method="POST">
-      {% for field in add_tag_form %}
-      {% module formfield(field) %}
-      {% end %}
-      <input type="submit" value="Add"/>
-      </form>
-      {% else %}
-      <a href="/login?next=/art/{{art.id}}">Log in</a> to add a tag
-      {% end %}
+    <h2>Tags</h2>
+    {% if current_user %}
+    <form action="/art/{{art.id}}/settags" method="post">
+{% for t in all_tags %}
+      <input type="checkbox" id="tag-{{t.name}}" name="tags" value="{{t.name}}" {% if t in art.tags %}checked{% end %}/>
+      <label for="tag-{{t.name}}"><img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/></label>
+{% end %}
+    <input type="submit"/> 
+    </form>
+    {% else %}
+{% for t in art.tags %}
+      <img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/>
+{% end %}
+    {% end %}
   </div>
 
   <div>

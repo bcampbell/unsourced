@@ -9,14 +9,15 @@ import json
 import datetime
 from optparse import OptionParser
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+#from sqlalchemy import create_engine
+#from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Date
 from sqlalchemy.sql.expression import cast
 
 from pprint import pprint
 from sourcy.models import Article,ArticleURL,Tag
 from sourcy.util import parse_config_file
+from sourcy import db
 
 from tornado.options import define, options
 
@@ -55,17 +56,7 @@ def main():
 
     (opts, args) = parser.parse_args()
 
-
-
-    eng_url = "mysql+mysqldb://%(user)s:%(password)s@%(host)s/%(db)s?charset=utf8" % {
-        'user': options.mysql_user,
-        'password': options.mysql_password,
-        'host': options.mysql_host,
-        'db': options.mysql_database
-    }
-    engine = create_engine(eng_url, echo=False)
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    session = db.create_session()
 
 
     found_arts = get_arts(opts.num_days)

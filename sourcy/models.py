@@ -1,7 +1,6 @@
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, Date, Boolean
-from sqlalchemy import ForeignKey
+from sqlalchemy import Table, Column, Integer, String, DateTime, Date, Boolean, ForeignKey
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
@@ -9,21 +8,8 @@ from sqlalchemy import create_engine
 
 import util
 
-#define("mysql_host", default="127.0.0.1:3306", help="database host")
-#define("mysql_database", default="sourcy", help="database name")
-#define("mysql_user", default="root", help="database user")
-#define("mysql_password", default="sourcy", help="database password")
 
 Base = declarative_base()
-
-#eng_url = "mysql://%s:%s@%s/%s" % (options.mysql_user, options.mysql_password, options.mysql_host, options.mysql_database)
-#eng_url = "mysql://root:@localhost/sourcy"
-
-# using the "mysql+mysqldb" driver to support unicode...
-eng_url = "mysql+mysqldb://root:@localhost/sourcy?charset=utf8"
-engine = create_engine(eng_url, echo=True)
-Session = sessionmaker(bind=engine)
-session = Session()
 
 class Action(Base):
     __tablename__ = 'action'
@@ -127,6 +113,14 @@ class ArticleURL(Base):
     def __repr__(self):
         return "<ArticleURL(%s)>" % (self.url,)
 
+
+
+article_tags = Table('article_tag', Base.metadata,
+    Column('article_id', Integer, ForeignKey('article.id')),
+    Column('tag_id', Integer, ForeignKey('tag.id'))
+)
+
+
 class Article(Base):
     __tablename__ = 'article'
 
@@ -135,8 +129,9 @@ class Article(Base):
     permalink = Column(String(512), nullable=False)
     pubdate = Column(DateTime)
 
+    tags = relationship("Tag", secondary=article_tags, backref="articles" )
+
     sources = relationship("Source", backref="article", cascade="all, delete-orphan")
-    tags = relationship("Tag", backref="article", cascade="all, delete-orphan")
     urls = relationship("ArticleURL", backref="article", cascade="all, delete-orphan")
     comments = relationship("Comment", backref="article", cascade="all, delete-orphan", order_by="Comment.post_time")
 
@@ -196,21 +191,43 @@ class Lookup(Base):
     def __repr__(self):
         return "<Lookup(%s: %s %s)>" % (self.kind, self.name, self.url)
 
+
+
+class TagKind(object):
+    GENERAL=0   # general categorisation tags
+    WARNING=1   # warning label
+    ADMIN=2     # eg help wanted, sources missing etc....
+
+
 class Tag(Base):
+    """ tag defintion """
     __tablename__ = 'tag'
     id = Column(Integer, primary_key=True)
     name = Column(String(32), nullable=False)
-    article_id = Column(Integer, ForeignKey('article.id'),name="article_id")
-    score = Column(Integer, nullable=False, default=0)
+    description = Column(String(256), nullable=False)
+    kind = Column(Integer, nullable=False, default=TagKind.GENERAL)
+    icon = Column(String(32), nullable=False, default="")
 
     actions = relationship("Action", backref="tag")
 
-    def __init__(self,article,name):
-        self.article=article
-        self.name = name
+    def __init__(self, **kw):
+        for key,value in kw.iteritems():
+            assert(hasattr(self,key))
+            setattr(self,key,value)
 
     def __repr__(self):
         return "<Tag(%s)>" % (self.name,)
+
+    def small_icon(self):
+        return "/static/tag_small/%s.png" % (self.icon)
+
+    def med_icon(self):
+        return "/static/tag_med/%s.png" % (self.icon)
+
+    def big_icon(self):
+        return "/static/tag_big/%s.png" % (self.icon)
+
+
 
 class UserAccount(Base):
     __tablename__ = 'useraccount'

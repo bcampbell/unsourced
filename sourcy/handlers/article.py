@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 
 from sourcy import util,analyser,highlight
-from sourcy.models import Article,Source
+from sourcy.models import Article,Source,Tag,TagKind
 from sourcy.forms import AddSourceForm, AddTagForm
 
 from base import BaseHandler
@@ -76,39 +76,25 @@ class ArticleHandler(BaseHandler):
             html = ''
             researchers,institutions,journals = [],[],[]
 
+
+        all_tags = self.session.query(Tag).all()
+
         add_source_form = AddSourceForm()
-        add_tag_form = AddTagForm()
+#        add_tag_form = AddTagForm()
 
         self.render('article.html',
             art=art,
             article_content=html,
-            warnings = self.cook_warnings(art),
             researchers=researchers,
             institutions=institutions,
             journals=journals,
             scrape_err=scrape_err,
             add_source_form=add_source_form,
-            add_tag_form=add_tag_form)
+            all_tags = all_tags,
+            TagKind=TagKind,
+#            add_tag_form=add_tag_form
+        )
         #self.finish()
-
-
-    def cook_warnings(self,art):
-        # TODO: move all this crud into a tag definition in the database
-        details = {
-            'warn_wikipedia': ('This article contains unsourced, unverified information from Wikipedia.',),
-            'warn_anon':('This article is based on an unverified, anonymous tipoff.',),
-            'warn_soft':('To ensure future interviews with subject, important questions were not asked.',),
-            'warn_churn':('This article is basically just a press release, copied and pasted.',),
-            'warn_pr': ('Statistics, survey results and/or equations in this article were sponsored by a PR company.',) }
-
-        warns = []
-        for tag in art.tags:
-            warn = tag.name
-            if tag.score < 0:
-                continue    # skip downvoted tags
-            if warn in details:
-                warns.append((details[warn][0],'/static/%s.png' %(warn,)))
-        return warns
 
     def analyse_text(self,html):
         researchers = analyser.find_researchers(html)
