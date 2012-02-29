@@ -12,6 +12,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 import uimodules
+import db
 
 from handlers import history,user,article,addarticle,front,sources,tagging,comments
 import analyser
@@ -49,13 +50,7 @@ class Application(tornado.web.Application):
             )
         tornado.web.Application.__init__(self, handlers, **settings)
 
-        eng_url = "mysql+mysqldb://%(user)s:%(password)s@%(host)s/%(db)s?charset=utf8" % {
-            'user': options.mysql_user,
-            'password': options.mysql_password,
-            'host': options.mysql_host,
-            'db': options.mysql_database
-        }
-        self.engine = create_engine(eng_url, echo=False, pool_recycle=3600)
+        self.engine = create_engine(db.engine_url(), echo=False, pool_recycle=3600)
         self.Session = sessionmaker(bind=self.engine)
 
         session = self.Session()
