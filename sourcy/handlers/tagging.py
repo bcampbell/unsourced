@@ -23,6 +23,11 @@ class SetTagsHandler(BaseHandler):
         article.tags = target_set
 
         # TODO: create actions
+        for t in removals:
+            self.session.add(Action('tag_remove', self.current_user, article=article, tag=t))
+        for t in additions:
+            self.session.add(Action('tag_add', self.current_user, article=article, tag=t))
+
         self.session.commit()
         self.redirect("/art/%s" % (article_id,))
 

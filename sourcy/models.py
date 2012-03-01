@@ -29,7 +29,7 @@ class Action(Base):
     lookup_id = Column(Integer, ForeignKey('lookup.id'))
     tag_id = Column(Integer, ForeignKey('tag.id'))
     comment_id = Column(Integer, ForeignKey('comment.id'))
-    value = Column(Integer, nullable=False, default=0)
+    value = Column(Integer, nullable=False, default=0)  # for votes
 
     user = relationship("UserAccount", backref="actions", uselist=False )
     comment = relationship("Comment")   #, uselist=False )
@@ -54,6 +54,8 @@ class Action(Base):
 
         if self.what == 'tag_add':
             frag = u"tagged '%s' as %s" %(art_link(self.article),self.tag.name)
+        elif self.what == 'tag_remove':
+            frag = u"removed %s tag from '%s'" %(self.tag.name,art_link(self.article))
         elif self.what == 'art_add':
             frag = u'added an article: %s' %(art_link(self.article),)
         elif self.what == 'src_add':
