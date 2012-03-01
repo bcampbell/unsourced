@@ -66,21 +66,6 @@ class source(tornado.web.UIModule):
         return self.render_string("modules/source.html", src=source, can_upvote=can_upvote, can_downvote=can_downvote, element_type=element_type, kind_info=info[source.kind])
 
 
-class tag(tornado.web.UIModule):
-    def render(self, tag, element_type='div'):
-
-        can_upvote = False
-        can_downvote = False
-        if self.current_user is not None:
-            prev_vote = self.handler.session.query(Action).filter_by(what='tag_vote',user_id=self.current_user.id, tag=tag).first()
-
-            if prev_vote is None or prev_vote.value>0:
-                can_downvote = True
-            if prev_vote is None or prev_vote.value<0:
-                can_upvote = True
-
-        return self.render_string("modules/tag.html", tag=tag, can_upvote=can_upvote, can_downvote=can_downvote, element_type=element_type)
-
 
 
 class league_table(tornado.web.UIModule):

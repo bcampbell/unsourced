@@ -1,16 +1,12 @@
-#import functools
-#import urlparse
-
 import tornado.auth
-from sqlalchemy.sql import func
 
 from base import BaseHandler
-from sourcy.util import TornadoMultiDict
-from sourcy.forms import AddTagForm
 from sourcy.models import Article,Tag,Action
 
 
+
 class SetTagsHandler(BaseHandler):
+    """ handler to set the tags on an article """
     @tornado.web.authenticated
     def post(self,article_id):
         article = self.session.query(Article).get(article_id)
