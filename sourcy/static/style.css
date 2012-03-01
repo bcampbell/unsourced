@@ -404,8 +404,8 @@ li.source:after {
 
 
 .helper.tags input[type="checkbox"] { display: none; }
-.helper.tags input[type="checkbox"] + label { width: 66px; text-align: center; }
-.helper.tags input[type="checkbox"] + label img { opacity: 0.3; }
+.helper.tags input[type="checkbox"] + label { width: 32px; text-align: center; }
+.helper.tags input[type="checkbox"] + label img { opacity: 0.2; }
 .helper.tags input[type="checkbox"]:checked + label img { opacity: 1.0; }
 .helper.tags input[type="checkbox"] + label:hover
  {
