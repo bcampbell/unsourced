@@ -33,10 +33,12 @@ class Application(tornado.web.Application):
         handlers.extend(tagging.handlers)
         handlers.extend(comments.handlers)
 
+        ui_modules = [ uimodules, ]
+
         settings = dict(
             static_path = os.path.join(os.path.dirname(__file__), "static"),
             template_path = os.path.join(os.path.dirname(__file__), "templates"),
-            ui_modules = uimodules,
+            ui_modules = ui_modules,
             debug=options.debug,
             cookie_secret=options.cookie_secret,
             login_url="/login",

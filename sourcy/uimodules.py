@@ -72,3 +72,41 @@ class league_table(tornado.web.UIModule):
     def render(self, rows, heading, action_desc):
         return self.render_string('modules/league_table.html',rows=rows, heading=heading, action_desc=action_desc)
 
+class tool_googlescholar(tornado.web.UIModule):
+    def render(self, institutions, journals, researchers):
+        return self.render_string('modules/tool_googlescholar.html',
+            institutions=institutions,
+            journals=journals,
+            researchers=researchers)
+
+
+class tool_addsource(tornado.web.UIModule):
+    def render(self, art, add_source_form, institutions, journals, researchers):
+        return self.render_string('modules/tool_addsource.html',
+            art=art,
+            add_source_form=add_source_form,
+            institutions=institutions,
+            journals=journals,
+            researchers=researchers)
+
+
+    def embedded_javascript(self):
+        return """
+    $('#addsource').collapsify();
+
+
+    $('#addsource .helper').hide();
+    $('#addsource .helper.pr').show();
+    $('#addsource form select').change( function() {
+        var sel = $(this).val();
+        $('#addsource .helper').each( function() {
+            if($(this).hasClass(sel)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+        """
+
+

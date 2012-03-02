@@ -33,9 +33,9 @@ Add more logon options
  - idea: share accounts with journalisted
  - facebook.
 
-front page: show small tag icons beside articles
+[DONE] front page: show small tag icons beside articles
 
-allow users to delete tags they added
+[DONE] allow users to delete tags they added
 
 Batch operations: apply a source to a set of articles
  - how should the UI work?

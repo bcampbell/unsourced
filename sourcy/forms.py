@@ -16,8 +16,8 @@ def fix_url(url):
 
 class AddSourceForm(Form):
     KIND_CHOICES = [
-        ('paper','Academic paper'),
         ('pr','Press release'),
+        ('paper','Academic paper'),
         ('other','Other')]
     kind = SelectField(u'Kind', choices=KIND_CHOICES)
     url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url])

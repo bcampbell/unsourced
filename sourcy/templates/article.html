@@ -4,6 +4,12 @@
 
 {% block extra_js %}
 
+    // hide the submit button on the tags form until a change is made
+    $('form#set-tags input[type="submit"]').hide();
+    $('form#set-tags input[type="checkbox"]').bind('change',function() {$('form#set-tags input[type="submit"]').show();});
+
+
+    // set up journal/researcher buttons for google scholar search thingy
     function reescape(str)
     {
       var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
@@ -83,85 +89,49 @@
     {% end %}
   </div>
 
-  <div class="helper helpful-links">
-      <h2>Helpful links</h2>
-  {% if institutions %}
-  <h3>Institutions</h3>
-  <ul>
-  {% for r in institutions %}
-  <li><span class="hilite institution">{{r[0]}}</span> (<a href="{{r[1]}}">homepage</a>)</li>
-  {% end %}
-  </ul>
-  {% end %}
 
-  {% if journals %}
-  <h3>Journals</h3>
-  <ul>
-  {% for r in journals %}
-  <li><span class="hilite journal">{{r[0]}}</span> (<a href="{{r[1]}}">homepage</a>)</li>
-  {% end %}
-  </ul>
-  {% end %}
-  <p>(add a missing <a href="/addjournal">journal</a> or <a href="/addinstitution">institution</a>)</p>
-  </div>
+{% module tool_addsource(art, add_source_form, institutions, journals, researchers) %}
 
-  <div class="helper addsource">
-      <h2>Add a source</h2>
-      {% if current_user %}
-      <form action="/art/{{art.id}}/addsource" method="post">
-      {% module form(add_source_form) %}
-      <input type="submit" name="submit" value="add" />
-      </form>
-      {% else %}
-      <a href="/login?next=/art/{{art.id}}">Log in</a> to add a source
-      {% end %}
-  </div>
-
-  <div class="helper">
-  <h2>Search for papers</h2>
-
-
-  <form action="http://scholar.google.co.uk/scholar" method="GET" target="_blank">
-      <label for="as_sauthors">written by:</label>
-      <input type="text" name="as_sauthors" id="as_sauthors"/>
-      <ul>
-          {% for r in researchers %}
-          <li><span class="hilite researcher">{{r['name']}}</span></li> <!-- {{r['search_value']}} -->
-          {% end %}<br/>
-      </ul>
-
-      <label for="as_publication">published in:</label>
-      <input type="text" name="as_publication" id="as_publication"/><br/>
-      <ul>
-          {% for j in journals %}
-          <li><span class="hilite journal">{{j[0]}}</span></li>
-          {% end %}
-      </ul>
-
-      <label for="as_q">keywords:</label>
-      <input type="text" name="as_q" id="as_q" /><br/>
-      <input type="submit" value="Search" name="btnG" /> (opens in a new window)
-  </form>
-  </div>
-
-  <div class="helper tags">
-    <h2>Tags</h2>
+  <div class="helper act tags">
     {% if current_user %}
-    <form action="/art/{{art.id}}/settags" method="post">
-{% for t in all_tags %}
+
+    <h2>Edit Tags</h2>
+    <form id="set-tags" action="/art/{{art.id}}/settags" method="post">
+
+    {% for t in [foo for foo in all_tags if foo.kind==TagKind.WARNING] %}
       <input type="checkbox" id="tag-{{t.name}}" name="tags" value="{{t.name}}" {% if t in art.tags %}checked{% end %}/>
       <label for="tag-{{t.name}}"><img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/></label>
-{% end %}
-    <input type="submit"/> 
+    {% end %}
+
+    <div style="width:2em; display: inline-block;"></div>
+
+    {% for t in [foo for foo in all_tags if foo.kind==TagKind.GENERAL] %}
+      <input type="checkbox" id="tag-{{t.name}}" name="tags" value="{{t.name}}" {% if t in art.tags %}checked{% end %}/>
+      <label for="tag-{{t.name}}"><img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/></label>
+    {% end %}
+
+    <div style="width:2em; display: inline-block;"></div>
+
+    {% for t in [foo for foo in all_tags if foo.kind==TagKind.ADMIN] %}
+      <input type="checkbox" id="tag-{{t.name}}" name="tags" value="{{t.name}}" {% if t in art.tags %}checked{% end %}/>
+      <label for="tag-{{t.name}}"><img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/></label>
+    {% end %}
+
+    <br/>
+    <input type="submit" name="submit" value="Update tags"/> 
     </form>
     {% else %}
+    <h2>Tags</h2>
 {% for t in art.tags %}
       <img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/>
 {% end %}
+    <br/>
+    <a href="/login?next=/art/{{art.id}}">Log in</a> to edit tags
     {% end %}
   </div>
 
-  <div>
+  <div class="act">
+   <h2>Chatter</h2>
     <ul>
 {% for cmt in art.comments %}
     <li>{{cmt.author.username}}: {{cmt.content}}</li>

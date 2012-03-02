@@ -1,0 +1,22 @@
+  <form action="http://scholar.google.co.uk/scholar" method="GET" target="_blank">
+      <label for="as_sauthors">written by:</label>
+      <input type="text" name="as_sauthors" id="as_sauthors"/>
+      <ul>
+          {% for r in researchers %}
+          <li><span class="hilite researcher">{{r['name']}}</span></li> <!-- {{r['search_value']}} -->
+          {% end %}<br/>
+      </ul>
+
+      <label for="as_publication">published in:</label>
+      <input type="text" name="as_publication" id="as_publication"/><br/>
+      <ul>
+          {% for j in journals %}
+          <li><span class="hilite journal">{{j[0]}}</span></li>
+          {% end %}
+      </ul>
+
+      <label for="as_q">keywords:</label>
+      <input type="text" name="as_q" id="as_q" /><br/>
+      <input type="submit" value="Search" name="btnG" /> (opens in a new window)
+  </form>
+
