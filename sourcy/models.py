@@ -1,3 +1,5 @@
+import datetime
+
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, DateTime, Date, Boolean, ForeignKey
@@ -23,7 +25,7 @@ class Action(Base):
     # 'src_upvote',
 
     user_id = Column(Integer, ForeignKey('useraccount.id'))
-    performed = Column(DateTime, nullable=False, default=func.current_timestamp())
+    performed = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     article_id = Column(Integer, ForeignKey('article.id'))
     source_id = Column(Integer, ForeignKey('source.id'))
     lookup_id = Column(Integer, ForeignKey('lookup.id'))
@@ -130,7 +132,7 @@ class Article(Base):
     headline = Column(String(512), nullable=False)
     permalink = Column(String(512), nullable=False)
     pubdate = Column(DateTime)
-
+    added = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     tags = relationship("Tag", secondary=article_tags, backref="articles" )
 
     sources = relationship("Source", backref="article", cascade="all, delete-orphan")
@@ -149,6 +151,11 @@ class Article(Base):
         return "<Article('%s','%s', '%s')>" % (self.headline, self.permalink, self.pubdate)
 
 
+class SourceKind(object):
+    PAPER = 'paper'
+    PR = 'pr'
+    OTHER = 'other'
+
 
 class Source(Base):
     __tablename__ = 'source'
@@ -159,22 +166,24 @@ class Source(Base):
     url = Column(String(512), nullable=False)
     title = Column(String(512), nullable=False, default='')
     pubdate = Column(Date)
-    kind = Column(String(32), nullable=False)
+    kind = Column(String(32), nullable=False, default=SourceKind.OTHER)
     doi = Column(String(32), nullable=False, default='')
     publication = Column(String(256), nullable=False,default='')
     score = Column(Integer, nullable=False, default=0)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     actions = relationship("Action", backref="source", cascade="all, delete-orphan")
     creator = relationship("UserAccount")
 
     def __init__(self, **kw):
         for key,value in kw.iteritems():
-            assert(key in ('creator','url','article','title','pubdate','doi','score','kind','publication'))
+            assert(hasattr(self,key))
             setattr(self,key,value)
 
 
     def __repr__(self):
         return "<Source(%s)>" % (self.url,)
+
 
 class Lookup(Base):
     __tablename__ = 'lookup'
@@ -239,7 +248,7 @@ class UserAccount(Base):
     username = Column(String(64), nullable=False, unique=True)
     prettyname = Column(String(256), nullable=False)
     anonymous = Column(Boolean, nullable=False, default=False)
-    created = Column(DateTime, nullable=False, default=func.current_timestamp())
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     # eg "twitter", "google" etc...
     auth_supplier = Column(String(16), nullable=False)
     # unique id on provider - email, twitter name, whatever makes sense
@@ -277,7 +286,7 @@ class Comment(Base):
     id = Column(Integer, primary_key=True)
     article_id = Column(Integer, ForeignKey('article.id'),nullable=True)
     author_id = Column(Integer, ForeignKey('useraccount.id'), nullable=False)
-    post_time = Column(DateTime,default=func.current_timestamp())
+    post_time = Column(DateTime,default=datetime.datetime.utcnow)
     content = Column(String(1024), nullable=False)
 
     author = relationship("UserAccount")

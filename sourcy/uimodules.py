@@ -1,7 +1,15 @@
 import tornado.web
 import util
 from pprint import pprint
-from models import Source,Article,Action
+from models import Source,SourceKind,Article,Action
+
+
+source_presentation = {
+    SourceKind.PAPER: {'icon':'paper_icon.png', 'desc':'Academic paper'},
+    SourceKind.PR: {'icon':'recycle_icon.png', 'desc':'Press release'},
+    SourceKind.OTHER: {'icon':'chain_icon.png', 'desc':'Other link'},
+    }
+
 
 class formfield(tornado.web.UIModule):
     def render(self, field):
@@ -46,26 +54,42 @@ class art_link(tornado.web.UIModule):
 #        return self.render_string('modules/add_source.html',art=art)
 
 
+
+
 class source(tornado.web.UIModule):
-    def render(self,source, element_type='div'):
+    def render(self,src, element_type='div'):
 
         can_upvote = False
         can_downvote = False
         if self.current_user is not None:
-            prev_vote = self.handler.session.query(Action).filter_by(what='src_vote',user_id=self.current_user.id, source=source).first()
+            prev_vote = self.handler.session.query(Action).filter_by(what='src_vote',user_id=self.current_user.id, source=src).first()
 
             if prev_vote is None or prev_vote.value>0:
                 can_downvote = True
             if prev_vote is None or prev_vote.value<0:
                 can_upvote = True
 
-        info = {'paper': {'icon':'paper_icon.png', 'desc':'Academic paper'},
-                'pr': {'icon':'recycle_icon.png', 'desc':'Press release'},
-                'other': {'icon':'chain_icon.png', 'desc':'Other link'}}
+        return self.render_string("modules/source.html",
+            src=src,
+            can_upvote=can_upvote,
+            can_downvote=can_downvote,
+            element_type=element_type,
+            kind_desc=source_presentation[src.kind]['desc'],
+            kind_icon='/static/' + source_presentation[src.kind]['icon'])
 
-        return self.render_string("modules/source.html", src=source, can_upvote=can_upvote, can_downvote=can_downvote, element_type=element_type, kind_info=info[source.kind])
 
+class art_item(tornado.web.UIModule):
+    """ handle an article as an entry in a list - ie one line with title, link etc... """
+    def render(self,art):
+        return self.render_string("modules/art_item.html",
+            art=art)
 
+class source_icon(tornado.web.UIModule):
+    """ iconic representation of a source """
+    def render(self,src):
+        kind_icon = '/static/' + source_presentation[src.kind]['icon']
+        kind_desc = source_presentation[src.kind]['desc']
+        return """<img src="%s" title="%s"/>""" % (kind_icon,kind_desc)
 
 
 class league_table(tornado.web.UIModule):
