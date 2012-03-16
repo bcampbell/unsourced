@@ -18,7 +18,6 @@ class AddArticleHandler(BaseHandler):
         if art_url is not None:
             art = art_url.article
             self.redirect("/art/%d" % (art.id,))
-            self.finish()
         else:
             # need to scrape the article metadata to add it to database
             # TODO: don't need to scrape article text here...
@@ -57,7 +56,6 @@ class AddArticleHandler(BaseHandler):
         self.session.commit()
 
         self.redirect("/art/%d" % (art.id,))
-        self.finish()
 
 
 
