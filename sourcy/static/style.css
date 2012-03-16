@@ -502,3 +502,25 @@ ul.tabs li.selected a {
     border: 1px solid #888;
 }
 
+/* comment count */
+.cmt-cnt {
+    position: relative;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #f80;
+    padding: 1px 0.4em;
+}
+
+.cmt-cnt:after {
+	content:"";
+	position:absolute;
+	bottom:4px; /* value = - border-top-width - border-bottom-width */
+	right:-4px; /* controls horizontal position */
+	border-width: 0 4px 4px 0; /* vary these values to change the angle of the vertex */
+	border-style:solid;
+	border-color:#f80 transparent;
+    /* reduce the damage in FF3.0 */
+    display:block; 
+    width:0;
+}
+

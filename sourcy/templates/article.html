@@ -134,7 +134,7 @@
    <h2>Chatter</h2>
     <ul>
 {% for cmt in art.comments %}
-    <li>{{cmt.author.username}}: {{cmt.content}}</li>
+    <li>{{cmt.author.username}}, {{ locale.format_date(cmt.post_time, shorter=True) }}: {{cmt.content}}</li>
 {% end %}
     </ul>
     {% if current_user %}
