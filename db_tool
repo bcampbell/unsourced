@@ -36,51 +36,51 @@ def main():
     session = Session()
 
     tag_defs = (
-        {
-        'name': 'warn_wikipedia',
-        'description': 'This article contains unsourced, unverified information from Wikipedia.',
-        'kind': TagKind.WARNING,
-        'icon': 'warn_wikipedia',
-        },
-        {
-        'name': 'warn_anon',
-        'description': 'This article is based on an unverified, anonymous tipoff.',
-        'kind': TagKind.WARNING,
-        'icon': 'warn_anon',
-        },
-        {
-        'name': 'warn_soft',
-        'description': 'To ensure future interviews with subject, important questions were not asked.',
-        'kind': TagKind.WARNING,
-        'icon': 'warn_soft',
-        },
+#        {
+#        'name': 'warn_wikipedia',
+#        'description': 'This article contains unsourced, unverified information from Wikipedia.',
+#        'kind': TagKind.WARNING,
+#        'icon': 'warn_wikipedia',
+#        },
+#        {
+#        'name': 'warn_anon',
+#        'description': 'This article is based on an unverified, anonymous tipoff.',
+#        'kind': TagKind.WARNING,
+#        'icon': 'warn_anon',
+#        },
+#        {
+#        'name': 'warn_soft',
+#        'description': 'To ensure future interviews with subject, important questions were not asked.',
+#        'kind': TagKind.WARNING,
+#        'icon': 'warn_soft',
+#        },
         {
         'name': 'warn_churn',
-        'description': 'This article is basically just a press release, copied and pasted.',
+        'description': 'Beware: churnalism',
         'kind': TagKind.WARNING,
         'icon': 'warn_churn',
         },
         {
-        'name': 'warn_pr',
-        'description': 'Statistics, survey results and/or equations in this article were sponsored by a PR company.',
+        'name': 'warn_poll',
+        'description': 'Beware: article based on dodgy poll or survey',
         'kind': TagKind.WARNING,
-        'icon': 'warn_pr',
+        'icon': 'warn_poll',
         },
+#        {
+#        'name': 'science',
+#        'description':  'Science',
+#        'kind': TagKind.GENERAL,
+#        'icon': 'science',
+#        },
         {
-        'name': 'science',
-        'description':  'Science',
-        'kind': TagKind.GENERAL,
-        'icon': 'science',
-        },
-        {
-        'name': 'unsourced',
-        'description': 'This article might be missing some sources',
+        'name': 'done',
+        'description': 'Hooray! A well sourced article',
         'kind': TagKind.ADMIN,
-        'icon': 'unsourced',
+        'icon': 'tick',
         },
         {
         'name': 'help',
-        'description': 'Help requested tracking down sources for this article',
+        'description': 'Help requested',
         'kind': TagKind.ADMIN,
         'icon': 'help',
         }

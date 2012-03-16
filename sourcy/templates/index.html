@@ -10,6 +10,7 @@
 
 <ul class="tabs">
 <li><a href="#recent-arts">Newest</a></li>
+<li><a href="#sourced-arts"><img src="/static/tag_small/tick.png"/> Sourced</a></li>
 <li><a href="#most-discussed"><img src="/static/comment_icon.png"/> Discussed</a></li>
 <li><a href="#help-wanted"><img src="/static/tag_small/help.png"/> Help wanted</a></li>
 <li><a href="#toxic-arts">Toxic</a></li>
@@ -25,11 +26,32 @@
 </ul>
 </div>
 
+<div class="tab-content" id="sourced-arts">
+<p>Articles which have been sourced:</p>
+<ul>
+{% for art in sourced_arts %}
+<li>{% module art_item(art) %}
+    <ul>
+    {% for s in art.sources %}
+    {% module source(s, element_type="li") %}
+    {% end %}
+    </ul>
+</li>
+{% end %}
+</ul>
+</div>
+
 <div class="tab-content" id="most-discussed">
 <p>The articles causing the buzz...</p>
 <ul>
 {% for art in most_discussed %}
-<li>{% module art_item(art) %}</li>
+<li>{% module art_item(art) %}
+ <ul>
+ {% for cmt in art.comments %}
+  <li>{{cmt.author.username}}, {{ locale.format_date(cmt.post_time, shorter=True) }}: {{cmt.content}}</li>
+ {% end %}
+ </ul>
+</li>
 {% end %}
 </ul>
 </div>

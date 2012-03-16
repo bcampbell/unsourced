@@ -92,41 +92,45 @@
 
 {% module tool_addsource(art, add_source_form, institutions, journals, researchers) %}
 
-  <div class="helper act tags">
-    {% if current_user %}
 
-    <h2>Edit Tags</h2>
-    <form id="set-tags" action="/art/{{art.id}}/settags" method="post">
+  <div class="tags">
 
-    {% for t in [foo for foo in all_tags if foo.kind==TagKind.WARNING] %}
-      <input type="checkbox" id="tag-{{t.name}}" name="tags" value="{{t.name}}" {% if t in art.tags %}checked{% end %}/>
-      <label for="tag-{{t.name}}"><img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/></label>
-    {% end %}
-
-    <div style="width:2em; display: inline-block;"></div>
-
-    {% for t in [foo for foo in all_tags if foo.kind==TagKind.GENERAL] %}
-      <input type="checkbox" id="tag-{{t.name}}" name="tags" value="{{t.name}}" {% if t in art.tags %}checked{% end %}/>
-      <label for="tag-{{t.name}}"><img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/></label>
-    {% end %}
-
-    <div style="width:2em; display: inline-block;"></div>
-
-    {% for t in [foo for foo in all_tags if foo.kind==TagKind.ADMIN] %}
-      <input type="checkbox" id="tag-{{t.name}}" name="tags" value="{{t.name}}" {% if t in art.tags %}checked{% end %}/>
-      <label for="tag-{{t.name}}"><img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/></label>
-    {% end %}
-
-    <br/>
-    <input type="submit" name="submit" value="Update tags"/> 
-    </form>
-    {% else %}
     <h2>Tags</h2>
-{% for t in art.tags %}
+    <ul class="tag-list">
+    {% for t in art.tags %}
+      <li>
       <img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/>
-{% end %}
-    <br/>
-    <a href="/login?next=/art/{{art.id}}">Log in</a> to edit tags
+      {% if current_user %}
+      <form class="btn" action="/art/{{art.id}}/deltag" method="post">
+        <input type="hidden" name="tag" value="{{t.name}}"/>
+        <input type="submit" value="Remove" />
+      </form>
+      {{t.description}}
+      {% end %}
+      </li>
+    {% end %}
+    </ul>
+  </div>
+
+  <div class="act tags" style="clear:both;">
+    {% if current_user %}
+    <h3>Add a tag</h3>
+
+    <form id="set-tags" action="/art/{{art.id}}/addtags" method="post">
+
+    <ul class="tag-list">
+    {% for t in [foo for foo in all_tags if foo not in art.tags] %}
+      <li>
+      <input type="checkbox" id="tag-{{t.name}}" name="tags" value="{{t.name}}" {% if t in art.tags %}checked{% end %}/>
+      <label for="tag-{{t.name}}"><img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/>{{t.description}}</label>
+      </li>
+    {% end %}
+    </ul>
+    <input type="submit" value="Add tags">
+    </form>
+
+    {% else %}
+     <a href="/login?next=/art/{{art.id}}">Add a tag</a>
     {% end %}
   </div>
 

@@ -76,9 +76,10 @@ nav li:hover { background-color: #f88; }
 .source .publication { padding-left: 24px; color:#444; font-size:x-small; } 
 .source .creator { padding-left: 24px; color:#888; font-size:x-small; display: block; } 
 
-/* delete button */
-form.delete {display: inline; }
-form.delete input { display: inline; }
+/* forms to show as inline buttons */
+form.btn {display: inline; }
+form.btn input { display: inline; }
+.helper form.btn>input[type="submit"] { margin: 0.2em 0 0.2em 0;}
 
 
 /* voting arrows */
@@ -413,16 +414,18 @@ li.source:after {
 }
 
 
-.helper.tags input[type="checkbox"] { display: none; }
-.helper.tags input[type="checkbox"] + label { width: 32px; text-align: center; }
-.helper.tags input[type="checkbox"] + label img { opacity: 0.2; }
-.helper.tags input[type="checkbox"]:checked + label img { opacity: 1.0; }
-.helper.tags input[type="checkbox"] + label:hover
+.tags input[type="checkbox"] { display: none; }
+.tags input[type="checkbox"] + label { width: 32px; text-align: center; }
+.tags input[type="checkbox"] + label img { opacity: 0.2; }
+.tags input[type="checkbox"]:checked + label img { opacity: 1.0; }
+.tags input[type="checkbox"] + label:hover
  {
     background: #88f;
  }
 
 
+
+.helper.tags .unchecked { opacity: 0.2; }
 
 /* call-to-action button to _do_ stuff!*/
 .act {
@@ -524,3 +527,24 @@ ul.tabs li.selected a {
     width:0;
 }
 
+ul.tag-list {
+    list-style: none;
+    padding: 1em 0;
+}
+
+
+ul.tag-list img {
+ float:left;
+ padding-right: 0.5em;
+}
+
+
+ul.tag-list li {
+    clear: both;
+    margin-bottom: 1em;
+    padding-left: 0;
+}
+
+ul.tag-list li .btn {
+float:right;
+}

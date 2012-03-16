@@ -30,6 +30,7 @@ class MainHandler(BaseHandler):
             most_discussed=self._most_discussed_arts(),
             recent_arts=self._recent_arts(),
             recent_actions=self._recent_actions(),
+            sourced_arts=self._sourced(),
             toxic=self._toxic(),
             help_wanted=self._help_wanted()
         )
@@ -65,6 +66,15 @@ class MainHandler(BaseHandler):
 
     def _help_wanted(self):
         q = self.session.query(Article).join(Article.tags).filter(Tag.name=='help').order_by(Article.pubdate.desc()).slice(0,10)
+        return q
+
+
+    def _sourced(self):
+        q = self.session.query(Article).\
+            join(Article.tags).\
+            filter(Tag.name=='done').\
+            order_by(Article.pubdate.desc()).\
+            slice(0,10)
         return q
 
 
