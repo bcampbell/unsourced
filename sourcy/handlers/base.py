@@ -9,6 +9,11 @@ class BaseHandler(tornado.web.RequestHandler):
     def initialize(self):
         self.dbsession = None
 
+    def on_finish(self):
+        if self.dbsession is not None:
+            self.dbsession.close()
+
+
     @property
     def session(self):
         if self.dbsession is None:
@@ -20,6 +25,5 @@ class BaseHandler(tornado.web.RequestHandler):
         if user_id is None:
             return None
         return self.session.query(UserAccount).filter_by(id=user_id).first()
-
 
 

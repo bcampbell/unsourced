@@ -55,9 +55,8 @@ a:visited:hover { color: #90f; }
 /* base menus (horizontal) */
 nav ul { padding: 0; margin: 0; list-style:none; }
 nav li { padding: 0; margin: 0; display: inline-block; } 
-nav li a { vertical-align: top; padding: 0.5em 0.5em; display: inline-block;  font-size: larger;}
+nav li a { padding: 0.5em; vertical-align: top; display: inline-block; }
 nav li:hover { background-color: #f88; }
-
 
 /* downvoted sources */
 .downvoted a:link { color: #aaa; }
@@ -125,7 +124,9 @@ body>header {
    background-image:      -o-linear-gradient(top, #d00, #a00);
 }
 
-body>header nav { position: absolute; bottom: 0em; right: 2em; }
+body>header nav { position: absolute; bottom: 0em; right: 2em; 
+ font-size: larger;
+}
 #user-stuff {
   position: absolute;
   top: 0.5em;
@@ -548,3 +549,29 @@ ul.tag-list li {
 ul.tag-list li .btn {
 float:right;
 }
+
+
+nav.pager li a {
+    background-color: #ccc;
+    margin: 0;
+}
+nav.pager li a:hover {
+    background-color: #88f;
+}
+
+nav.pager li span {
+    padding: 0.5em;
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
+}
+
+nav.pager li.gap {
+    border: none;
+}
+
+nav.pager li {
+    border: 1px solid #888;
+    margin: 0;
+}
+

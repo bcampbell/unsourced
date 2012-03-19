@@ -9,7 +9,30 @@ from sqlalchemy.sql.expression import cast
 from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import subqueryload
 
+from sourcy.util import Paginator
+
 from pprint import pprint
+
+class BrowseHandler(BaseHandler):
+    def get(self):
+        page = int(self.get_argument('p',1))
+        tag_filts = self.get_arguments('t')
+
+
+        all_tags = self.session.query(Tag).all()
+
+        arts = self.session.query(Article).\
+            options(subqueryload(Article.tags,Article.sources,Article.comments))
+
+        tags = self.session.query(Tag).filter(Tag.name.in_(tag_filts))
+        if tag_filts:
+            arts = arts.filter(Article.tags.any(Tag.name.in_(tag_filts)))
+
+        arts = arts.order_by(Article.pubdate.desc())
+
+        pager = Paginator(arts, 50, page)
+        self.render("browse.html",pager=pager,all_tags=all_tags,filter_tags=tags)
+
 
 
 class MainHandler(BaseHandler):
@@ -204,6 +227,7 @@ class LeagueTablesHandler(BaseHandler):
 
 handlers = [
     (r'/', MainHandler),
+    (r'/browse', BrowseHandler),
     (r'/about', AboutHandler),
     (r'/academicpapers', AcademicPapersHandler),
     (r"/addjournal", AddJournalHandler),
