@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Sourcy{% end %}
+
+
+{% block main %}
+<h2>breakdown by day</h2>
+<p>TODO: this will be a fancy-looking graph</p>
+<table border="1">
+<tr><th>day</th><th>num articles</th><th>num sourced</th><th>num help requested</th></tr>
+{% for day, row in stats %}
+<tr>
+ <th>{{day}}</th><td>{{row['total']}}</td><td>{{row['done']}}</td><td>{{row['help']}}</td>
+</tr>
+{% end %}
+</table>
+
+{% end %}
+

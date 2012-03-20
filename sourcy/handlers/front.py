@@ -5,13 +5,41 @@ import itertools
 
 from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
 from sqlalchemy import Date
-from sqlalchemy.sql.expression import cast
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import cast,func
 from sqlalchemy.orm import subqueryload
 
 from sourcy.util import Paginator
 
 from pprint import pprint
+from collections import defaultdict
+
+class DailyBreakdown(BaseHandler):
+    def get(self):
+
+
+        stats = {}
+
+        donetag = self.session.query(Tag).filter(Tag.name=='done').one()
+        helptag = self.session.query(Tag).filter(Tag.name=='help').one()
+        q = self.session.query(cast(Article.pubdate,Date), Article).\
+            options(subqueryload(Article.tags))
+
+        for day,art in q:
+            if day not in stats:
+                foo = dict(total=0,done=0,help=0)
+            else:
+                foo = stats[day]
+            foo['total'] += 1
+            if donetag in art.tags:
+                foo['done'] += 1
+            if helptag in art.tags:
+                foo['help'] += 1
+            stats[day]=foo
+
+        stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0], reverse=True)
+
+        self.render('daily.html', stats=stats)
+
 
 class BrowseHandler(BaseHandler):
     def get(self):
@@ -30,7 +58,7 @@ class BrowseHandler(BaseHandler):
 
         arts = arts.order_by(Article.pubdate.desc())
 
-        pager = Paginator(arts, 50, page)
+        pager = Paginator(arts, 10, page)
         self.render("browse.html",pager=pager,all_tags=all_tags,filter_tags=tags)
 
 
@@ -233,4 +261,5 @@ handlers = [
     (r"/addjournal", AddJournalHandler),
     (r"/addinstitution", AddInstitutionHandler),
     (r"/leaguetables", LeagueTablesHandler),
+    (r"/daily", DailyBreakdown),
     ]
