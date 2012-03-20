@@ -36,7 +36,7 @@ class DailyBreakdown(BaseHandler):
                 foo['help'] += 1
             stats[day]=foo
 
-        stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0], reverse=True)
+        stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0] )
 
         self.render('daily.html', stats=stats)
 
