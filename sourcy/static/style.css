@@ -208,9 +208,9 @@ body>footer {
    background-attachment: fixed;
 
    /*background:  url(/static/cut.png) bottom right no-repeat fixed, -moz-linear-gradient(top, #ffe0e0, #fff) fixed;*/
-   background:  url(/static/cut.png) bottom right no-repeat fixed, -moz-linear-gradient(top, #f0f0ff, #fff) fixed;
+/*   background:  url(/static/cut.png) bottom right no-repeat fixed, -moz-linear-gradient(top, #f0f0ff, #fff) fixed;
    background:  url(/static/cut.png) bottom right no-repeat fixed, -webkit-linear-gradient(top, #f0f0ff, #fff) fixed;
-
+*/
 }
 
 /* tools sidebar */

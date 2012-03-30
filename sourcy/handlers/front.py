@@ -4,7 +4,7 @@ import tornado.auth
 import itertools
 
 from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
-from sqlalchemy import Date
+from sqlalchemy import Date,not_
 from sqlalchemy.sql.expression import cast,func
 from sqlalchemy.orm import subqueryload
 
@@ -62,8 +62,29 @@ class BrowseHandler(BaseHandler):
         self.render("browse.html",pager=pager,all_tags=all_tags,filter_tags=tags)
 
 
+class FrontHandler(BaseHandler):
+    def get(self):
 
-class MainHandler(BaseHandler):
+        donetag = self.session.query(Tag).filter(Tag.name=='done').one()
+
+
+        subq = self.session.query("article_tag.article_id").\
+            filter(not_(article_tags.c.tag_id==donetag.id)).\
+            subquery()
+
+        random_arts = self.session.query(Article).\
+            options(subqueryload(Article.tags,Article.sources,Article.comments)).\
+            filter(not_(Article.id.in_(subq))).\
+            order_by(func.rand()).\
+            limit(5)
+
+        recent_actions = self.session.query(Action).order_by(Action.performed.desc()).slice(0,10)
+
+        self.render('front.html', random_arts=random_arts, recent_actions=recent_actions)
+
+
+
+class OldComplexFrontHandler(BaseHandler):
     def get(self):
 
         days = []
@@ -76,7 +97,7 @@ class MainHandler(BaseHandler):
 
         days.append((date,arts))
 
-        self.render('index.html',
+        self.render('old_front.html',
             days=days,
             most_discussed=self._most_discussed_arts(),
             recent_arts=self._recent_arts(),
@@ -254,7 +275,8 @@ class LeagueTablesHandler(BaseHandler):
 
 
 handlers = [
-    (r'/', MainHandler),
+    (r'/', FrontHandler),
+    (r'/old', OldComplexFrontHandler),
     (r'/browse', BrowseHandler),
     (r'/about', AboutHandler),
     (r'/academicpapers', AcademicPapersHandler),
