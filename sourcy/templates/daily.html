@@ -2,32 +2,20 @@
 {% block title %}Sourcy{% end %}
 
 {% block extra_js %}
-arrayOfDataMulti = new Array(
 
-{% for day,row in stats[:-1] %}[[{{row['done']}},{{row['total']-row['done']}}], '{{day}}'],{% end %}
-{% for day,row in stats[-1:] %}[[{{row['done']}},{{row['total']-row['done']}}], '{{day}}']{% end %}
-);
-
-$('#fancychart').jqBarGraph({
-   data: arrayOfDataMulti,
-   colors: ['#0f0','#444'],
-   legends: ['done','missing sources'],
-   legend: true
-});
+$('#daily_data').dailychart({});
 {% end %}
 
 {% block main %}
 <h2>breakdown by day</h2>
-<table border="1">
-<tr><th>day</th><th>num articles</th><th>num sourced</th><th>num help requested</th></tr>
-{% for day, row in stats %}
-<tr>
- <th>{{day}}</th><td>{{row['total']}}</td><td>{{row['done']}}</td><td>{{row['help']}}</td>
-</tr>
-{% end %}
-</table>
 
-<div id="fancychart"></div>
+<ul class="daily">
+{% for day, row in stats %}
+{% module daily(day,row) %}
+</li>
+{% end %}
+</ul>
+
 
 {% end %}
 

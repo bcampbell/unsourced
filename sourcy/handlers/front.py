@@ -13,31 +13,44 @@ from sourcy.util import Paginator
 from pprint import pprint
 from collections import defaultdict
 
+
+def daily_breakdown(session):
+    stats = {}
+
+    donetag = session.query(Tag).filter(Tag.name=='done').one()
+    helptag = session.query(Tag).filter(Tag.name=='help').one()
+    q = session.query(cast(Article.pubdate,Date), Article).\
+        options(subqueryload(Article.tags))
+
+    for day,art in q:
+        if day not in stats:
+            foo = dict(total=0,done=0,help=0)
+        else:
+            foo = stats[day]
+        foo['total'] += 1
+        if donetag in art.tags:
+            foo['done'] += 1
+        if helptag in art.tags:
+            foo['help'] += 1
+        stats[day]=foo
+
+    stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0] )
+
+
+    for x in stats:
+        perc = 0.0
+        if x[1]['total'] > 0:
+            perc = 100.0 * float(x[1]['done']) / float(x[1]['total'])
+        x[1]['percent'] = int(perc)
+
+    return stats
+
+
 class DailyBreakdown(BaseHandler):
     def get(self):
 
-
-        stats = {}
-
-        donetag = self.session.query(Tag).filter(Tag.name=='done').one()
-        helptag = self.session.query(Tag).filter(Tag.name=='help').one()
-        q = self.session.query(cast(Article.pubdate,Date), Article).\
-            options(subqueryload(Article.tags))
-
-        for day,art in q:
-            if day not in stats:
-                foo = dict(total=0,done=0,help=0)
-            else:
-                foo = stats[day]
-            foo['total'] += 1
-            if donetag in art.tags:
-                foo['done'] += 1
-            if helptag in art.tags:
-                foo['help'] += 1
-            stats[day]=foo
-
-        stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0] )
-
+        stats = daily_breakdown(self.session)
+       
         self.render('daily.html', stats=stats)
 
 
@@ -45,6 +58,16 @@ class BrowseHandler(BaseHandler):
     def get(self):
         page = int(self.get_argument('p',1))
         tag_filts = self.get_arguments('t')
+
+        day_from = self.get_argument('from','')
+        day_to = self.get_argument('to','')
+
+
+        if day_from:
+            day_from = datetime.datetime.strptime(day_from, '%Y-%m-%d').date()
+        if day_to:
+            day_to = datetime.datetime.strptime(day_to,'%Y-%m-%d').date()
+
 
 
         all_tags = self.session.query(Tag).all()
@@ -56,10 +79,16 @@ class BrowseHandler(BaseHandler):
         if tag_filts:
             arts = arts.filter(Article.tags.any(Tag.name.in_(tag_filts)))
 
+        if day_from:
+            arts = arts.filter(cast(Article.pubdate, Date) >= day_from)
+
+        if day_to:
+            arts = arts.filter(cast(Article.pubdate, Date) <= day_to)
+
         arts = arts.order_by(Article.pubdate.desc())
 
-        pager = Paginator(arts, 10, page)
-        self.render("browse.html",pager=pager,all_tags=all_tags,filter_tags=tags)
+        pager = Paginator(arts, 100, page)
+        self.render("browse.html",pager=pager,all_tags=all_tags,filter_tags=tags,day_from=day_from, day_to=day_to)
 
 
 class FrontHandler(BaseHandler):
@@ -80,7 +109,9 @@ class FrontHandler(BaseHandler):
 
         recent_actions = self.session.query(Action).order_by(Action.performed.desc()).slice(0,10)
 
-        self.render('front.html', random_arts=random_arts, recent_actions=recent_actions)
+        daily = daily_breakdown(self.session)
+
+        self.render('front.html', random_arts=random_arts, recent_actions=recent_actions,daily=daily)
 
 
 

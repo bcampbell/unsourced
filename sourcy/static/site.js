@@ -72,6 +72,47 @@
     });
 
   };
+
+
+  /* convert daily breakdown table into a chart */
+  $.fn.dailychart = function( options ) {
+    var settings = $.extend( {
+      'foo'         : 'bar'
+    }, options);
+
+
+    function table_to_data(src) {
+        var rows = [];
+        $('tbody tr', src).each(function(i, tr) {
+            var row = [];
+            $('th,td',tr).each(function(i,td) {
+                row.push($(td).html());
+            });
+            rows.push(row);
+        });
+        return rows;
+    }
+
+
+    return this.each(function() {
+        var data = table_to_data($(this));
+
+        $(this).hide();
+
+        var rows = [];
+        $(data).each( function(i,d) {
+            var percent = 0.0;
+            if(d[2] > 0) {
+                percent = d[1] / d[2];
+            }
+            rows.push('<span>'+d[0]+'</span><div class="graph"><span class="bar" style="width:'+percent+'%;">'+percent+'%</span></div>\n');
+        });
+        $(this).after('<div style="clear:both;">' + rows.join('')+"</div>");
+
+
+    });
+  };
+
 })( jQuery );
 
 

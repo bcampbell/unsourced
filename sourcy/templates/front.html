@@ -11,7 +11,7 @@
 <img src="/static/howitworks.png" alt="How sourcy works" style="display: block; margin-left: auto; margin-right: auto"/>
 
 <div id="random-arts">
-<h4>Some articles which need sourcing</h4>
+<h2>Some articles which need sourcing</h2>
 <ul>
 {% for art in random_arts %}
 <li>{% module art_item(art) %}</li>
@@ -20,8 +20,16 @@
 (<a href="/">show me some others</a>)
 </div>
 
-<div id="recent-activity" style="clear:both;">
-<h4>What has everyone been up to?</h4>
+
+
+</div>
+</div>
+
+<br/>
+<br/>
+
+<div id="recent-activity" style="float:left; width: 50%;">
+<h2>Recent activity</h2>
 <ul>
     {% for act in recent_actions %}
     <li>{{ locale.format_date(act.performed, shorter=True) }}: {% module user(act.user) %} {% raw act.describe() %}</li>
@@ -29,7 +37,16 @@
 </ul>
 </div>
 
+<div id="daily" style="float:right; width: 40%;">
+<h2>Progress</h2>
+<p>Percentage of articles sourced per day</p>
+<ul class="daily">
+{% for day, row in daily %}
+{% module daily(day,row) %}
+{% end %}
+</ul>
 </div>
-</div>
+
+
 {% end %}
 

@@ -330,15 +330,17 @@ form input[type="submit"] { border: 1px solid #888; }
 }
 
 .day-progress {
-    float: left;
-    width: 6em;
+/*    float: left; */
+/*    width: 6em;
     height: 6em;
+*/
+    padding:0.2em;
     -moz-border-radius: 3em;
     border-radius: 3em;
     background-color: #d00;
     color: #fff;
     text-align: center;
-    font-size: 75%;
+/*    font-size: 75%; */
 }
 
 .day-progress .percentage {
@@ -574,4 +576,44 @@ nav.pager li {
     border: 1px solid #888;
     margin: 0;
 }
+
+
+/*
+.daily { margin-top:0.5em; }
+
+.graph {
+display:inline-block;
+background-color: #ccc;
+width: 80px;
+}
+ 
+.graph .bar {
+display:block;
+background-color: #0f0;
+color:#fff;
+padding: 0;
+}
+ 
+.graph .bar span {
+position:absolute;
+#left:1em
+}
+*/
+.daily { clear: both; }
+.daily a { float: left; width: 7em; }
+.daily li { margin: 0.3em; }
+.graph {
+     border: 1px solid #888; 
+     width: 100px; 
+/*     margin: 2px 5px 2px 0;  */
+    margin-right: 0.3em;
+     padding: 0; 
+     float: left; 
+     background: #eee;
+   }
+
+   div.graph > div {
+     background-color: #0f0; 
+     height: 12px
+   }
 

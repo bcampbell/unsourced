@@ -84,6 +84,11 @@ class art_item(tornado.web.UIModule):
         return self.render_string("modules/art_item.html",
             art=art)
 
+class daily(tornado.web.UIModule):
+    def render(self,day,row):
+        return self.render_string("modules/daily.html",
+            day=day,row=row)
+
 class source_icon(tornado.web.UIModule):
     """ iconic representation of a source """
     def render(self,src):
