@@ -14,7 +14,7 @@
 <h2>Some articles which need sourcing</h2>
 <ul>
 {% for art in random_arts %}
-<li>{% module art_item(art) %}</li>
+<li>{% module art_item(art,show_pubdate=True) %}</li>
 {% end %}
 </ul>
 (<a href="/">show me some others</a>)

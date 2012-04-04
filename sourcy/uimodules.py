@@ -80,9 +80,9 @@ class source(tornado.web.UIModule):
 
 class art_item(tornado.web.UIModule):
     """ handle an article as an entry in a list - ie one line with title, link etc... """
-    def render(self,art):
+    def render(self, art, show_pubdate=False):
         return self.render_string("modules/art_item.html",
-            art=art)
+            art=art, show_pubdate=show_pubdate)
 
 class daily(tornado.web.UIModule):
     def render(self,day,row):
