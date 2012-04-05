@@ -78,6 +78,8 @@ class ArticleHandler(BaseHandler):
 
 
         all_tags = self.session.query(Tag).all()
+        donetag = self.session.query(Tag).filter(Tag.name=='done').one()
+        helptag = self.session.query(Tag).filter(Tag.name=='help').one()
 
         add_source_form = AddSourceForm()
 
@@ -91,6 +93,8 @@ class ArticleHandler(BaseHandler):
             add_source_form=add_source_form,
             all_tags = all_tags,
             TagKind=TagKind,
+            donetag=donetag,
+            helptag=helptag,
 #            add_tag_form=add_tag_form
         )
         #self.finish()

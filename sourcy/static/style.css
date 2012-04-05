@@ -465,6 +465,14 @@ li.source:after {
     content: "+ ";
 }
 
+#addawarning h2.active:before {
+    content: "- ";
+}
+
+#addwarning h2.inactive:before {
+    content: "+ ";
+}
+
 
 .tabs ul {
 }
