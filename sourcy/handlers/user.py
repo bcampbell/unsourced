@@ -1,3 +1,5 @@
+import itertools
+
 import tornado.auth
 import tornado.web
 from tornado import httpclient
@@ -22,7 +24,7 @@ class UserHandler(BaseHandler):
             .order_by(Action.performed.desc())\
             .slice(0,100)\
             .all()
-        self.render('user.html', user=user, actions=actions)
+        self.render('user.html', user=user, actions=actions, groupby=itertools.groupby)
 
 
 class LoginHandler(BaseHandler):

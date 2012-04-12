@@ -538,6 +538,33 @@ ul.tabs li.selected a {
     width:0;
 }
 
+
+/* comment bubble */
+.cmt {
+    position: relative;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #f80;
+    padding: 0.2em 0.2em;
+    margin: 0.2em 0.2em;
+    display: inline-block;
+}
+
+.cmt:before {
+	content:"";
+	position:absolute;
+	bottom:4px; /* value = - border-top-width - border-bottom-width */
+	left:-4px; /* controls horizontal position */
+	border-width: 0px 0px 4px 4px; /* vary these values to change the angle of the vertex */
+	border-style:solid;
+	border-color:#f80 transparent;
+    /* reduce the damage in FF3.0 */
+    display:block; 
+    width:0;
+}
+
+
+
 ul.tag-list {
     list-style: none;
     padding: 1em 0;
@@ -624,4 +651,46 @@ position:absolute;
      background-color: #0f0; 
      height: 12px
    }
+
+.when { font-size: smaller;
+    color: #888;
+    font-style: italic;
+}
+
+
+ul.action-list {
+    padding: 0;
+    margin: 1em;
+    padding-left: 1em;
+    list-style:none;
+}
+li.user-actions {
+    margin: 0;
+    padding: 0.1em;
+    border-bottom: 1px solid #ccc;
+}
+li.user-actions:last-child {
+    border-bottom: none;
+}
+
+
+li.user-actions .user {
+    float: left;
+/*    border: 1px solid #888; */
+    padding: 4px;
+}
+
+li.user-actions:after {
+    content: "";
+    clear: both;
+    display: block;
+}
+
+li.user-actions>ul {
+    padding: 0;
+    margin: 0em 0em 0.2em 8em;
+    list-style: none;
+}
+
+
 

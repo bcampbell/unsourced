@@ -30,11 +30,22 @@
 
 <div id="recent-activity" style="float:left; width: 50%;">
 <h2>Recent activity</h2>
-<ul>
-    {% for act in recent_actions %}
-    <li>{{ locale.format_date(act.performed, shorter=True) }}: {% module user(act.user) %} {% raw act.describe() %}</li>
+{% for art, art_actions in groupby(recent_actions, key = lambda x: x.article) %}
+<span>on {% module art_item(art, show_icons=False, show_pubdate=True) %}:</span>
+<ul class="action-list">
+    {% for user, user_actions in groupby(art_actions, key = lambda x: x.user) %}
+    <li class="user-actions">
+        <span class="user">{% module user(user, show_avi=True) %}:</span>
+        <ul>
+        {% for act in user_actions %}
+        <li class="action"> {% module action(act) %}
+        <span class="when">{{ locale.format_date(act.performed, shorter=True) }}</span></li>
+        {% end %}
+        </ul>
+    </li>
     {% end %}
 </ul>
+{% end %}
 </div>
 
 <div id="daily" style="float:right; width: 40%;">

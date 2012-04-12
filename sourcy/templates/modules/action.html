@@ -1,0 +1,14 @@
+{% if act.what=='comment' %}
+<span class="cmt">{{ act.comment.content }}</span>
+{% elif act.what=='tag_add' %}
+<span>add tag <img src="{{act.tag.small_icon()}}" /></span>
+{% elif act.what=='tag_remove' %}
+<span>remove tag <img src="{{act.tag.small_icon()}}" /></span>
+{% elif act.what=='src_add' %}
+<span>add source</span>
+{% elif act.what=='src_remove' %}
+<span>remove source</span>
+{% else %}
+{% raw act.describe() %}
+{% end %}
+

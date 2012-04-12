@@ -34,11 +34,15 @@ class day_overview(tornado.web.UIModule):
 
 
 class user(tornado.web.UIModule):
-    def render(self, user):
+    def render(self, user, show_avi):
+        out = u''
+        if show_avi:
+            out += u'<img src="/static/rupe.png" />'
+
         if user is not None:
-            out = u'<a href="/user/%d">%s</a>' % (user.id, user.username)
+            out += u'<a href="/user/%d">%s</a>' % (user.id, user.username)
         else:
-            out = u'anonymous'
+            out += u'anonymous'
         return out
 
 class art_link(tornado.web.UIModule):
@@ -80,9 +84,15 @@ class source(tornado.web.UIModule):
 
 class art_item(tornado.web.UIModule):
     """ handle an article as an entry in a list - ie one line with title, link etc... """
-    def render(self, art, show_pubdate=False):
+    def render(self, art, show_pubdate=False, show_icons=True):
         return self.render_string("modules/art_item.html",
-            art=art, show_pubdate=show_pubdate)
+            art=art, show_pubdate=show_pubdate, show_icons=show_icons)
+
+class action(tornado.web.UIModule):
+    """ describe an action """
+    def render(self, action):
+        return self.render_string("modules/action.html", act=action)
+
 
 class daily(tornado.web.UIModule):
     def render(self,day,row):

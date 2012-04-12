@@ -4,13 +4,21 @@
 
 <h2>User: {{user.username}}</h2>
 
-<h3>Recent activity</h3>
-<ul>
-    {% for act in actions %}
-    <li>{{act.performed}}: {% raw act.describe() %}</li>
-    {% end %}
+
+<h2>Recent activity</h2>
+{% for art, art_actions in groupby(actions, key = lambda x: x.article) %}
+<span>{% module art_item(art, show_icons=False, show_pubdate=True) %}</span>
+<ul class="action-list">
+    <li class="user-actions">
+        <ul>
+        {% for act in art_actions %}
+        <li class="action"> {% module action(act) %}
+        <span class="when">{{ locale.format_date(act.performed, shorter=True) }}</span></li>
+        {% end %}
+        </ul>
+    </li>
 </ul>
-</div>
+{% end %}
 
 {% end %}
 

@@ -107,11 +107,14 @@ class FrontHandler(BaseHandler):
             order_by(func.rand()).\
             limit(5)
 
-        recent_actions = self.session.query(Action).order_by(Action.performed.desc()).slice(0,10)
+        recent_actions = self.session.query(Action).order_by(Action.performed.desc()).slice(0,20)
+        for i in recent_actions:
+            print i.describe()
+
 
         daily = daily_breakdown(self.session)[:7]
 
-        self.render('front.html', random_arts=random_arts, recent_actions=recent_actions,daily=daily)
+        self.render('front.html', random_arts=random_arts, recent_actions=recent_actions,daily=daily, groupby=itertools.groupby)
 
 
 
