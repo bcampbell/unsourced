@@ -108,8 +108,6 @@ class FrontHandler(BaseHandler):
             limit(5)
 
         recent_actions = self.session.query(Action).order_by(Action.performed.desc()).slice(0,20)
-        for i in recent_actions:
-            print i.describe()
 
 
         daily = daily_breakdown(self.session)[:7]
