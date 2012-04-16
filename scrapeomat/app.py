@@ -22,6 +22,7 @@
 import sys
 import os
 import logging
+import logging.config
 
 import tornado.ioloop
 import tornado.web
@@ -58,7 +59,11 @@ def main():
 
     app = Application()
     app.listen(options.port)
-    logging.info("start.")
+
+    logging.config.fileConfig("logging.ini")
+    logger = logging.getLogger('art')
+
+    logger.info("start.")
     tornado.ioloop.IOLoop.instance().start()
 
 if __name__ == "__main__":

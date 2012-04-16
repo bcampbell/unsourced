@@ -12,9 +12,9 @@ from tornado import httpclient
 import decruft
 import metareadability
 
+logger = logging.getLogger('art')
 
 paywall_domains = ['ft.com','thetimes.co.uk','thesundaytimes.co.uk']
-
 
 
 class ArticleCache(object):
@@ -26,9 +26,9 @@ class ArticleCache(object):
             f = open(self.cachefile, 'r')
             self.art_cache = pickle.load(f)
             f.close()
-            logging.debug("loaded %s (%d entries)", self.cachefile, len(self.art_cache))
+            logger.debug("loaded %s (%d entries)", self.cachefile, len(self.art_cache))
         except:
-            logging.warn("couldn't load %s", self.cachefile)
+            logger.warn("couldn't load %s", self.cachefile)
             self.art_cache = {}
 
 
@@ -82,7 +82,7 @@ class ArticleHandler(tornado.web.RequestHandler):
             return
 
 
-        logging.debug( "%s: fetching...", self.url)
+        logger.debug( "%s: fetching...", self.url)
         if self.url == '':
             results = {'status': Status.BAD_REQ}   # 2=bad req
             self.write(results)
@@ -91,7 +91,7 @@ class ArticleHandler(tornado.web.RequestHandler):
 
         art = self.application.artcache.fetch(self.url)
         if art is not None:
-            logging.debug('%s: retrieved from cache', self.url)
+            logger.debug('%s: retrieved from cache', self.url)
             results = {'status': Status.SUCCESS, 'article': art}   # 0=success
             self.write(results)
             self.finish()
@@ -110,11 +110,12 @@ class ArticleHandler(tornado.web.RequestHandler):
                 scrape_time = datetime.datetime.utcnow()
                 html = response.body
 
-                logging.debug("%s: processing...", self.url)
+                logger.debug("%s: processing...", self.url)
                 txt = decruft.Document(html).summary()
+                logger.debug("%s: textdone...", self.url)
                 headline,byline,pubdate = metareadability.extract(html,self.url)
 
-                logging.debug("%s: done.", self.url)
+                logger.debug("%s: done.", self.url)
 
                 headline = headline.encode('utf-8')
                 txt = txt.encode('utf-8')
@@ -135,8 +136,9 @@ class ArticleHandler(tornado.web.RequestHandler):
                 self.application.artcache.stash(art)
                 results = {'status':Status.SUCCESS, 'article':art}
             except Exception as e:
-                logging.error("%s: exception: %s", self.url, e)
+                logger.exception("%s: exception"%(self.url,))
                 results = {'status':Status.PARSE_ERROR}   # error during parse
+
 
         self.write(results)
         self.finish()
