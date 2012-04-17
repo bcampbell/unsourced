@@ -78,6 +78,12 @@
 
 {% if scrape_err %}
 <p>Sorry, but there was a problem fetching the article text: {{scrape_err}}</p>
+<p>if you'd like, you can paste the text in here manually:</p>
+<form action="/art/{{art.id}}" method="post">
+<textarea name="text">
+</textarea>
+<input type="submit" />
+</form>
 {% else %}
 {% raw article_content %}
 {% end %}

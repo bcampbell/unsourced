@@ -21,15 +21,35 @@ class ArticleHandler(BaseHandler):
         self.art = self.session.query(Article).get(art_id)
         if self.art is None:
             raise tornado.web.HTTPError(404, "Article not found")
- 
-        http = tornado.httpclient.AsyncHTTPClient()
 
-        # ask the scrapeomat for the article text
-        # TODO: don't need to scrape article metadata here...
-        params = {'url': self.art.permalink}
-        url = "http://localhost:8889/scrape?" + urllib.urlencode(params)
+        # manually pasted text (stored in a cookie for persistance)
+        txt = self.get_argument('text',None)
+        txt_cookie_name = "a%d" %(self.art.id,)
+        if txt is None:
+            txt = self.get_secure_cookie(txt_cookie_name)
+        else:
+            # text was pasted
+            # save in a cookie for cheesy client-side persistance
+            self.set_secure_cookie(txt_cookie_name, txt, expires_days=2)
 
-        http.fetch(url, callback=self.on_response)
+
+        if txt is not None:
+            self.go(txt,None)
+        else:
+            http = tornado.httpclient.AsyncHTTPClient()
+
+            # ask the scrapeomat for the article text
+            # TODO: don't need to scrape article metadata here...
+            params = {'url': self.art.permalink}
+            url = "http://localhost:8889/scrape?" + urllib.urlencode(params)
+
+            http.fetch(url, callback=self.on_response)
+
+
+    # post() usually called as a result of manually pasting text
+    def post(self,art_id):
+        self.get(art_id)
+
 
     def on_response(self, response):
         art = self.art
@@ -49,9 +69,20 @@ class ArticleHandler(BaseHandler):
             if results['status']!=0:
                 scrape_err = errs[results['status']]
 
+        html = None
         if scrape_err is None:
             html = results['article']['content']
             html = util.sanitise_html(html)
+
+        self.go(html,scrape_err)
+
+
+
+
+    def go(self, html, scrape_err=None):
+
+        art = self.art
+        if html is not None:
             highlight_spans = self.analyse_text(html)
             # mark up the html
             html = highlight.html_highlight(html, highlight_spans)
