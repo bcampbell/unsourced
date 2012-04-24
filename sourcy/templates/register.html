@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Create Account{% end %}
+
+{% block main %}
+{% if form is None %}
+<strong>Email on it's way...click the link to verify</strong>
+{% else %}
+{% module register(form) %}
+{% end %}
+{% end %}

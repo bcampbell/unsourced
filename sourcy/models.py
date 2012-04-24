@@ -1,4 +1,5 @@
 import datetime
+import bcrypt
 
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
@@ -246,26 +247,55 @@ class UserAccount(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String(256), nullable=False)
     username = Column(String(64), nullable=False, unique=True)
-    prettyname = Column(String(256), nullable=False)
-    anonymous = Column(Boolean, nullable=False, default=False)
+    prettyname = Column(String(256), nullable=False, default=u'')
+    hashed_password = Column(String(128), nullable=True)
+    verified = Column(Boolean, nullable=False, default=False)
     created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     # eg "twitter", "google" etc...
-    auth_supplier = Column(String(16), nullable=False)
+    auth_supplier = Column(String(16), nullable=False, default=u'')
     # unique id on provider - email, twitter name, whatever makes sense
-    auth_uid = Column(String(1024), nullable=False)
+    auth_uid = Column(String(1024), nullable=False, default=u'')
 
     twitter_access_token = relationship("TwitterAccessToken", uselist=False, backref="user")
 
-    def __init__(self, username, prettyname, email, auth_supplier, auth_uid):
-        self.username = username
-        self.prettyname = prettyname
-        self.email = email
-        self.auth_supplier = auth_supplier
-        self.auth_uid = auth_uid
+    def __init__(self, **kw):
+        if 'password' in kw:
+            kw['hashed_password'] = bcrypt.hashpw(kw['password'], bcrypt.gensalt())
+            del kw['password']
 
+        for key,value in kw.iteritems():
+            assert(hasattr(self,key))
+            setattr(self,key,value)
 
     def __repr__(self):
         return "<UserAccount(%s)>" % (self.username,)
+
+
+    # TODO: could probably use sqlalchemy hybrid trickery to do this properly!
+    def set_password(self,password):
+        self.hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+
+    def check_password(self, password):
+        hashed = bcrypt.hashpw(password, self.hashed_password)
+        return hashed == self.hashed_password
+
+
+    @staticmethod
+    def calc_unique_username(session,base_username):
+        """ return a unique username """
+        foo = session.query(UserAccount.username).filter(UserAccount.username==base_username).first()
+        if foo is None:
+            return base_username
+        # append a number, keep incrementing until free name found.
+        i=1
+        while True:
+            u = "%s%d" %(base_username, i)
+            foo = session.query(UserAccount.username).filter(UserAccount.username==u).first()
+            if foo is None:
+                return u
+            i=i+1
+
+
 
 class TwitterAccessToken(Base):
     __tablename__ = 'twitter_access_token'

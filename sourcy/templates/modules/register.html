@@ -1,0 +1,13 @@
+<div id="register">
+<h2>Create Account</h2>
+
+<form action="/register" method="post">
+{% module form(form) %}
+<input type="submit" value="Create Account" />
+</form>
+
+<p>Already got an account? <a href="{{login_url}}">log in</a></p>
+<p>Or log in using your <a href="/login/twitter">Twitter</a> or <a href="/login/google">Google</a> account.</p>
+</div>
+
+

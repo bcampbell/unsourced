@@ -1,6 +1,6 @@
 import urlparse
 from sourcy.util import TornadoMultiDict
-from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, validators
+from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, validators
 
 
 

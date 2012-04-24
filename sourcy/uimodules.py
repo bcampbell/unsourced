@@ -1,5 +1,6 @@
 import tornado.web
 import util
+import urllib   # for urlencode
 from pprint import pprint
 from models import Source,SourceKind,Article,Action
 
@@ -147,5 +148,29 @@ class tool_addsource(tornado.web.UIModule):
         });
     });
         """
+
+
+class login(tornado.web.UIModule):
+    def render(self, form):
+        reg_url = '/register'
+        try:
+            next = form.next.data
+            if next is not None:
+                reg_url += "?" + urllib.urlencode({'next':next})
+        except AttributeError:
+            pass
+        return self.render_string('modules/login.html', form=form, reg_url=reg_url)
+
+
+class register(tornado.web.UIModule):
+    def render(self, form):
+        login_url = '/login'
+        try:
+            next = form.next.data
+            if next is not None:
+                login_url += "?" + urllib.urlencode({'next':next})
+        except AttributeError:
+            pass
+        return self.render_string('modules/register.html', form=form, login_url=login_url)
 
 

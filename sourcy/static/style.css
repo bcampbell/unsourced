@@ -43,14 +43,17 @@ a:visited:hover { color: #90f; }
 
 /* generic form styling */
 
-.errormsg { color: red; font-style: bold; }
-.errors { }
+.field { margin: 0.2em; 0; width: 50%; }
+
+.errormsg { color: white; background-color: red; font-style: bold; }
+ul.errormsg { list-style: none; margin-top: 0px; }
+.field.errors { background-color: #fdd; border: 1px solid red; }
 .help { display: block;
     font-size: x-small;
     color: #888;
     font-style: italic;
 }
-.errors input, .errors select { border: 1px solid red; }
+/*.errors input, .errors select { border: 1px solid red; ) */
 
 /* base menus (horizontal) */
 nav ul { padding: 0; margin: 0; list-style:none; }
