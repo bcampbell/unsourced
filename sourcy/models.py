@@ -1,5 +1,9 @@
 import datetime
 import bcrypt
+import StringIO
+from PIL import Image
+import os
+import re
 
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
@@ -8,9 +12,15 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql import func
 from sqlalchemy import create_engine
+from sqlalchemy import event
 
 import util
 
+
+def is_image(content_type):
+    if content_type.lower() in ("image/jpeg","image/gif","image/png"):
+        return True
+    return False
 
 Base = declarative_base()
 
@@ -258,6 +268,9 @@ class UserAccount(Base):
 
     twitter_access_token = relationship("TwitterAccessToken", uselist=False, backref="user")
 
+    photo_id = Column(Integer, ForeignKey('uploaded_file.id', use_alter=True, name='fk_useraccount_photo_id'), nullable=True)
+    photo = relationship("UploadedFile", primaryjoin="UserAccount.photo_id==UploadedFile.id")
+
     def __init__(self, **kw):
         if 'password' in kw:
             kw['hashed_password'] = bcrypt.hashpw(kw['password'], bcrypt.gensalt())
@@ -325,4 +338,105 @@ class Comment(Base):
         for key,value in kw.iteritems():
             assert(key in ('article','author','post_time','content'))
             setattr(self,key,value)
+
+
+def sanitise_filename(filename):
+    filename = os.path.basename(filename)
+    filename = filename.lower()
+    filename = re.compile('[^-._a-z0-9]').sub('',filename)
+    return filename
+
+
+def uniq_filename(filename):
+    if not os.path.exists(filename):
+        return filename
+    i = 1
+    base,ext = os.path.splitext(filename)
+    while True:
+        newname = "%s-%d%s" % (base,i,ext)
+        if not os.path.exists(newname):
+            return newname
+        i=i+1
+
+
+
+class UploadedFile(Base):
+    __tablename__ = 'uploaded_file'
+
+    id = Column(Integer, primary_key=True)
+    # note: "use_alert" required to avoid annoying circular dependency error (shows up when using alembic)
+    # base filename, as uploaded (eg "fook.jpeg"), but made unique by adding a suffix if necessary. Used to store in uploads dir.
+    filename = Column(String(256), nullable=False, unique=True)
+    content_type = Column(String(128), nullable=False)
+    uploaded = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    is_img = Column(Boolean, nullable=False, default=False)
+    # some extra data for images
+    width = Column(Integer, nullable=True)
+    height = Column(Integer, nullable=True)
+
+
+    def __init__(self, **kw):
+        for key,value in kw.iteritems():
+            assert(key in ('filename','content_type','uploaded','is_img','width','height'))
+            setattr(self,key,value)
+ 
+    @staticmethod
+    def create(f, creator, app_settings):
+        uploads_path = app_settings['uploads_path']
+        thumbs_path = app_settings['thumbs_path']
+
+        w,h=None,None
+
+        # pick a unique, sane filename
+        filename = sanitise_filename(f['filename'])
+        full_path = os.path.join(uploads_path, filename)
+        full_path = uniq_filename(full_path)
+        filename = os.path.basename(full_path)
+        is_img = is_image(f['content_type'])
+
+        if is_img:
+            im = Image.open(StringIO.StringIO(f['body']))
+            w,h = im.size
+
+            thumb_sizes = [(16,16),(64,64),(128,128)]
+            UploadedFile.build_thumbnails(im, filename, thumb_sizes, thumbs_path)
+        else:
+            w,h = None,None
+
+        fp = open(full_path, "wb")
+        fp.write(f['body']);
+        fp.close()
+
+        foo = UploadedFile(filename=filename, content_type=f['content_type'],is_img=is_img, width=w, height=h)
+
+        return foo
+
+    def thumb_url(self,size):
+        base,ext = os.path.splitext(self.filename)
+        thumbfile = "%s_%dx%d%s" % (base, size[0],size[1],ext)
+        # TODO: reconcile with thumbs_path setting
+        return '/static/thumbs/' + thumbfile
+
+
+    @staticmethod
+    def build_thumbnails(img, filename, thumb_sizes, thumbs_path):
+        if not os.path.exists(thumbs_path):
+            os.makedirs(thumbs_path)
+
+        for size in thumb_sizes:
+            thumb = img.convert()   # convert() rather than copy() - copy leaves palette intact, which makes for crumby thumbs
+            thumb.thumbnail(size, Image.ANTIALIAS)
+
+            base,ext = os.path.splitext(filename)
+            thumbfile = "%s_%dx%d%s" % (base, size[0],size[1],ext)
+            thumb.save(os.path.join(thumbs_path, thumbfile))
+
+    @staticmethod
+    def on_delete(mapper,connection,target):
+        # bookkeeping
+        print "NOW DELETE ", target.filename
+
+# hook in some bookkeeping to delete uploaded files/thumbs after removal from database
+event.listen(UploadedFile, 'after_delete', UploadedFile.on_delete)
+
 

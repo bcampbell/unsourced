@@ -5,3 +5,5 @@ metareadability
 scrapeomat/.scrapecache
 sourcy.conf
 sourcy/alembic.ini
+sourcy/static/uploads
+sourcy/static/thumbs

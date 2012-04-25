@@ -3,14 +3,14 @@ import itertools
 import tornado.auth
 import tornado.web
 from tornado import httpclient
-from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, validators
+from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, FileField, validators
 
 from base import BaseHandler
 from sourcy.util import TornadoMultiDict
-from sourcy.models import Action,UserAccount
+from sourcy.models import Action,UserAccount,UploadedFile
 from sourcy.util import TornadoMultiDict
 
-
+#from pprint import pprint
 
 
 class UserHandler(BaseHandler):
@@ -42,6 +42,7 @@ class EditProfileForm(Form):
     password_confirm = PasswordField(u'Confirm password', [
         validators.EqualTo('password', message='Passwords must match')]
     )
+    photo = FileField(u'Upload a profile photo')
 
 
 class EditProfileHandler(BaseHandler):
@@ -71,6 +72,19 @@ class EditProfileHandler(BaseHandler):
 
         user.username = form.username.data
         user.email = form.email.data
+
+        # any photo uploaded?
+        uploaded_photos = self.request.files.get('photo')
+        photo = None
+        if len(uploaded_photos)>0:
+            photo = UploadedFile.create(uploaded_photos[0], creator=user, app_settings=self.application.settings)
+            self.session.add(photo)
+
+            old_photo = user.photo
+            user.photo = photo
+            if old_photo:
+                self.session.delete(old_photo)
+
 
         msgs.append("Your account has been updated")
 

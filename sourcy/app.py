@@ -35,8 +35,9 @@ class Application(tornado.web.Application):
 
         ui_modules = [ uimodules, ]
 
+        static_path = os.path.join(os.path.dirname(__file__), "static")
         settings = dict(
-            static_path = os.path.join(os.path.dirname(__file__), "static"),
+            static_path = static_path,
             template_path = os.path.join(os.path.dirname(__file__), "templates"),
             ui_modules = ui_modules,
             debug=options.debug,
@@ -49,6 +50,9 @@ class Application(tornado.web.Application):
             #friendfeed_consumer_secret=options.friendfeed_consumer_secret,
             #facebook_api_key=options.facebook_api_key,
             #facebook_secret=options.facebook_secret,
+
+            uploads_path = os.path.join(static_path,'uploads'),
+            thumbs_path = os.path.join(static_path,'thumbs'),
             )
         tornado.web.Application.__init__(self, handlers, **settings)
 
