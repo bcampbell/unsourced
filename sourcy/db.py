@@ -1,15 +1,15 @@
-from tornado.options import define, options
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 
+import config
 
 def engine_url():
-    """ construct the sqlalchemy engine connection url from tornado options """
+    """ construct the sqlalchemy engine connection url """
     eng_url = "mysql+mysqldb://%(user)s:%(password)s@%(host)s/%(db)s?charset=utf8" % {
-        'user': options.mysql_user,
-        'password': options.mysql_password,
-        'host': options.mysql_host,
-        'db': options.mysql_database
+        'user': config.settings.mysql_user,
+        'password': config.settings.mysql_password,
+        'host': config.settings.mysql_host,
+        'db': config.settings.mysql_database
     }
     return eng_url
 

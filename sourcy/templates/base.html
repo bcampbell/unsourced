@@ -27,7 +27,7 @@
         <a href="/login">log in</a>
 {% else %}
 {% if current_user.photo %}
-<img src="{{ current_user.photo.thumb_url((16,16)) }}" width="16" height="16"/>
+{% raw current_user.photo_img('s') %}
 {% end %}
 Hello, <a href="/user/{{current_user.id}}">{{current_user.username}}</a> (<a href="/logout">log out</a>)
 {% end %}

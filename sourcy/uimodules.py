@@ -38,7 +38,7 @@ class user(tornado.web.UIModule):
     def render(self, user, show_avi):
         out = u''
         if show_avi:
-            out += u'<img src="/static/rupe.png" />'
+            out += user.photo_img('s')
 
         if user is not None:
             out += u'<a href="/user/%d">%s</a>' % (user.id, user.username)

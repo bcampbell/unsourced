@@ -4,10 +4,7 @@
 
 <h2>User: {{user.username}}</h2>
 
-{% if user.photo %}
-<img src="{{ current_user.photo.thumb_url((128,128)) }}" width="128" height="128"/>
-{% end %}
-
+{% raw user.photo_img('l') %}
 
 <h2>Recent activity</h2>
 {% for art, art_actions in groupby(actions, key = lambda x: x.article) %}

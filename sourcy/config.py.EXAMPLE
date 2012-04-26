@@ -1,0 +1,22 @@
+import os.path
+import ConfigParser
+
+class Settings:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
+
+settings = Settings(
+    mysql_host="127.0.0.1:3306",
+    mysql_database="",
+    mysql_user="",
+    mysql_password="",
+
+    cache_dir="/tmp/sourcy-cache",
+
+    cookie_secret="",
+    debug=True,
+    twitter_consumer_key="",
+    twitter_consumer_secret="",
+    )
+
+

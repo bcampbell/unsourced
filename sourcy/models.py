@@ -15,7 +15,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import event
 
 import util
-
+from config import settings
 
 def is_image(content_type):
     if content_type.lower() in ("image/jpeg","image/gif","image/png"):
@@ -191,7 +191,6 @@ class Source(Base):
             assert(hasattr(self,key))
             setattr(self,key,value)
 
-
     def __repr__(self):
         return "<Source(%s)>" % (self.url,)
 
@@ -308,6 +307,17 @@ class UserAccount(Base):
                 return u
             i=i+1
 
+    def photo_img(self, size):
+        assert size in settings.thumb_sizes
+        if self.photo:
+            assert self.photo.is_img
+            url = self.photo.thumb_url(size)
+        else:
+            url = '/static/%s' % (settings.default_user_photos[size],)
+
+        w,h = settings.thumb_sizes[size]
+        return '<img src="%s" width="%d" height="%d" />' % (url,w,h)
+
 
 
 class TwitterAccessToken(Base):
@@ -381,9 +391,8 @@ class UploadedFile(Base):
             setattr(self,key,value)
  
     @staticmethod
-    def create(f, creator, app_settings):
-        uploads_path = app_settings['uploads_path']
-        thumbs_path = app_settings['thumbs_path']
+    def create(f, creator):
+        uploads_path = settings.uploads_path
 
         w,h=None,None
 
@@ -397,9 +406,6 @@ class UploadedFile(Base):
         if is_img:
             im = Image.open(StringIO.StringIO(f['body']))
             w,h = im.size
-
-            thumb_sizes = [(16,16),(64,64),(128,128)]
-            UploadedFile.build_thumbnails(im, filename, thumb_sizes, thumbs_path)
         else:
             w,h = None,None
 
@@ -412,24 +418,8 @@ class UploadedFile(Base):
         return foo
 
     def thumb_url(self,size):
-        base,ext = os.path.splitext(self.filename)
-        thumbfile = "%s_%dx%d%s" % (base, size[0],size[1],ext)
-        # TODO: reconcile with thumbs_path setting
-        return '/static/thumbs/' + thumbfile
-
-
-    @staticmethod
-    def build_thumbnails(img, filename, thumb_sizes, thumbs_path):
-        if not os.path.exists(thumbs_path):
-            os.makedirs(thumbs_path)
-
-        for size in thumb_sizes:
-            thumb = img.convert()   # convert() rather than copy() - copy leaves palette intact, which makes for crumby thumbs
-            thumb.thumbnail(size, Image.ANTIALIAS)
-
-            base,ext = os.path.splitext(filename)
-            thumbfile = "%s_%dx%d%s" % (base, size[0],size[1],ext)
-            thumb.save(os.path.join(thumbs_path, thumbfile))
+        assert size in settings.thumb_sizes
+        return "/thumb/%s/%s" % (size,self.filename)
 
     @staticmethod
     def on_delete(mapper,connection,target):

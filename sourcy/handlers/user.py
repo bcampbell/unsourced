@@ -1,5 +1,10 @@
 import itertools
 
+import StringIO
+from PIL import Image
+import os
+import logging
+
 import tornado.auth
 import tornado.web
 from tornado import httpclient
@@ -10,7 +15,9 @@ from sourcy.util import TornadoMultiDict
 from sourcy.models import Action,UserAccount,UploadedFile
 from sourcy.util import TornadoMultiDict
 
-#from pprint import pprint
+from sourcy.cache import cache
+
+from sourcy.config import settings
 
 
 class UserHandler(BaseHandler):
@@ -77,7 +84,7 @@ class EditProfileHandler(BaseHandler):
         uploaded_photos = self.request.files.get('photo')
         photo = None
         if len(uploaded_photos)>0:
-            photo = UploadedFile.create(uploaded_photos[0], creator=user, app_settings=self.application.settings)
+            photo = UploadedFile.create(uploaded_photos[0], creator=user)
             self.session.add(photo)
 
             old_photo = user.photo
@@ -310,6 +317,29 @@ class RegisterHandler(BaseHandler):
         self.render('register.html',form=None)
 
 
+
+
+class ThumbHandler(BaseHandler):
+    """ serve up thumbnail versions of uploaded images """
+    def get(self, size, filename):
+        if size not in settings.thumb_sizes:
+            raise tornado.web.HTTPError(404)
+        w,h = settings.thumb_sizes[size]
+        content_type, raw_data = self.thumbnail(str(filename),w,h)
+        self.set_header("Content-Type", content_type)
+        self.write(raw_data)
+
+    @cache.cache_on_arguments()
+    def thumbnail(self, filename, w, h):
+        original = Image.open(os.path.join(settings.uploads_path,filename))
+        thumb = original.convert()   # convert() rather than copy() - copy leaves palette intact, which makes for crumby thumbs
+        thumb.thumbnail((w,h), Image.ANTIALIAS)
+
+        buf= StringIO.StringIO()
+        thumb.save(buf, format='PNG')
+        return 'image/png',buf.getvalue()
+
+
 handlers = [
     (r'/login', LoginHandler),
     (r'/login/google', GoogleLoginHandler),
@@ -317,6 +347,7 @@ handlers = [
     (r'/logout', LogoutHandler),
     (r"/user/([0-9]+)", UserHandler),
     (r"/editprofile", EditProfileHandler),
-    (r'/register', RegisterHandler),
+    (r"/register", RegisterHandler),
+    (r"/thumb/([a-z0-9]+)/([^!#?&]+)", ThumbHandler),
 ]
 
