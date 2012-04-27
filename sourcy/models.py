@@ -288,6 +288,8 @@ class UserAccount(Base):
         self.hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
 
     def check_password(self, password):
+        if self.hashed_password is None:
+            return False
         hashed = bcrypt.hashpw(password, self.hashed_password)
         return hashed == self.hashed_password
 
