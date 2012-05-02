@@ -1,6 +1,7 @@
 import datetime
 import bcrypt
 import StringIO
+from urlparse import urlparse
 from PIL import Image
 import os
 import re
@@ -160,6 +161,13 @@ class Article(Base):
 
     def __repr__(self):
         return "<Article('%s','%s', '%s')>" % (self.headline, self.permalink, self.pubdate)
+
+
+    def publisher_favicon_url(self):
+        """ return a url for a favicon for publisher of this article """
+        o = urlparse(self.permalink)
+        return "%s://%s/favicon.ico" % (o.scheme,o.hostname)
+
 
 
 class SourceKind(object):

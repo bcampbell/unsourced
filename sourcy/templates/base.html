@@ -3,7 +3,7 @@
 <head>
     <title>{% block title %}{% end %} - Sourcy</title>
     <link rel="stylesheet" href="/static/style.css" />
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/static/jquery-1.7.2.min.js"></script>
     <script src="/static/site.js"></script>
     <script>
         $(document).ready( function() {
@@ -13,36 +13,49 @@
     </script>
 </head>
 <body>
-<header id="pageHeader">
-    <h1><a href="/">Sourcy</a></h1><span>Add missing sources to news articles</span>
-    <nav>
-        <ul>
-            <li><a href="/browse">browse articles</a></li>
-            <li><a href="/daily">view by day</a></li>
-            <li><a href="/about">about</a></li>
-        </ul>
+
+
+<header>
+  <div class="inner">
+    <div id="logo">
+      <h1><a href="/"><img src="/static/unsourced.png" width="200" height="64" alt="Unsourced" /></a> </h1>
+    </div>
+
+    <nav id="topnav">
+      <ul class="menu">
+          <li><a href="/browse">browse articles</a></li>
+          <li><a href="/daily">view by day</a></li>
+          <li><a href="/about">about</a></li>
+      </ul>
     </nav>
-    <div id="user-stuff">
+
+    <div id="login-status">
 {% if current_user is None %}
-        <a href="/login">log in</a>
+      <a href="/login">log in</a>
 {% else %}
-{% if current_user.photo %}
-{% raw current_user.photo_img('s') %}
-{% end %}
-Hello, <a href="/user/{{current_user.id}}">{{current_user.username}}</a> (<a href="/logout">log out</a>)
+Hello, <a href="/user/{{current_user.id}}">{{current_user.username}}</a>
+{% if current_user.photo %}{% raw current_user.photo_img('s') %}{% end %}
+(<a href="/logout">log out</a>)
 {% end %}
     </div>
+  </div>
 </header>
-<div id="content">
+
+
+<div id="main">
 {% block main %}
 {% end %}
-</div>
+</div> <!-- end #main -->
+
+
 <footer>
+  <div class="inner">
     <a href="/about">about</a>&nbsp;&nbsp;
     <a href="https://github.com/bcampbell/sourcy/">source code</a> (on github.com)&nbsp;&nbsp;
     <span id="site-copyright">
         &copy; <a href="http://mediastandardstrust.org">Media Standards Trust</a> 2011
     </span>
+  </div>
 </footer>
 </body>
 </html>

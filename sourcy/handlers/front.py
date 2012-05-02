@@ -2,6 +2,7 @@ import datetime
 from base import BaseHandler
 import tornado.auth
 import itertools
+import random
 
 from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
 from sqlalchemy import Date,not_
@@ -105,14 +106,17 @@ class FrontHandler(BaseHandler):
             options(subqueryload(Article.tags,Article.sources,Article.comments)).\
             filter(not_(Article.id.in_(subq))).\
             order_by(func.rand()).\
-            limit(5)
+            limit(4).all()
 
         recent_actions = self.session.query(Action).order_by(Action.performed.desc()).slice(0,20)
 
 
+        all_users = self.session.query(UserAccount).slice(0,10).all()
+        top_sourcers = [random.choice(all_users) for i in range(8)]
+
         daily = daily_breakdown(self.session)[:7]
 
-        self.render('front.html', random_arts=random_arts, recent_actions=recent_actions,daily=daily, groupby=itertools.groupby)
+        self.render('front.html', random_arts=random_arts, recent_actions=recent_actions,daily=daily, groupby=itertools.groupby, top_sourcers=top_sourcers)
 
 
 
