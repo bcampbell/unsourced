@@ -5,6 +5,8 @@ class Settings:
     def __init__(self, **entries):
         self.__dict__.update(entries)
 
+here = os.path.dirname(__file__)
+
 settings = Settings(
     mysql_host="127.0.0.1:3306",
     mysql_database="",
