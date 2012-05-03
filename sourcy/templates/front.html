@@ -14,7 +14,7 @@
 <ul class="l-4col">
 {% for art in random_arts %}
 <li>
- <div id="art-{{art.id}}" class="art">
+ <div id="art-{{art.id}}" class="art art-box">
   {% module art_item(art,show_pubdate=True) %}
   <a class="btn findsrc" href="/art/{{art.id}}">Find source</a>
  </div>

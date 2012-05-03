@@ -1,1 +1,9 @@
-<img src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="published on {%module domain(art.permalink)%}" /><a href="/art/{{art.id}}">{{art.headline}}</a> ({% module domain(art.permalink) %}{% if show_pubdate %}, {{ locale.format_date(art.pubdate, shorter=True) }}{%end%}){% if show_icons %}{% for src in art.sources %}{% module source_icon(src) %}{% end %}{% for t in art.tags %}<img src="{{t.small_icon()}}" title="{{t.description}}"/>{% end %}{% if len(art.comments)>0 %} <span class="cmt-cnt">{{len(art.comments)}}{% end %}</span>{% end %}
+<img src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />
+{% if show_pubdate %}{{ locale.format_date(art.pubdate, shorter=True) }}<br/>{%end%}
+<a href="/art/{{art.id}}">{{art.headline}}</a>
+{% if show_icons %}
+{% for src in art.sources %}{% module source_icon(src) %}{% end %}
+{% for t in art.tags %}<img src="{{t.small_icon()}}" title="{{t.description}}"/>{% end %}
+{% if len(art.comments)>0 %}<span class="cmt-cnt">{{len(art.comments)}}{% end %}
+{% end %}
+

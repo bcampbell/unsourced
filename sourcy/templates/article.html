@@ -57,11 +57,13 @@
 
 {% block main %}
 <div id="view">
+<div class="fullart">
+
 <header>
 <h2><a href="{{art.permalink}}">{{art.headline}}</a></h2>
 <span class="pubdate">{{art.pubdate}}</span> - <span class="publication">{% module domain(art.permalink) %}</span>
-
 </header>
+
 <div class="body">
 
 {% for w in [t for t in art.tags if t.kind==TagKind.WARNING] %}
@@ -73,8 +75,8 @@
       </form>
       {% end %}
 </div>
-
 {% end %}
+
 
 {% if scrape_err %}
 <p>Sorry, but there was a problem fetching the article text: {{scrape_err}}</p>
@@ -88,11 +90,15 @@
 {% raw article_content %}
 {% end %}
 </div>
-</div>
+
+</div> <!-- end .fullart -->
+</div> <!-- end #view -->
+
+
 
 <div id="tools">
 
-  <div class="sources">
+  <div class="sources tool">
     <h2>Sources</h2>
     {% if art.sources %}
     <ul>
@@ -106,7 +112,7 @@
   </div>
 
     {% if donetag not in art.tags %}
- <div class="act">
+ <div class="act tool">
     {% if len(art.sources)>0 %}
     Have all the sources for this article have been added?
     {% else %}
@@ -121,9 +127,11 @@
 
 
 {% if donetag not in art.tags %}
+  <div id="addsource" class="act tool">
 {% module tool_addsource(art, add_source_form, institutions, journals, researchers) %}
+  </div>
 {% else %}
-  <div class="act"><img src="/static/tag_med/tick.png" />This article has been marked complete - all sources tracked down and added.
+  <div class="act tool"><img src="/static/tag_med/tick.png" />This article has been marked complete - all sources tracked down and added.
     <form class="btn" action="/art/{{art.id}}/deltag" method="post">
     <input type="hidden" name="tag" value="done" />
     <input type="submit" value="disagree" />
@@ -135,7 +143,7 @@
 
 
 {% if helptag in art.tags %}
-  <div class="act"><img src="/static/tag_med/help.png" />Someone asked for help on this article
+  <div class="act tool"><img src="/static/tag_med/help.png" />Someone asked for help on this article
     <form class="btn" action="/art/{{art.id}}/deltag" method="post">
     <input type="hidden" name="tag" value="help" />
     <input type="submit" value="Close help request" />
@@ -144,7 +152,7 @@
 
 {% else %}
 
-  <div class="act">
+  <div class="act tool">
     Having trouble tracking down sources for this article?
     <form class="btn" action="/art/{{art.id}}/addtag" method="post">
     <input type="hidden" name="tag" value="help" />
@@ -155,38 +163,11 @@
 {% end %}
 
 
-{% if 0 %}
-
-
-
-  <div class="tags">
-
-    <h2>Tags</h2>
-    <ul class="tag-list">
-    {% for t in art.tags %}
-      <li>
-      <img src="{{t.med_icon()}}" title="{{t.description}}" alt="{{t.name}}"/>
-      {% if current_user %}
-      <form class="btn" action="/art/{{art.id}}/deltag" method="post">
-        <input type="hidden" name="tag" value="{{t.name}}"/>
-        <input type="submit" value="Remove" />
-      </form>
-      {{t.description}}
-      {% end %}
-      </li>
-    {% end %}
-    </ul>
-  </div>
-
-
-
-{% end %}
 
 
 
 
-
-  <div id="addwarning" class="act tags">
+  <div id="addwarning" class="act tags tool">
     {% if current_user %}
     <h2>Add a warning</h2>
     <div>
@@ -211,7 +192,7 @@
     {% end %}
   </div>
 
-  <div class="act">
+  <div class="act tool">
    <h2>Chatter</h2>
     <ul>
 {% for cmt in art.comments %}
