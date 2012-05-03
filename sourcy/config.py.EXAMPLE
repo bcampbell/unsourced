@@ -17,6 +17,10 @@ settings = Settings(
     debug=True,
     twitter_consumer_key="",
     twitter_consumer_secret="",
+
+    uploads_path = os.path.join(here,'uploads'),
+    thumb_sizes = {'s':(20,20),'m':(50,50), 'l': (170,170)},
+    default_user_photos = {'s':'rupe-s.png', 'm':'rupe-m.png', 'l':'rupe-l.png'},  # images in static dir, one per thumb size
     )
 
 
