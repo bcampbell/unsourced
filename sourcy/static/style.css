@@ -29,7 +29,10 @@ a:visited:hover { color: #90f; }
 /**********************************************************************
  * GENERIC LAYOUT
  */
-
+.page-of-text {
+    width: 50%;
+    margin: 0 auto;
+}
 
 
 .l-3col,
@@ -195,7 +198,7 @@ body>header .inner {
     width: 33.3333%;
     float: right;
     margin: 0;
-    padding 0;
+    padding: 0;
 }
 
 
