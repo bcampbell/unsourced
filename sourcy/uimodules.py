@@ -195,7 +195,9 @@ class filters(tornado.web.UIModule):
 			data: params,
 			success: function(data){
 				$('#results').html(data);
-                /* TODO: push history to allow back buttons to work */
+                if(window.history.pushState) {
+                    window.history.replaceState('', "FOOO!", url+"?"+params);
+                }
 			}
 		});
     });
