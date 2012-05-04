@@ -26,4 +26,6 @@ class BaseHandler(tornado.web.RequestHandler):
             return None
         return self.session.query(UserAccount).filter_by(id=user_id).first()
 
-
+    def is_xhr(self):
+        """check if request AJAX"""
+        return self.request.headers.get('X-requested-with', '').lower() == 'xmlhttprequest'

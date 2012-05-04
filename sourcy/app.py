@@ -15,7 +15,7 @@ import uimodules
 import db
 import config
 
-from handlers import history,user,article,addarticle,front,sources,tagging,comments
+from handlers import history,user,article,addarticle,front,sources,tagging,comments,browse
 import analyser
 from util import parse_config_file
 
@@ -31,6 +31,7 @@ class Application(tornado.web.Application):
         handlers.extend(sources.handlers)
         handlers.extend(tagging.handlers)
         handlers.extend(comments.handlers)
+        handlers.extend(browse.handlers)
 
         ui_modules = [ uimodules, ]
 

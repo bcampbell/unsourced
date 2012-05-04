@@ -1,0 +1,27 @@
+<p>{{pager.total_items}} articles:</p>
+<table>
+{% for art in pager.items %}
+<tr>
+<td>{{art.pubdate.strftime('%Y-%m-%d')}}</td><td>{% module art_item(art) %}</td>
+</tr>
+{% end %}
+</table>
+
+
+
+<nav class="pager">
+<ul>
+{% for p in pager %}
+ {% if p is None %}
+<li class="gap"><span>...</span></li>
+ {% elif p==pager.cur %}
+<li><span>{{p}}</span></li>
+ {% else %}
+<li><a href="/browse?p={{p}}">{{p}}</a></li>
+ {% end %}
+{% end %}
+</ul>
+page {{pager.cur}} of {{pager.total_pages}}
+</nav>
+
+

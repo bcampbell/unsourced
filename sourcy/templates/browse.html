@@ -5,49 +5,18 @@
 {% block main %}
 
 <h2>List articles</h2>
-<form id="set-tags" action="/browse" method="get">
-<fieldset>
-<legend>Filter by tag</legend>
-{% for t in all_tags %}
-<input id="b-{{t.name}}" type="checkbox" name="t" value="{{t.name}}"{%if t in filter_tags %} checked{% end %} />
-<label for="b-{{t.name}}"><img src="{{t.small_icon()}}"/>{{t.description}}</label><br/>
-{% end %}
-</fieldset>
-<fieldset>
-<legend>Filter by publication date</legend>
-<label for="day_from">from </label><input id="day_from" name="from" value="{{day_from}}" placeholder="yyyy-mm-dd" />
-<label for="day_to">to </label><input id="day_to" name="to" value="{{day_to}}" placeholder="yyyy-mm-dd" /><br/>
-</fieldset>
-<input type="submit" value="Filter"/>
-</form>
 
-<p>{{pager.total_items}} articles:</p>
-<table>
-{% for art in pager.items %}
-<tr>
-<td>{{art.pubdate.strftime('%Y-%m-%d')}}</td><td>{% module art_item(art) %}</td>
-</tr>
-{% end %}
-</table>
+<div class="l-filters">
+<div class="filters">
+{% module filters(filters) %}
+</div>
+</div>
 
-
-
-<nav class="pager">
-<ul>
-{% for p in pager %}
- {% if p is None %}
-<li class="gap"><span>...</span></li>
- {% elif p==pager.cur %}
-<li><span>{{p}}</span></li>
- {% else %}
-<li><a href="/browse?p={{p}}">{{p}}</a></li>
- {% end %}
-{% end %}
-</ul>
-page {{pager.cur}} of {{pager.total_pages}}
-</nav>
-
-
+<div class="l-results">
+<div id="results">
+{% module searchresults(pager) %}
+</div>
+</div>
 
 
 

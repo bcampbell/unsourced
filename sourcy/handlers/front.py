@@ -1,18 +1,16 @@
 import datetime
-from base import BaseHandler
-import tornado.auth
+from pprint import pprint
+from collections import defaultdict
 import itertools
 import random
 
-from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
+import tornado.auth
 from sqlalchemy import Date,not_
 from sqlalchemy.sql.expression import cast,func
 from sqlalchemy.orm import subqueryload
 
-from sourcy.util import Paginator
-
-from pprint import pprint
-from collections import defaultdict
+from base import BaseHandler
+from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
 
 
 def daily_breakdown(session):
@@ -54,42 +52,6 @@ class DailyBreakdown(BaseHandler):
        
         self.render('daily.html', stats=stats)
 
-
-class BrowseHandler(BaseHandler):
-    def get(self):
-        page = int(self.get_argument('p',1))
-        tag_filts = self.get_arguments('t')
-
-        day_from = self.get_argument('from','')
-        day_to = self.get_argument('to','')
-
-
-        if day_from:
-            day_from = datetime.datetime.strptime(day_from, '%Y-%m-%d').date()
-        if day_to:
-            day_to = datetime.datetime.strptime(day_to,'%Y-%m-%d').date()
-
-
-
-        all_tags = self.session.query(Tag).all()
-
-        arts = self.session.query(Article).\
-            options(subqueryload(Article.tags,Article.sources,Article.comments))
-
-        tags = self.session.query(Tag).filter(Tag.name.in_(tag_filts))
-        if tag_filts:
-            arts = arts.filter(Article.tags.any(Tag.name.in_(tag_filts)))
-
-        if day_from:
-            arts = arts.filter(cast(Article.pubdate, Date) >= day_from)
-
-        if day_to:
-            arts = arts.filter(cast(Article.pubdate, Date) <= day_to)
-
-        arts = arts.order_by(Article.pubdate.desc())
-
-        pager = Paginator(arts, 100, page)
-        self.render("browse.html",pager=pager,all_tags=all_tags,filter_tags=tags,day_from=day_from, day_to=day_to)
 
 
 class FrontHandler(BaseHandler):
@@ -313,7 +275,6 @@ class LeagueTablesHandler(BaseHandler):
 handlers = [
     (r'/', FrontHandler),
     (r'/old', OldComplexFrontHandler),
-    (r'/browse', BrowseHandler),
     (r'/about', AboutHandler),
     (r'/academicpapers', AcademicPapersHandler),
     (r"/addjournal", AddJournalHandler),

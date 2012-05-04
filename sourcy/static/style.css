@@ -20,6 +20,10 @@ a:visited:hover { color: #90f; }
 /**********************************************************************
  * GENERIC STYLES
  */
+form ul {
+    list-style: none;
+    padding: 0;
+}
 
 .btn {
     border: 1px solid #000;
@@ -244,6 +248,14 @@ body>header .inner {
     padding: 0.5em;
 }
 
+/*****/
+.filters {
+    border: 1px solid #000;
+    padding: 0.5em;
+}
+
+
+
 /* Site Footer */
 body>footer {
     clear: both;
@@ -277,11 +289,16 @@ body>footer .inner {
 }
 
 
-
+/* browse page layout */
+.l-filters {
+    width: 30%;
+    float: right;
+}
+.l-results {
+    width: 70%;
+}
 
 
 /* STATE */
-
-
 
 

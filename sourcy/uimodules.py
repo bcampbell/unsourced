@@ -174,3 +174,37 @@ class register(tornado.web.UIModule):
         return self.render_string('modules/register.html', form=form, login_url=login_url)
 
 
+class filters(tornado.web.UIModule):
+    def render(self, filters):
+        return self.render_string("modules/filters.html", filters=filters)
+
+    def embedded_javascript(self):
+        return """
+    $('.filters input[type="submit"]').hide();
+    $('.filters form').bind('submit', function(e){
+        e.preventDefault();
+
+        var form = $(this);
+        var url = form.attr('action');
+        var params = form.serialize();
+
+        $('#results').html("<blink>working...</blink>");
+        $.ajax({
+			type: "GET",
+			url: url,
+			data: params,
+			success: function(data){
+				$('#results').html(data);
+                /* TODO: push history to allow back buttons to work */
+			}
+		});
+    });
+    $('.filters input').bind("change", function(e) {
+        $('.filters form').submit();
+    });
+        """
+
+class searchresults(tornado.web.UIModule):
+    def render(self, pager):
+        return self.render_string("modules/searchresults.html", pager=pager)
+
