@@ -1,5 +1,11 @@
 (function( $ ){
 
+  // escape special regex chars
+  $.reescape = function(str) {
+    var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
+    return str.replace(specials, "\\$&");
+  };
+
   $.fn.collapsify = function( options ) {  
 
     // Create some defaults, extending them with any options that were provided
@@ -112,6 +118,11 @@
 
     });
   };
+
+
+
+  // set up journal/researcher buttons for google scholar search thingy
+
 
 })( jQuery );
 

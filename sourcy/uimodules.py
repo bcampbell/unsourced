@@ -112,12 +112,57 @@ class league_table(tornado.web.UIModule):
     def render(self, rows, heading, action_desc):
         return self.render_string('modules/league_table.html',rows=rows, heading=heading, action_desc=action_desc)
 
+
+
+
 class tool_googlescholar(tornado.web.UIModule):
     def render(self, institutions, journals, researchers):
         return self.render_string('modules/tool_googlescholar.html',
             institutions=institutions,
             journals=journals,
             researchers=researchers)
+
+
+    def embedded_javascript(self):
+        return """
+    $('.helper form .researcher').each(function(index) {
+        var fullname = '"' + $.trim($(this).text()) + '"';
+
+        var cb = $('<input type="checkbox" />').change(function() {
+            var cur = $.trim($('#as_sauthors').val());
+            var pat = new RegExp($.reescape(fullname),"ig");
+            if(this.checked) {
+               cur = cur + " " + fullname;
+            } else {
+               cur = cur.replace(pat,'');
+            }
+            $('#as_sauthors').val(cur);
+        });
+        cb.prependTo(this);
+        $(this).wrap("<label/>");
+    });
+
+    $('.helper form .journal').each(function(index) {
+        var fullname = $.trim($(this).text()); 
+
+        var cb = $('<input type="radio" name="j"/>').change(function() {
+            var cur = $.trim($('#as_publication').val());
+            var pat = new RegExp($.reescape(fullname),"ig");
+            if(this.checked) {
+               cur = fullname;
+            } else {
+               cur = cur.replace(pat,'');
+            }
+            $('#as_publication').val(cur);
+        });
+        cb.prependTo(this);
+        $(this).wrap("<label/>");
+
+    });
+
+        """
+
+
 
 
 class tool_addsource(tornado.web.UIModule):

@@ -4,54 +4,6 @@
 
 {% block extra_js %}
 
-    $('#addwarning').collapsify();
-
-    // hide the submit button on the tags form until a change is made
-    $('form#set-tags input[type="submit"]').hide();
-    $('form#set-tags input[type="checkbox"]').bind('change',function() {$('form#set-tags input[type="submit"]').show();});
-
-
-    // set up journal/researcher buttons for google scholar search thingy
-    function reescape(str)
-    {
-      var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-      return str.replace(specials, "\\$&");
-    }
-
-    $('.helper form .researcher').each(function(index) {
-        var fullname = '"' + $.trim($(this).text()) + '"';
-
-        var cb = $('<input type="checkbox" />').change(function() {
-            var cur = $.trim($('#as_sauthors').val());
-            var pat = new RegExp(reescape(fullname),"ig");
-            if(this.checked) {
-               cur = cur + " " + fullname;
-            } else {
-               cur = cur.replace(pat,'');
-            }
-            $('#as_sauthors').val(cur);
-        });
-        cb.prependTo(this);
-        $(this).wrap("<label/>");
-    });
-
-    $('.helper form .journal').each(function(index) {
-        var fullname = $.trim($(this).text()); 
-
-        var cb = $('<input type="radio" name="j"/>').change(function() {
-            var cur = $.trim($('#as_publication').val());
-            var pat = new RegExp(reescape(fullname),"ig");
-            if(this.checked) {
-               cur = fullname;
-            } else {
-               cur = cur.replace(pat,'');
-            }
-            $('#as_publication').val(cur);
-        });
-        cb.prependTo(this);
-        $(this).wrap("<label/>");
-
-    });
 
 {% end %}
 
