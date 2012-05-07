@@ -1,4 +1,5 @@
 from datetime import datetime,timedelta
+import urllib
 
 import tornado.auth
 from sqlalchemy import Date,not_
@@ -23,6 +24,9 @@ class FiltersForm(Form):
     DATE_CHOICES = [('all','All')] + [(v['id'],v['label']) for v in date_defs]
     date = RadioField("Narrow by Date", choices=DATE_CHOICES, default="all")
 
+    help = BooleanField("Help requested")
+    sourced = BooleanField("Sourced")
+
 #$('form').bind('submit', function(e){
 #    e.preventDefault();
 #    //do your stuff
@@ -43,19 +47,32 @@ class BrowseHandler(BaseHandler):
                 day_from = datetime.utcnow().date() - date_def['delta']
                 arts = arts.filter(cast(Article.pubdate, Date) >= day_from)
 
-#        tags = self.session.query(Tag).filter(Tag.name.in_(tag_filts))
-#        if tag_filts:
-#            arts = arts.filter(Article.tags.any(Tag.name.in_(tag_filts)))
 
             day_to = None
 
             if day_to:
                 arts = arts.filter(cast(Article.pubdate, Date) <= day_to)
 
+            if filters.help.data:
+                arts = arts.filter(Article.tags.any(Tag.name.in_(['help'])))
+            if filters.sourced.data:
+                arts = arts.filter(Article.tags.any(Tag.name.in_(['done'])))
+
         arts = arts.order_by(Article.pubdate.desc())
 
-        pager = Paginator(arts, 100, page)
+        def page_url(page):
+            """ generate url for the given page of this query"""
+            params = {}
+            # preserve all request params, and override page number
+            for k in self.request.arguments:
+                params[k] = self.get_argument(k)
+            params['p'] = page
+            url = "/browse?" + urllib.urlencode(params)
+            return url
+
+        pager = Paginator(arts, 100, page, page_url)
         if self.is_xhr():
+            # if ajax, just render a new #searchresults instead of whole page
             results = searchresults(self)
             self.finish(results.render(pager=pager))
         else:

@@ -135,11 +135,12 @@ def parse_config_file(path):
 class Paginator:
     """ paginator object for wrapping an sqlalchemy query """
 
-    def __init__(self, query, per_page, current_page):
+    def __init__(self, query, per_page, current_page, page_url_fn):
         self.query = query
         self.per_page = per_page
         self.cur = current_page
         self._total_items = None
+        self.page_url = page_url_fn
 
     @property
     def items(self):

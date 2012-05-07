@@ -1,5 +1,20 @@
 <form action="/browse" method="get">
-{% module form(filters) %}
+
+<fieldset>
+<legend>Narrow by date</legend>
+{% raw filters.date %}
+</fieldset>
+
+<fieldset>
+<legend>Narrow by...</legend>
+<div>
+{% raw filters.help.label%}{% raw filters.help %}
+</div>
+<div>
+{% raw filters.sourced.label%}{% raw filters.sourced %}
+</div>
+</fieldset>
+
 <input type="submit" value="Filter"/>
 </form>
 

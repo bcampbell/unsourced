@@ -8,20 +8,7 @@
 </table>
 
 
-
-<nav class="pager">
-<ul>
-{% for p in pager %}
- {% if p is None %}
-<li class="gap"><span>...</span></li>
- {% elif p==pager.cur %}
-<li><span>{{p}}</span></li>
- {% else %}
-<li><a href="/browse?p={{p}}">{{p}}</a></li>
- {% end %}
+{% if pager.total_pages > 1 %}
+{% module paginator(pager) %}
 {% end %}
-</ul>
-page {{pager.cur}} of {{pager.total_pages}}
-</nav>
-
 
