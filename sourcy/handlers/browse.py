@@ -27,6 +27,19 @@ class FiltersForm(Form):
     help = BooleanField("Help requested")
     sourced = BooleanField("Sourced")
 
+    def description(self):
+        parts = []
+
+        parts.append(self.date.data)
+
+        if self.help.data:
+            parts.append(self.help.label.text)
+        if self.sourced.data:
+            parts.append(self.sourced.label.text)
+        
+        return u', '.join(parts)
+
+
 #$('form').bind('submit', function(e){
 #    e.preventDefault();
 #    //do your stuff
