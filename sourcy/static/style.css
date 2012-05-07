@@ -206,7 +206,22 @@ body>header .inner {
 }
 
 
+/* Site Footer */
+body>footer {
+    clear: both;
+/*    border-top: 1px solid #000; */
+    margin: 1em 0;
+}
 
+body>footer .inner {
+    width: 80%;
+    margin: 0 auto;
+}
+
+
+/****************************************
+ * MODULES
+ */
 
 /*****
  * art module for article summaries
@@ -256,16 +271,43 @@ body>header .inner {
 
 
 
-/* Site Footer */
-body>footer {
-    clear: both;
-/*    border-top: 1px solid #000; */
-    margin: 1em 0;
+/*****
+ * Pagination widget
+ */
+
+.pager li a {
+    background-color: #ccc;
+    margin: 0;
+    padding: 0.2em;
+    vertical-align: top;
+    display: inline-block;
+}
+.pager li a:hover {
+    background-color: #88f;
 }
 
-body>footer .inner {
-    width: 80%;
-    margin: 0 auto;
+.pager li span {
+    padding: 0.2em;
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.pager li.gap {
+    border: none;
+}
+
+.pager ul {
+    padding: 0;
+    margin: 0;
+    list-style:none;
+}
+
+.pager li {
+    border: 1px solid #888;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
 }
 
 
