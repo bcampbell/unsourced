@@ -247,11 +247,10 @@ class DeleteHandler(BaseHandler):
         self.redirect("/art/%s" % (art_id,))
 
 
-# TODO: votes should be handled via POSTs
 class SrcVoteHandler(BaseHandler):
 
     @tornado.web.authenticated
-    def get(self,source_id):
+    def post(self,source_id):
         source = self.session.query(Source).get(source_id)
         assert source is not None
 

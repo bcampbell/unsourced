@@ -53,9 +53,11 @@
   <div class="sources tool">
     <h2>Sources</h2>
     {% if art.sources %}
-    <ul>
-    {% for s in art.sources %}
-    {% module source(s, element_type="li") %}
+    <ul class="sourcelist">
+    {% for src in art.sources %}
+    <li id="src-{{src.id}}" class="src {{src.kind}}">
+    {% module source(src) %}
+    </li>
     {% end %}
     </ul>
     {% else %}

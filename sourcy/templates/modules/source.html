@@ -1,48 +1,40 @@
-{% comment output a source link and voting widget %}
-<{{element_type}} class="source {{src.kind}}{{' downvoted' if src.score<0 else ''}}">
+{% comment output a source link %}
 
-
-<div class="moderation">
-{{src.score}} points
-{% if current_user %}
-<span class="vote">
-    {% if can_upvote %}
-    <a class="up" href="/source/{{src.id}}/upvote" title="vote up">&#9650;</a>
-    {% end %}
-    {% if can_downvote %}
-    <a class="down" href="/source/{{src.id}}/downvote" title="vote down">&#9660;</a>
-    {% end %}
-</span>
-{% end %}
-</div>
-
-<img src="{{kind_icon}}" title="{{kind_desc}}" />
+<div>
 {% if src.title %}
 <a href="{{src.url}}">{{src.title}}</a>
 {% else %}
 <a href="{{src.url}}">{{src.url}}</a>
 {% end %}
-
+</div>
 
 
 {% if src.publication %}
 {% if src.pubdate %}
-<span class="publication">{{src.publication}}, {{src.pubdate.strftime('%d %b, %Y')}}</span>
+<span class="publication">{{src.publication}}</span>, {%module fmt_date(src.pubdate,'pubdate')%}
 {% else %}
 <span class="publication">{{src.publication}}</span>
 {% end %}
 {% end %}
 
+
+<div class="moderation">
+<!--
+{{src.score}} points
+{% if current_user %}
+  <span class="vote">
+    <form action="/source/{{src.id}}/upvote" method="POST"><input class="upvote btn" type="submit" value="&#9650;" {% if not can_upvote %}disabled{% end %}/></form>
+    <form action="/source/{{src.id}}/downvote" method="POST"><input class="downvote btn" type="submit" value="&#9660;" {% if not can_downvote %}disabled{% end %}/></form>
+  </span>
+-->
+
 {% if src.creator %}
-<span class="creator">added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a>
+  <span class="creator"><a href="/user/{{src.creator.id}}">{% raw src.creator.photo_img('m') %}</a> added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
 {% if src.creator==current_user %}
-<form class="btn" action="/source/{{src.id}}/delete" method="POST"><input type="submit" name="submit" value="delete"/></form>
+    <form action="/source/{{src.id}}/delete" method="POST"><input class="btn"  type="submit" name="submit" value="delete"/></form>
+{% end %}
 {% end %}
 
-</span>
-
 {% end %}
-
-
-</{{element_type}}>
+</div>
 

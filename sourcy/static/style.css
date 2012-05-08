@@ -311,6 +311,43 @@ body>footer .inner {
 }
 
 
+/*****/
+.pubdate {
+}
+
+/*****/
+.publication {
+    font-style: italic;
+}
+
+/*****/
+.sourcelist {
+    list-style: none;
+    padding: 0;
+}
+
+.sourcelist>* {
+    margin: 0.5em 0;
+}
+
+
+/*****/
+.moderation {
+}
+.moderation:after {
+    content: "";
+    clear: both;
+    display: block;
+}
+
+.moderation>.vote {
+    float: left;
+}
+
+.moderation>.creator {
+    float: right;
+}
+
 
 /************************************************
  * UNSORTED CRAP - REFACTOR RUTHLESSLY!
