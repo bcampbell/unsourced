@@ -1,8 +1,11 @@
-import tornado.web
-import util
 import urllib   # for urlencode
 from pprint import pprint
+import datetime
+
+import tornado.web
+
 from models import Source,SourceKind,Article,Action
+import util
 
 
 source_presentation = {
@@ -258,4 +261,32 @@ class searchresults(tornado.web.UIModule):
 class paginator(tornado.web.UIModule):
     def render(self, pager):
         return self.render_string("modules/paginator.html", pager=pager)
+
+
+class fmt_datetime(tornado.web.UIModule):
+    def render(self, dt, cls):
+
+        if cls:
+            extra = 'class="%s"' % (cls,)
+        else:
+            extra = ''
+        return '<time %sdatetime="%s">%s</time>' % (
+            extra,
+            dt.isoformat(),
+            self.locale.format_date(dt, shorter=True)
+            ) 
+
+class fmt_date(tornado.web.UIModule):
+    def render(self, d, cls):
+
+        if cls:
+            extra = 'class="%s"' % (cls,)
+        else:
+            extra = ''
+        return '<time %sdatetime="%s">%s</time>' % (
+            extra,
+            d.isoformat(),
+            d.strftime('%d %b %Y')
+            ) 
+
 
