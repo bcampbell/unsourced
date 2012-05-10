@@ -21,9 +21,9 @@
 {% for w in [t for t in art.tags if t.kind==TagKind.WARNING] %}
 <div class="warning-label"><img src="{{w.big_icon()}}"/><b>WARNING</b><br/>{{w.description}}
       {% if current_user %}
-      <form style="float:right;" class="btn" action="/art/{{art.id}}/deltag" method="post">
+      <form style="float:right;" action="/art/{{art.id}}/deltag" method="post">
         <input type="hidden" name="tag" value="{{w.name}}"/>
-        <input type="submit" value="Remove" />
+        <input class="btn" type="submit" value="Remove" />
       </form>
       {% end %}
 </div>
@@ -52,17 +52,12 @@
 
   <div class="sources tool">
     <h2>Sources</h2>
-    {% if art.sources %}
     <ul class="sourcelist">
-    {% for src in art.sources %}
-    <li id="src-{{src.id}}" class="src {{src.kind}}">
-    {% module source(src) %}
-    </li>
-    {% end %}
+    {% for src in art.sources %}{% module source(src, container='li') %}{% end %}
     </ul>
-    {% else %}
-    <p>None<p>
-    {% end %}
+
+    <h4>Add an academic paper</h4>
+    {% module add_paper(art, add_paper_form) %}
   </div>
 
     {% if donetag not in art.tags %}
@@ -72,9 +67,9 @@
     {% else %}
     Think this article doesn't need any sources?
     {% end %}
-    <form class="btn" action="/art/{{art.id}}/addtag" method="post">
+    <form action="/art/{{art.id}}/addtag" method="post">
     <input type="hidden" name="tag" value="done" />
-    <input type="submit" value="Mark it completed" />
+    <input class="btn" type="submit" value="Mark it completed" />
     </form>
  </div>
     {% end %}
@@ -86,9 +81,9 @@
   </div>
 {% else %}
   <div class="act tool"><img src="/static/tag_med/tick.png" />This article has been marked complete - all sources tracked down and added.
-    <form class="btn" action="/art/{{art.id}}/deltag" method="post">
+    <form action="/art/{{art.id}}/deltag" method="post">
     <input type="hidden" name="tag" value="done" />
-    <input type="submit" value="disagree" />
+    <input class="btn" type="submit" value="disagree" />
     </form>
   </div>
 
@@ -98,9 +93,9 @@
 
 {% if helptag in art.tags %}
   <div class="act tool"><img src="/static/tag_med/help.png" />Someone asked for help on this article
-    <form class="btn" action="/art/{{art.id}}/deltag" method="post">
+    <form action="/art/{{art.id}}/deltag" method="post">
     <input type="hidden" name="tag" value="help" />
-    <input type="submit" value="Close help request" />
+    <input class="btn" type="submit" value="Close help request" />
     </form>
   </div>
 
@@ -108,9 +103,9 @@
 
   <div class="act tool">
     Having trouble tracking down sources for this article?
-    <form class="btn" action="/art/{{art.id}}/addtag" method="post">
+    <form action="/art/{{art.id}}/addtag" method="post">
     <input type="hidden" name="tag" value="help" />
-    <input type="submit" value="Ask for help" />
+    <input class="btn" type="submit" value="Ask for help" />
     </form>
   </div>
 

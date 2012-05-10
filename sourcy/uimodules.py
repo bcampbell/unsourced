@@ -65,7 +65,7 @@ class art_link(tornado.web.UIModule):
 
 
 class source(tornado.web.UIModule):
-    def render(self,src, element_type='div'):
+    def render(self, src, container='div'):
 
         can_upvote = False
         can_downvote = False
@@ -81,7 +81,7 @@ class source(tornado.web.UIModule):
             src=src,
             can_upvote=can_upvote,
             can_downvote=can_downvote,
-            element_type=element_type,
+            container=container,
             kind_desc=source_presentation[src.kind]['desc'],
             kind_icon='/static/' + source_presentation[src.kind]['icon'])
 
@@ -165,6 +165,51 @@ class tool_googlescholar(tornado.web.UIModule):
 
         """
 
+
+class add_paper(tornado.web.UIModule):
+    def render(self, art, add_paper_form):
+        return self.render_string('modules/add_paper.html', art=art, add_paper_form=add_paper_form)
+
+    def embedded_javascript(self):
+        return """
+    $('.sources').on('submit', '#add-paper', function(e){
+        e.preventDefault();
+
+        var form = $(this);
+        var url = form.attr('action');
+        var params = form.serialize();
+        // clear off any errors
+        showFormErrs(form, {});
+
+        form.addClass('is-busy');
+        form.find('.busy-message').html("Looking it up...");
+        $.ajax({
+			type: "POST",
+			url: url,
+			data: params,
+            complete: function(jqXHR, textStatus) {
+                form.removeClass('is-busy');
+                form.find('.busy-message').html("");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+            },
+			success: function(data){
+                if(!data.success){
+                    showFormErrs(form, data.errors);
+                } else {
+                    /* hide the form and show the newly-added item */
+                    form.each( function() { this.reset(); });
+                    $(data.new_source)
+                        .hide()
+                        .css('opacity',0.0)
+                        .appendTo('.sourcelist')
+                        .slideDown('slow')
+                        .animate({opacity: 1.0});
+                }
+			}
+		});
+    });
+        """
 
 
 

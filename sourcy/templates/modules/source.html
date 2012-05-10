@@ -1,5 +1,6 @@
 {% comment output a source link %}
 
+<{{container}} id="src-{{src.id}}" class="src {{src.kind}}">
 <div>
 {% if src.title %}
 <a href="{{src.url}}">{{src.title}}</a>
@@ -38,3 +39,4 @@
 {% end %}
 </div>
 
+</{{container}}>

@@ -53,7 +53,6 @@
 
         function activate_tab(t) {
             var active = $(t).attr('href');
-            console.log(active);
             tabs.each(function() {
                 var href= $(this).attr('href');
                 if(href==active) {
@@ -67,7 +66,6 @@
         }
 
         tabs.each(function() {
-            console.log(this);
             $(this).click(function() {
                 activate_tab($(this));
                 return false;
@@ -119,11 +117,26 @@
     });
   };
 
-
-
-  // set up journal/researcher buttons for google scholar search thingy
-
-
 })( jQuery );
+
+
+
+
+function showFormErrs(form,errs) {
+
+  // clear out any previous messages
+  form.find('.error').removeClass('error');
+  form.find('.errorlist').remove();
+
+  for( var field in errs ) {
+    var html = '<ul class="errorlist">';
+    for( var msg in errs[field] ) {
+      html += '<li>' + errs[field][msg] + '</li>';
+    }
+    html += '</ul>';
+    form.find('#'+field).after(html);
+    form.find('#'+field).parent().addClass('error');
+  }
+}
 
 

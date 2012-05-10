@@ -24,3 +24,7 @@ class AddSourceForm(Form):
 
 
 
+class AddPaperForm(Form):
+    url = TextField(u'Url (or <abbr title="Digital Object Identifier">DOI</abbr>)', [validators.required(),validators.URL()], filters=[fix_url])
+
+

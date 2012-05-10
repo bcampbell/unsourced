@@ -18,16 +18,35 @@ a:visited:hover { color: #90f; }
 
 
 /**********************************************************************
- * GENERIC STYLES
+ * BASE FORM STYLE
  */
+
 form ul {
     list-style: none;
     padding: 0;
+    margin: 0;
+} /* used for groups of radiobuttons */
+
+form ul.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #c00;
+    color: #fff;
 }
 
-.btn {
-    border: 1px solid #000;
+/*label { display: block; }*/
+input { display: block; }
+input[type="checkbox"],
+input[type="radio"] {
     display: inline;
+}
+
+select { display: block; }
+
+
+.error input {
+    border: 1px solid #c00;
 }
 
 /**********************************************************************
@@ -349,6 +368,41 @@ body>footer .inner {
 }
 
 
+/*****
+ *
+ */
+
+.btn {
+    border: 1px solid #000;
+    display: inline;
+}
+
+
+/*****/
+.busy-message {
+    display: none;
+    font-style: italic;
+}
+
+
+/* STATES */
+
+
+/****
+ * is-busy - show message/icon during ajax requests
+ */
+
+.is-busy .busy-message {
+    padding-left: 20px;
+    background: url(/static/busy-s.gif) left no-repeat;
+    display: block;
+}
+
+.is-busy input[type="submit"] {
+    display: none;
+}
+
+
 /************************************************
  * UNSORTED CRAP - REFACTOR RUTHLESSLY!
  */
@@ -376,8 +430,5 @@ body>footer .inner {
 .l-results {
     width: 70%;
 }
-
-
-/* STATE */
 
 
