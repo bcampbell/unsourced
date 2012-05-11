@@ -126,10 +126,6 @@ pubsub = {
   source_added: $.Callbacks()
 };
 
-pubsub.source_added.add(function(data) {
-    console.log(data);
-  });
-
 
 
 function showFormErrs(form,errs) {
