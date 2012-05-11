@@ -169,6 +169,14 @@ class Article(Base):
         return "%s://%s/favicon.ico" % (o.scheme,o.hostname)
 
 
+    def papers(self):
+        return [src for src in self.sources if src.kind==SourceKind.PAPER]
+    def press_releases(self):
+        return [src for src in self.sources if src.kind==SourceKind.PR]
+    def other_links(self):
+        return [src for src in self.sources if src.kind==SourceKind.OTHER]
+
+
 
 class SourceKind(object):
     PAPER = 'paper'

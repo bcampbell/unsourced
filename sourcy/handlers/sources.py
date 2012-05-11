@@ -15,11 +15,19 @@ from sqlalchemy.sql import func
 
 from base import BaseHandler
 from sourcy.util import TornadoMultiDict
-from sourcy.forms import AddSourceForm,AddPaperForm
-from sourcy.models import Source,Action,Article,TwitterAccessToken
+from sourcy.forms import AddPaperForm
+from sourcy.models import Source,SourceKind,Action,Article,TwitterAccessToken
 from sourcy import uimodules
 
-class AddPaperHandler(BaseHandler):
+class AddSourceHandler(BaseHandler):
+    def get(self,art_id):
+        self.art = self.session.query(Article).get(art_id)
+        if self.art is None:
+            raise tornado.web.HTTPError(404, "Article not found")
+        self.form = AddPaperForm(TornadoMultiDict(self))
+        self.render('add_paper.html', art=self.art, add_paper_form=self.form)
+
+
     @tornado.web.authenticated
     @tornado.web.asynchronous
     def post(self,art_id):
@@ -30,11 +38,17 @@ class AddPaperHandler(BaseHandler):
         self.form = AddPaperForm(TornadoMultiDict(self))
 
         if self.form.validate():
-            self.find_doi(self.form.url.data)
+            self.kind = self.form.kind.data
+
+            if self.kind == SourceKind.PAPER:
+                # if adding a paper, try getting metadata
+                self.find_doi(self.form.url.data)
+            else:
+                # otherwise, we're all done - add source and finish up
+                action = self.create_source(self.kind, url=self.form.url.data)
+                self.wrap_things_up(action)
         else:
             if self.is_xhr():   # ajax?
-
-
                 # collect up the form errors
                 errs = {}
                 for field in self.form:
@@ -43,11 +57,9 @@ class AddPaperHandler(BaseHandler):
 
                 self.write({'success':False, 'errors':errs})
                 self.finish()
-
-#                results = uimodules.add_paper(self)
-#                self.finish(results.render(self.art, self.form))
             else:
                 self.render('add_paper.html', art=self.art, add_paper_form=self.form)
+
 
     def find_doi(self,url):
         """ retreive doi and metadata from url """
@@ -76,13 +88,16 @@ class AddPaperHandler(BaseHandler):
                     # TODO: sometimes there's a year, which we should grab
                     details['pubdate'] = None
 
-        action = self.create_source('paper',**details)
+        action = self.create_source(self.kind, **details)
+        self.wrap_things_up(action)
 
+
+    def wrap_things_up(self,action):
         if self.is_xhr():
             # ajax - just send back the source snippet
             m = uimodules.source(self)
             html = m.render(action.source,'li')
-            self.write({'success':True, 'new_source':html})
+            self.write({'success':True, 'new_source': {'kind':action.source.kind, 'html':html} })
             self.finish()
         else:
             self.redirect("/thanks/%d" % (action.id,))
@@ -101,76 +116,6 @@ class AddPaperHandler(BaseHandler):
         self.session.commit()
         return action
 
-
-
-
-class AddSourceHandler(BaseHandler):
-    @tornado.web.authenticated
-    @tornado.web.asynchronous
-    def post(self,art_id):
-        self.art = self.session.query(Article).get(art_id)
-        if self.art is None:
-            raise tornado.web.HTTPError(404, "Article not found")
-
-        form = AddSourceForm(TornadoMultiDict(self))
-
-        if form.validate():
-            kind = form.kind.data
-            if kind == 'paper':
-                logging.debug("add paper %s"%(form.url.data,))
-                self.find_doi(form.url.data)
-                return
-
-            # not a paper - just add as a bare url
-            action = self.create_source(kind=form.kind.data, url=form.url.data)
-
-            self.redirect("/thanks/%d" % (action.id,))
-        else:
-            self.render('add_source.html',add_source_form=form, art=self.art)
-
-    def find_doi(self,url):
-        """ retreive doi and metadata from url """
-
-        self.url = url  # save for later
-        params = {'url': url}
-        scrapeomat_url = "http://localhost:8889/doi?" + urllib.urlencode(params)
-        http = tornado.httpclient.AsyncHTTPClient()
-        http.fetch(scrapeomat_url, callback=self.on_got_doi_data)
-
-
-    def on_got_doi_data(self,response):
-
-        details = {'url':self.url}
-        if not response.error:
-            results = json.loads(response.body)
-            if results['status']==0:
-                #success!
-                meta = results['metadata']
-                details['doi'] = meta['doi']
-                details['title'] = meta['title']
-                details['publication'] = meta['journal']
-                try:
-                    details['pubdate'] = datetime.datetime.strptime(meta['date'], '%Y-%m-%dZ').date()
-                except ValueError:
-                    # TODO: sometimes there's a year, which we should grab
-                    details['pubdate'] = None
-
-        action = self.create_source('paper',**details)
-        self.redirect("/thanks/%d" % (action.id,))
-
-
-    def create_source(self, kind,**details):
-        src = Source(article=self.art,
-            creator=self.current_user,
-            kind=kind,
-            **details)
-        action = Action('src_add', self.current_user,
-            article=self.art,
-            source=src)
-        self.session.add(src)
-        self.session.add(action)
-        self.session.commit()
-        return action
 
 
 
@@ -333,8 +278,7 @@ class DownvoteHandler(SrcVoteHandler):
 
 
 handlers = [
-    (r"/art/([0-9]+)/addsource", AddSourceHandler),
-    (r"/art/([0-9]+)/add_paper", AddPaperHandler),
+    (r"/art/(\d+)/add_source", AddSourceHandler),
     (r"/thanks/(\d+)", ThanksHandler),
     (r"/thanks/(\d+)/tweet", TweetHandler),
     (r"/source/(\d+)/upvote", UpvoteHandler),

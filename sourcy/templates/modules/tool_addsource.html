@@ -17,35 +17,7 @@
       <input type="submit" name="submit" value="add" />
       </form>
 
-  <div class="helper paper">
-  <h4>Finding academic papers</h4>
-  <ul>
-  <li>Journal websites usually have a search facility
-{% if journals %}
-    <ul>
-    {% for r in journals %}
-      <li><span class="hilite journal">{{r[0]}}</span> (<a href="{{r[1]}}">homepage</a>)</li>
-    {% end %}
-    </ul>
-{% else %}
-   - does the article mention any journals?
-{% end %}
-  </li>
-  {% if institutions %}
-  <li>University press releases often link to papers. Try:
-    <ul>
-    {% for r in institutions %}
-      <li><span class="hilite institution"><a href="{{r[1]}}">{{r[0]}}</a></span></li>
-    {% end %}
-    </ul>
-{% end %}
-  </li>
-  <li>Try searching for the paper on google scholar:
-    {% module tool_googlescholar(institutions, journals, researchers) %}
-  </li>
-  </ul>
-  <p>(add a missing <a href="/addjournal">journal</a> or <a href="/addinstitution">institution</a>)</p>
-  </div>
+{% module help_paper(art,journals,institutions,researchers) %}
 
   <div class="helper pr">
   <h4>Tracking down Press Releases</h4>

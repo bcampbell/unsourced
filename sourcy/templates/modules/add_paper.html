@@ -1,0 +1,6 @@
+<form action="/art/{{art.id}}/add_source" method="POST">
+{% module form(add_paper_form) %}
+<input type="submit" value="Add" /><a class="cancel" href="/art/{{art.id}}">cancel</a>
+<div class="busy-message"></div>
+</form>
+

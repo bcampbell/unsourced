@@ -3,7 +3,32 @@
 
 
 {% block extra_js %}
+$('#add-paper .add').click(function() {
+    $('#add-paper form').show();
+    $('#add-paper .help').show();
+    $('#add-paper .add').hide();
+    return false;
+});
+$('#add-paper form').hide();
+$('#add-paper .help').hide();
 
+$('#add-paper form .cancel').click(function() {
+    $('#add-paper .add').show();
+    $('#add-paper form').hide();
+    $('#add-paper .help').hide();
+    return false;
+});
+
+pubsub.source_added.add(function(new_src) {
+  var kinds = {paper: '.list-paper', pr: '.list-pr', other: '.list_other'};
+  var destlist = kinds[new_src.kind];
+  $(new_src.html)
+    .hide()
+    .css('opacity',0.0)
+    .appendTo($(destlist))
+    .slideDown('slow')
+    .animate({opacity: 1.0});
+});
 
 {% end %}
 
@@ -50,14 +75,30 @@
 
 <div id="tools">
 
-  <div class="sources tool">
+  <div class="tool sources">
     <h2>Sources</h2>
-    <ul class="sourcelist">
-    {% for src in art.sources %}{% module source(src, container='li') %}{% end %}
+
+    <h3>Academic paper</h3>
+    <ul class="list-paper">
+    {% for src in art.papers() %}{% module source(src, container='li') %}{% end %}
     </ul>
 
-    <h4>Add an academic paper</h4>
+    <div id="add-paper">
+    <a class="add" href="/art/{{art.id}}/add_source" method="GET">Add</a>
     {% module add_paper(art, add_paper_form) %}
+    {% module help_paper(art,journals,institutions,researchers) %}
+    </div>
+
+    <h3>Press release</h3>
+    <ul class="list-pr">
+    {% for src in art.press_releases() %}{% module source(src, container='li') %}{% end %}
+    </ul>
+
+    <h3>Other link</h3>
+    <ul class="list-other">
+    {% for src in art.other_links() %}{% module source(src, container='li') %}{% end %}
+    </ul>
+
   </div>
 
     {% if donetag not in art.tags %}
@@ -75,11 +116,7 @@
     {% end %}
 
 
-{% if donetag not in art.tags %}
-  <div id="addsource" class="act tool">
-{% module tool_addsource(art, add_source_form, institutions, journals, researchers) %}
-  </div>
-{% else %}
+{% if donetag in art.tags %}
   <div class="act tool"><img src="/static/tag_med/tick.png" />This article has been marked complete - all sources tracked down and added.
     <form action="/art/{{art.id}}/deltag" method="post">
     <input type="hidden" name="tag" value="done" />
@@ -115,7 +152,7 @@
 
 
 
-
+<!--
   <div id="addwarning" class="act tags tool">
     {% if current_user %}
     <h2>Add a warning</h2>
@@ -140,6 +177,7 @@
      <a href="/login?next=/art/{{art.id}}">Add a warning</a>
     {% end %}
   </div>
+-->
 
   <div class="act tool">
    <h2>Chatter</h2>

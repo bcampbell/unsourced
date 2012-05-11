@@ -1,3 +1,4 @@
+
 (function( $ ){
 
   // escape special regex chars
@@ -78,7 +79,7 @@
   };
 
 
-  /* convert daily breakdown table into a chart */
+  // convert daily breakdown table into a chart
   $.fn.dailychart = function( options ) {
     var settings = $.extend( {
       'foo'         : 'bar'
@@ -121,6 +122,15 @@
 
 
 
+pubsub = {
+  source_added: $.Callbacks()
+};
+
+pubsub.source_added.add(function(data) {
+    console.log(data);
+  });
+
+
 
 function showFormErrs(form,errs) {
 
@@ -137,6 +147,42 @@ function showFormErrs(form,errs) {
     form.find('#'+field).after(html);
     form.find('#'+field).parent().addClass('error');
   }
+}
+
+
+function ajaxifyAddSourceForm(form, busytext, destlist) {
+  form.submit( function(e){
+    e.preventDefault();
+
+    var form = $(this);
+    var url = form.attr('action');
+    var params = form.serialize();
+    // clear off any errors
+    showFormErrs(form, {});
+
+    form.addClass('is-busy');
+    form.find('.busy-message').html(busytext);
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: params,
+      complete: function(jqXHR, textStatus) {
+        form.removeClass('is-busy');
+        form.find('.busy-message').html("");
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+      },
+      success: function(data){
+        if(!data.success){
+          showFormErrs(form, data.errors);
+        } else {
+          // hide the form and show the newly-added item
+          pubsub.source_added.fire(data.new_source);
+          form.each( function() { this.reset(); });
+        }
+      }
+    });
+  });
 }
 
 

@@ -172,75 +172,14 @@ class add_paper(tornado.web.UIModule):
 
     def embedded_javascript(self):
         return """
-    $('.sources').on('submit', '#add-paper', function(e){
-        e.preventDefault();
-
-        var form = $(this);
-        var url = form.attr('action');
-        var params = form.serialize();
-        // clear off any errors
-        showFormErrs(form, {});
-
-        form.addClass('is-busy');
-        form.find('.busy-message').html("Looking it up...");
-        $.ajax({
-			type: "POST",
-			url: url,
-			data: params,
-            complete: function(jqXHR, textStatus) {
-                form.removeClass('is-busy');
-                form.find('.busy-message').html("");
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-            },
-			success: function(data){
-                if(!data.success){
-                    showFormErrs(form, data.errors);
-                } else {
-                    /* hide the form and show the newly-added item */
-                    form.each( function() { this.reset(); });
-                    $(data.new_source)
-                        .hide()
-                        .css('opacity',0.0)
-                        .appendTo('.sourcelist')
-                        .slideDown('slow')
-                        .animate({opacity: 1.0});
-                }
-			}
-		});
-    });
+            $(document).ready( function() {
+            ajaxifyAddSourceForm(
+                $('#add-paper form'),
+                "Looking up details...",
+                $('.sources .list-paper'));
+            });
         """
 
-
-
-class tool_addsource(tornado.web.UIModule):
-    def render(self, art, add_source_form, institutions, journals, researchers):
-        return self.render_string('modules/tool_addsource.html',
-            art=art,
-            add_source_form=add_source_form,
-            institutions=institutions,
-            journals=journals,
-            researchers=researchers)
-
-
-    def embedded_javascript(self):
-        return """
-    $('#addsource').collapsify();
-
-
-    $('#addsource .helper').hide();
-    $('#addsource .helper.pr').show();
-    $('#addsource form select').change( function() {
-        var sel = $(this).val();
-        $('#addsource .helper').each( function() {
-            if($(this).hasClass(sel)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
-    });
-        """
 
 
 class login(tornado.web.UIModule):
@@ -333,5 +272,15 @@ class fmt_date(tornado.web.UIModule):
             d.isoformat(),
             d.strftime('%d %b %Y')
             ) 
+
+
+class help_paper(tornado.web.UIModule):
+    """ show help on tracking down academic papers """
+    def render(self, art, journals, institutions, researchers):
+        return self.render_string('modules/help_paper.html',
+            art=art,
+            institutions=institutions,
+            journals=journals,
+            researchers=researchers)
 
 

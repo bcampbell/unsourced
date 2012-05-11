@@ -10,7 +10,7 @@ from pprint import pprint
 
 from sourcy import util,analyser,highlight
 from sourcy.models import Article,Source,Tag,TagKind
-from sourcy.forms import AddSourceForm,AddPaperForm
+from sourcy.forms import AddPaperForm
 
 from base import BaseHandler
 
@@ -112,7 +112,6 @@ class ArticleHandler(BaseHandler):
         donetag = self.session.query(Tag).filter(Tag.name=='done').one()
         helptag = self.session.query(Tag).filter(Tag.name=='help').one()
 
-        add_source_form = AddSourceForm()
         add_paper_form = AddPaperForm()
 
         self.render('article.html',
@@ -122,7 +121,6 @@ class ArticleHandler(BaseHandler):
             institutions=institutions,
             journals=journals,
             scrape_err=scrape_err,
-            add_source_form=add_source_form,
             add_paper_form=add_paper_form,
             all_tags = all_tags,
             TagKind=TagKind,

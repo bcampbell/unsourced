@@ -14,17 +14,8 @@ def fix_url(url):
     return url
 
 
-class AddSourceForm(Form):
-    KIND_CHOICES = [
-        ('pr','Press release'),
-        ('paper','Academic paper'),
-        ('other','Other')]
-    kind = SelectField(u'Kind', choices=KIND_CHOICES)
-    url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url])
-
-
 
 class AddPaperForm(Form):
     url = TextField(u'Url (or <abbr title="Digital Object Identifier">DOI</abbr>)', [validators.required(),validators.URL()], filters=[fix_url])
-
+    kind= HiddenField(default='paper')  # TODO: use SourceKind def
 
