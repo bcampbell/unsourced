@@ -57,9 +57,6 @@ class art_link(tornado.web.UIModule):
 
 
 
-#class add_source(tornado.web.UIModule):
-#    def render(self,art_id):
-#        return self.render_string('modules/add_source.html',art=art)
 
 
 
@@ -168,17 +165,43 @@ class tool_googlescholar(tornado.web.UIModule):
 
 class add_paper(tornado.web.UIModule):
     def render(self, art, add_paper_form):
-        return self.render_string('modules/add_paper.html', art=art, add_paper_form=add_paper_form)
+        return self.render_string('modules/add_paper.html', art=art, form=add_paper_form)
 
     def embedded_javascript(self):
         return """
-            $(document).ready( function() {
             ajaxifyAddSourceForm(
-                $('#add-paper form'),
+                $('#add-paper'),
                 "Looking up details...",
                 $('.sources .list-paper'));
-            });
         """
+
+
+class add_pr(tornado.web.UIModule):
+    def render(self, art, add_pr_form):
+        return self.render_string('modules/add_pr.html', art=art, form=add_pr_form)
+
+    def embedded_javascript(self):
+        return """
+            ajaxifyAddSourceForm(
+                $('#add-pr'),
+                "Adding...",
+                $('.sources .list-pr'));
+        """
+
+
+
+class add_other(tornado.web.UIModule):
+    def render(self, art, add_other_form):
+        return self.render_string('modules/add_other.html', art=art, form=add_other_form)
+
+    def embedded_javascript(self):
+        return """
+            ajaxifyAddSourceForm(
+                $('#add-other'),
+                "Adding...",
+                $('.sources .list-other'));
+        """
+
 
 
 
@@ -278,6 +301,26 @@ class help_paper(tornado.web.UIModule):
     """ show help on tracking down academic papers """
     def render(self, art, journals, institutions, researchers):
         return self.render_string('modules/help_paper.html',
+            art=art,
+            institutions=institutions,
+            journals=journals,
+            researchers=researchers)
+
+
+class help_pr(tornado.web.UIModule):
+    """ show help on tracking down press releases """
+    def render(self, art, journals, institutions, researchers):
+        return self.render_string('modules/help_pr.html',
+            art=art,
+            institutions=institutions,
+            journals=journals,
+            researchers=researchers)
+
+
+class help_other(tornado.web.UIModule):
+    """ show help on tracking down other links """
+    def render(self, art, journals, institutions, researchers):
+        return self.render_string('modules/help_other.html',
             art=art,
             institutions=institutions,
             journals=journals,

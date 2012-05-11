@@ -1,0 +1,18 @@
+<div class="help pr">
+  <h4>Tracking down Press Releases</h4>
+  <ul>
+  {% if institutions %}
+  <li>Institutions usually have a news page with press releases. Try:
+    <ul>
+    {% for r in institutions %}
+      <li><span class="hilite institution"><a href="{{r[1]}}">{{r[0]}}</a></span></li>
+    {% end %}
+    </ul>
+  </li>
+{% else %}
+  <li>Are any institutions (universities etc) mentioned? They usually have a news page with press releases</li>
+{% end %}
+  <li>For science articles, try looking for press releases on <a href="http://www.eurekalert.org">EurekAlert!</a></li>
+  <li><i>TODO: churnalism linkup goes here</i></li>
+  </ul>
+</div>

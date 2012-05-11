@@ -15,31 +15,44 @@ from sqlalchemy.sql import func
 
 from base import BaseHandler
 from sourcy.util import TornadoMultiDict
-from sourcy.forms import AddPaperForm
+from sourcy.forms import AddPaperForm,AddPRForm,AddOtherForm
 from sourcy.models import Source,SourceKind,Action,Article,TwitterAccessToken
 from sourcy import uimodules
 
 class AddSourceHandler(BaseHandler):
-    def get(self,art_id):
+    def get(self, art_id, kind):
+        self.kind = kind
         self.art = self.session.query(Article).get(art_id)
         if self.art is None:
             raise tornado.web.HTTPError(404, "Article not found")
-        self.form = AddPaperForm(TornadoMultiDict(self))
-        self.render('add_paper.html', art=self.art, add_paper_form=self.form)
+
+        if self.kind == SourceKind.PAPER:
+            self.form = AddPaperForm(TornadoMultiDict(self))
+            self.render('add_paper.html', art=self.art, form=self.form)
+        elif self.kind == SourceKind.PR:
+            self.form = AddPRForm(TornadoMultiDict(self))
+            self.render('add_pr.html', art=self.art, form=self.form)
+        elif self.kind == SourceKind.OTHER:
+            self.form = AddOtherForm(TornadoMultiDict(self))
+            self.render('add_other.html', art=self.art, form=self.form)
 
 
     @tornado.web.authenticated
     @tornado.web.asynchronous
-    def post(self,art_id):
+    def post(self, art_id, kind):
+        self.kind = kind
         self.art = self.session.query(Article).get(art_id)
         if self.art is None:
             raise tornado.web.HTTPError(404, "Article not found")
 
-        self.form = AddPaperForm(TornadoMultiDict(self))
+        if self.kind == SourceKind.PAPER:
+            self.form = AddPaperForm(TornadoMultiDict(self))
+        elif self.kind == SourceKind.PR:
+            self.form = AddPRForm(TornadoMultiDict(self))
+        elif self.kind == SourceKind.OTHER:
+            self.form = AddOtherForm(TornadoMultiDict(self))
 
         if self.form.validate():
-            self.kind = self.form.kind.data
-
             if self.kind == SourceKind.PAPER:
                 # if adding a paper, try getting metadata
                 self.find_doi(self.form.url.data)
@@ -58,7 +71,7 @@ class AddSourceHandler(BaseHandler):
                 self.write({'success':False, 'errors':errs})
                 self.finish()
             else:
-                self.render('add_paper.html', art=self.art, add_paper_form=self.form)
+                self.render('add_paper.html', art=self.art, form=self.form)
 
 
     def find_doi(self,url):
@@ -278,7 +291,7 @@ class DownvoteHandler(SrcVoteHandler):
 
 
 handlers = [
-    (r"/art/(\d+)/add_source", AddSourceHandler),
+    (r"/art/(\d+)/(paper|pr|other)/add", AddSourceHandler),
     (r"/thanks/(\d+)", ThanksHandler),
     (r"/thanks/(\d+)/tweet", TweetHandler),
     (r"/source/(\d+)/upvote", UpvoteHandler),
