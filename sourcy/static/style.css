@@ -391,6 +391,21 @@ body>footer .inner {
     padding: 0.5em;
 }
 
+
+/*****/
+
+.hilite {
+    padding: 1px;
+    border: 1px solid;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.hilite.journal { background-color: #ff0; border-color: #cc0; }
+.hilite.researcher { background-color: #afa; ; border-color: #8c8; }
+.hilite.institution { background-color: #aaf; border-color: #88c; }
+
+
+
 /* STATES */
 
 
