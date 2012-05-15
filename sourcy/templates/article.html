@@ -8,23 +8,23 @@
 // ugly gubbins for showing/hiding forms
 $('.add-source .add').click(function() {
     /* hide all others */
-    $('.add-source form').hide();
-    $('.add-source .help').hide();
-    $('.add-source .add').show();
+    $('.add-source>form').hide();
+    $('.add-source>.help').hide();
+    $('.add-source>.add').show();
 
     /* show just one */
     $(this).nextAll('form').show();
-    $(this).nextAll('.help').slideDown();
+    $(this).nextAll('.help').show();
     $(this).hide();
     return false;
 });
 
-$('.add-source form').hide();
-$('.add-source .help').hide();
+$('.add-source>form').hide();
+$('.add-source>.help').hide();
 
 $('.add-source form .cancel').click(function() {
     $(this).closest('.add-source').find('form').hide();
-    $(this).closest('.add-source').find('.help').slideUp();
+    $(this).closest('.add-source').find('.help').hide();
     $(this).closest('.add-source').find('.add').show();
     return false;
 });
