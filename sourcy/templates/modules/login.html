@@ -2,6 +2,7 @@
 <h2>Log in</h2>
 
 <form action="/login" method="post">
+{% raw xsrf_form_html() %}
 {% module form(form) %}
 <input type="submit" value="Log in" />
 </form>

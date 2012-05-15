@@ -2,6 +2,7 @@
 <h2>Create Account</h2>
 
 <form action="/register" method="post">
+{% raw xsrf_form_html() %}
 {% module form(form) %}
 <input type="submit" value="Create Account" />
 </form>

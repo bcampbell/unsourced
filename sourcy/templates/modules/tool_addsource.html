@@ -2,6 +2,7 @@
     <h2>Add a source</h2>
     <div>
       <form action="/art/{{art.id}}/addsource" method="post">
+      {% raw xsrf_form_html() %}
 
       <div>
         <label for="kind">Kind</label>: <select id="kind" name="kind">

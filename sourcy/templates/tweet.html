@@ -6,9 +6,8 @@
 
 <h3>tweet about it</h3>
 <form method="POST" action="/thanks/{{action.id}}/tweet">
-    {% for field in form %}
-    {% module formfield(field) %}
-    {% end %}
+{% raw xsrf_form_html() %}
+{% module form(form) %}
     <input type="submit"/>
 </form>
 

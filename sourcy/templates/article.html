@@ -65,6 +65,7 @@ pubsub.source_added.add(function(new_src) {
 <div class="warning-label"><img src="{{w.big_icon()}}"/><b>WARNING</b><br/>{{w.description}}
       {% if current_user %}
       <form style="float:right;" action="/art/{{art.id}}/deltag" method="post">
+        {% raw xsrf_form_html() %}
         <input type="hidden" name="tag" value="{{w.name}}"/>
         <input class="btn" type="submit" value="Remove" />
       </form>
@@ -77,6 +78,7 @@ pubsub.source_added.add(function(new_src) {
 <p>Sorry, but there was a problem fetching the article text: {{scrape_err}}</p>
 <p>if you'd like, you can paste the text in here manually:</p>
 <form action="/art/{{art.id}}" method="post">
+{% raw xsrf_form_html() %}
 <textarea name="text">
 </textarea>
 <input type="submit" />
@@ -139,6 +141,7 @@ pubsub.source_added.add(function(new_src) {
     Think this article doesn't need any sources?
     {% end %}
     <form action="/art/{{art.id}}/addtag" method="post">
+    {% raw xsrf_form_html() %}
     <input type="hidden" name="tag" value="done" />
     <input class="btn" type="submit" value="Mark it completed" />
     </form>
@@ -149,6 +152,7 @@ pubsub.source_added.add(function(new_src) {
 {% if donetag in art.tags %}
   <div class="act tool"><img src="/static/tag_med/tick.png" />This article has been marked complete - all sources tracked down and added.
     <form action="/art/{{art.id}}/deltag" method="post">
+    {% raw xsrf_form_html() %}
     <input type="hidden" name="tag" value="done" />
     <input class="btn" type="submit" value="disagree" />
     </form>
@@ -161,6 +165,7 @@ pubsub.source_added.add(function(new_src) {
 {% if helptag in art.tags %}
   <div class="act tool"><img src="/static/tag_med/help.png" />Someone asked for help on this article
     <form action="/art/{{art.id}}/deltag" method="post">
+    {% raw xsrf_form_html() %}
     <input type="hidden" name="tag" value="help" />
     <input class="btn" type="submit" value="Close help request" />
     </form>
@@ -171,6 +176,7 @@ pubsub.source_added.add(function(new_src) {
   <div class="act tool">
     Having trouble tracking down sources for this article?
     <form action="/art/{{art.id}}/addtag" method="post">
+    {% raw xsrf_form_html() %}
     <input type="hidden" name="tag" value="help" />
     <input class="btn" type="submit" value="Ask for help" />
     </form>
@@ -189,6 +195,7 @@ pubsub.source_added.add(function(new_src) {
     <div>
 
     <form id="set-tags" action="/art/{{art.id}}/addtags" method="post">
+    {% raw xsrf_form_html() %}
 
     <ul class="tag-list">
     {% for t in [foo for foo in all_tags if foo not in art.tags and foo.kind==TagKind.WARNING] %}
@@ -218,6 +225,7 @@ pubsub.source_added.add(function(new_src) {
     </ul>
     {% if current_user %}
     <form action="/art/{{art.id}}/postcomment" method="POST">
+    {% raw xsrf_form_html() %}
     <input type="text" name="msg" />
     <input type="submit" value="Post comment"/>
     </form>

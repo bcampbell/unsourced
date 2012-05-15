@@ -44,10 +44,10 @@ class Application(tornado.web.Application):
             debug=config.settings.debug,
             cookie_secret=config.settings.cookie_secret,
             login_url="/login",
+            xsrf_cookies = True,
             # auth secret
             twitter_consumer_key=config.settings.twitter_consumer_key,
             twitter_consumer_secret=config.settings.twitter_consumer_secret,
-
 
         )
         tornado.web.Application.__init__(self, handlers, **settings)

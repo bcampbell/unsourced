@@ -11,6 +11,7 @@
 {% end %}
 
 <form method="POST" action="/editprofile" enctype="multipart/form-data">
+    {% raw xsrf_form_html() %}
     {% module form(form) %}
     <input type="submit" value="Update details"/>
 </form>
