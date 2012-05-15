@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Add Article{% end %}
+{% block main %}
+<div class="page-of-text">
+
+<h2>Add Article</h2>
+<form action="/addarticle" method="POST">
+{% module form(form) %}
+<input type="submit" value="Add article"/>
+</form>
+
+</div>
+{% end %}
+

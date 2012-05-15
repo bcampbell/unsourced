@@ -198,3 +198,12 @@ class Paginator:
             return None
 
 
+def fix_url(url):
+    """ prepend "http://" to protocoless urls """
+    if url is None:
+        return url
+    o = urlparse(url)
+    if not o[0]:
+        url = 'http://' + url
+    return url
+

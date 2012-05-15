@@ -1,19 +1,41 @@
-import tornado.web
-from tornado import httpclient
 import urllib
 import collections
 import json
 import datetime
 
+from wtforms import Form, TextField, validators
+import tornado.web
+from tornado import httpclient
+
 from sourcy import util,analyser,highlight
 from base import BaseHandler
 from sourcy.models import Article,ArticleURL,Action
+from sourcy.util import TornadoMultiDict, fix_url
+
+
+
+
+
+class AddArticleForm(Form):
+    url = TextField(u'Url of article', [validators.required(),validators.URL()], filters=[fix_url])
+
 
 class AddArticleHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    def get(self):
+        form = AddArticleForm(TornadoMultiDict(self))
+        self.render("addarticle.html", form=form)
+
     @tornado.web.authenticated
     @tornado.web.asynchronous
     def post(self):
-        url = self.get_argument('url')
+        form = AddArticleForm(TornadoMultiDict(self))
+        if not form.validate():
+            self.render("addarticle.html", form=form)
+            return
+
+        url = form.url.data
         art_url = self.session.query(ArticleURL).filter_by(url=url).first()
         if art_url is not None:
             art = art_url.article

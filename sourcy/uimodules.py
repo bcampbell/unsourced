@@ -125,7 +125,7 @@ class tool_googlescholar(tornado.web.UIModule):
 
     def embedded_javascript(self):
         return """
-    $('.helper form .researcher').each(function(index) {
+    $('.help form .researcher').each(function(index) {
         var fullname = '"' + $.trim($(this).text()) + '"';
 
         var cb = $('<input type="checkbox" />').change(function() {
@@ -142,7 +142,7 @@ class tool_googlescholar(tornado.web.UIModule):
         $(this).wrap("<label/>");
     });
 
-    $('.helper form .journal').each(function(index) {
+    $('.help form .journal').each(function(index) {
         var fullname = $.trim($(this).text()); 
 
         var cb = $('<input type="radio" name="j"/>').change(function() {
