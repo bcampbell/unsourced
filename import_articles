@@ -49,8 +49,6 @@ def get_arts(num_days=1):
 
 
 def main():
-    parse_config_file("sourcy.conf")
-
     parser = OptionParser()
     parser.add_option("-n", type="int", dest="num_days", default=1)
 
