@@ -14,8 +14,10 @@
 </head>
 <body>
 
+<div class="row">
+<div class="column grid_12">
 
-<header>
+<header class="site-header">
   <div class="inner">
     <div id="logo">
       <h1><a href="/"><img src="/static/unsourced.png" width="200" height="64" alt="Unsourced" /></a> </h1>
@@ -41,6 +43,8 @@ Hello, <a href="/user/{{current_user.id}}">{{current_user.username}}</a>
   </div>
 </header>
 
+</div>
+</div> <!-- end .row -->
 
 <div id="main">
 {% block main %}
@@ -48,7 +52,10 @@ Hello, <a href="/user/{{current_user.id}}">{{current_user.username}}</a>
 </div> <!-- end #main -->
 
 
-<footer>
+<div class="row">
+<div class="column grid_12">
+
+<footer class="site-footer">
   <div class="inner">
     <a href="/about">about</a>&nbsp;&nbsp;
     <a href="https://github.com/bcampbell/sourcy/">source code</a> (on github.com)&nbsp;&nbsp;
@@ -57,6 +64,10 @@ Hello, <a href="/user/{{current_user.id}}">{{current_user.username}}</a>
     </span>
   </div>
 </footer>
+
+</div>
+</div> <!-- end .row -->
+
 </body>
 </html>
 

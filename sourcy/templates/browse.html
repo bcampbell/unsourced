@@ -3,21 +3,27 @@
 
 
 {% block main %}
-
+<div class="row">
+<div class="column grid_12">
 <h2>Browse</h2>
-<div class="l-filters">
-<div class="filters">
-{% module filters(filters) %}
 </div>
 </div>
 
-<div class="l-results">
+<div class="row">
+
+<div class="column grid_8">
 <div id="results">
 {% module searchresults(pager) %}
 </div>
 </div>
 
+<div class="column grid_4">
+<div class="filters">
+{% module filters(filters) %}
+</div>
+</div>
 
+</div> <!-- end .row -->
 
 {% end %}
 

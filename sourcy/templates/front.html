@@ -5,28 +5,54 @@
 
 {% block main %}
 
-
-<div id="intro">
-<span>Add missing sources to news articles</span>
+<div class="row">
+<div class="column grid_12">
+  <div id="intro">
+    <span>Add missing sources to news articles</span>
+  </div>
 </div>
+</div> <!-- end .row -->
 
-<div id="get-started">
-<ul class="l-4col">
+
+<div class="row">
 {% for art in random_arts %}
-<li>
+<div class="column grid_3">
  <div id="art-{{art.id}}" class="art art-box">
   {% module art_item(art,show_pubdate=True) %}
   <a class="btn findsrc" href="/art/{{art.id}}">Find source</a>
  </div>
-</li>
+</div>
+{% end %}
+</div> <!-- end .row -->
+<div class="row">
+<div class="column grid_12">
+  <div>(<a href="/">show me some others</a>)</div>
+</div>
+</div> <!-- end .row -->
+
+<br/>
+
+<div class="row">
+<div class="column grid_8">
+<div class="infobox">
+<h2>Right now</h2>
+
+<ul>
+{% for act in recent_actions %}
+<li>{% module user(act.user,True) %} {% module action(act) %}<br/></li>
 {% end %}
 </ul>
-<div>(<a href="/">show me some others</a>)</div>
 </div>
 
-<div class="l-3col">
+</div>
 
-<div>
+<div class="column grid_4">
+
+<div class="infobox">
+<h2>Today's articles are X% complete</h2>
+</div>
+<br/>
+
 <div class="infobox">
 <h2>Top Sourcers</h2>
     <ul class="l-4col">
@@ -35,24 +61,16 @@
     {% end %}
     </ul>
 </div>
-</div>
+<br/>
 
-
-<div>
-<div class="infobox">
-<h2>Today's articles are X% complete</h2>
-</div>
-</div>
-
-<div>
 <div class="infobox">
 <h2>Something else</h2>
 <p>Some other stuff goes in here.</p>
 <p>not sure what yet.</p>
 <p>probably recent chat</p>
 </div>
-</div>
 
-</div> <!-- end .l-3col -->
+</div>
+</div> <!-- end .row -->
 {% end %}
 

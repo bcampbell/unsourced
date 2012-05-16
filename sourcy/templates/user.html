@@ -2,13 +2,18 @@
 {% block title %}User {{user.username}}{% end %}
 {% block main %}
 
-<h2>User: {{user.username}}</h2>
+<div class="row">
+<div class="column grid_4">
+
+<h2>{{user.username}}</h2>
 {% if current_user %}
 <a href="/editprofile">Edit your details</a><br/>
 {% end %}
 
 {% raw user.photo_img('l') %}
+</div>
 
+<div class="column grid_8">
 <h2>Recent activity</h2>
 {% for art, art_actions in groupby(actions, key = lambda x: x.article) %}
 <span>{% module art_item(art, show_icons=False, show_pubdate=True) %}</span>
@@ -24,5 +29,7 @@
 </ul>
 {% end %}
 
+</div>
+</div><!-- end .row -->
 {% end %}
 

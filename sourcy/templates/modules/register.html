@@ -1,5 +1,6 @@
 <div id="register">
 <h2>Create Account</h2>
+<div class="l-2col">
 
 <form action="/register" method="post">
 {% raw xsrf_form_html() %}
@@ -7,8 +8,12 @@
 <input type="submit" value="Create Account" />
 </form>
 
+<div>
 <p>Already got an account? <a href="{{login_url}}">log in</a></p>
 <p>Or log in using your <a href="/login/twitter">Twitter</a> or <a href="/login/google">Google</a> account.</p>
+</div>
+
+</div>
 </div>
 
 
