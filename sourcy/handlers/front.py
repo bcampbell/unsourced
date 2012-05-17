@@ -83,88 +83,6 @@ class FrontHandler(BaseHandler):
 
 
 
-class OldComplexFrontHandler(BaseHandler):
-    def get(self):
-
-        days = []
-        date = datetime.datetime.utcnow().date()
-
-        arts = self.session.query(Article).\
-            options(subqueryload(Article.tags,Article.sources,Article.comments)).\
-            filter(cast(Article.pubdate, Date)== date).\
-            all()
-
-        days.append((date,arts))
-
-        self.render('old_front.html',
-            days=days,
-            most_discussed=self._most_discussed_arts(),
-            recent_arts=self._recent_arts(),
-            recent_actions=self._recent_actions(),
-            sourced_arts=self._sourced(),
-            toxic=self._toxic(),
-            help_wanted=self._help_wanted()
-        )
-
-
-    def _recent_actions(self):
-        """ build query to get latest actions """
-        foo = self.session.query(Action).order_by(Action.performed.desc()).slice(0,20)
-
-        # group by day
-#        return [(day,list(g)) for day,g in itertools.groupby(foo, lambda action:action.performed.date())]
-
-        return foo
-
-
-
-    def _most_discussed_arts(self):
-        subq = self.session.query(Comment.article_id, func.count('*').label('cnt')).\
-            filter(Comment.post_time > datetime.date.today() - datetime.timedelta(days=7)).\
-            group_by(Comment.article_id).\
-            subquery()
-        return self.session.query(Article).\
-            options(subqueryload(Article.tags,Article.sources,Article.comments)).\
-            join(subq).\
-            order_by(subq.c.cnt.desc())[0:20]
-
-    def _recent_arts(self):
-        return self.session.query(Article).\
-            options(subqueryload(Article.tags,Article.sources,Article.comments)).\
-            order_by(Article.added.desc())[0:20]
-
-
-
-    def _help_wanted(self):
-        q = self.session.query(Article).join(Article.tags).filter(Tag.name=='help').order_by(Article.pubdate.desc()).slice(0,10)
-        return q
-
-
-    def _sourced(self):
-        q = self.session.query(Article).\
-            join(Article.tags).\
-            filter(Tag.name=='done').\
-            order_by(Article.pubdate.desc()).\
-            slice(0,10)
-        return q
-
-
-    def _toxic(self):
-        warnings = self.session.query(Tag.id).\
-            filter(Tag.kind==TagKind.WARNING).\
-            subquery()
-
-        q = self.session.query(Article, func.count("*").label("warn_cnt")).\
-            join(article_tags).\
-            join(Tag).\
-            filter(Tag.kind==TagKind.WARNING).\
-            group_by(Article).\
-            order_by('warn_cnt DESC').\
-            slice(0,20)
-        return [art for art,n in q]
-
-
-
 
 class AboutHandler(BaseHandler):
     def get(self):
@@ -275,7 +193,6 @@ class LeagueTablesHandler(BaseHandler):
 
 handlers = [
     (r'/', FrontHandler),
-    (r'/old', OldComplexFrontHandler),
     (r'/about', AboutHandler),
     (r'/academicpapers', AcademicPapersHandler),
     (r"/addjournal", AddJournalHandler),
