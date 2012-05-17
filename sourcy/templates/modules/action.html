@@ -1,14 +1,7 @@
-{% if act.what=='comment' %}
-<span class="cmt">{{ act.comment.content }}</span>
-{% elif act.what=='tag_add' %}
-<span>add tag <img src="{{act.tag.small_icon()}}" /></span>
-{% elif act.what=='tag_remove' %}
-<span>remove tag <img src="{{act.tag.small_icon()}}" /></span>
-{% elif act.what=='src_add' %}
-<span>add source</span>
-{% elif act.what=='src_remove' %}
-<span>remove source</span>
-{% else %}
-{% raw act.describe() %}
-{% end %}
-
+{% if user_display is not None %}<a class="attribution user" href="{{act.user.profile_url()}}">{% raw act.user.photo_img(user_display) %}</a>{% end %}
+<div>
+{% if user_display is not None %}<a class="user" href="{{act.user.profile_url()}}">{{act.user.username}}</a>{% end %}
+<span>{% raw desc_html %}</span>
+<br/>
+<span class="timestamp">- {% module fmt_datetime(act.performed) %}</span>
+</div>

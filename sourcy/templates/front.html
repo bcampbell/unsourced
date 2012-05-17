@@ -37,9 +37,9 @@
 <div class="infobox">
 <h2>Right now</h2>
 
-<ul>
+<ul class="act-list">
 {% for act in recent_actions %}
-<li>{% module user(act.user,True) %} {% module action(act) %}<br/></li>
+<li class="act act-full">{% module action(act,user_display='m') %}</li>
 {% end %}
 </ul>
 </div>
@@ -60,14 +60,6 @@
     <li>{% raw u.photo_img('m') %}</li>
     {% end %}
     </ul>
-</div>
-<br/>
-
-<div class="infobox">
-<h2>Something else</h2>
-<p>Some other stuff goes in here.</p>
-<p>not sure what yet.</p>
-<p>probably recent chat</p>
 </div>
 
 </div>

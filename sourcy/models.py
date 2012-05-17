@@ -176,6 +176,8 @@ class Article(Base):
     def other_links(self):
         return [src for src in self.sources if src.kind==SourceKind.OTHER]
 
+    def art_url(self):
+        return "/art/%d" % (self.id)
 
 
 class SourceKind(object):
@@ -309,6 +311,9 @@ class UserAccount(Base):
         hashed = bcrypt.hashpw(password, self.hashed_password)
         return hashed == self.hashed_password
 
+    def profile_url(self):
+        """ url for public profile of this user """
+        return "/user/%d" %(self.id,)
 
     @staticmethod
     def calc_unique_username(session,base_username):

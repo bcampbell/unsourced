@@ -3,33 +3,27 @@
 {% block main %}
 
 <div class="row">
-<div class="column grid_4">
 
+<div class="column grid_8">
 <h2>{{user.username}}</h2>
+<h3>Recent activity</h3>
+
+<ul class="act-list">
+{% for act in actions %}
+<li class="act">{% module action(act, user_display=None) %}</li>
+{% end %}
+</ul>
+
+</div>
+
+<div class="column grid_4">
 {% if current_user %}
-<a href="/editprofile">Edit your details</a><br/>
+<a class="btn" href="/editprofile">Edit your details</a><br/>
 {% end %}
 
 {% raw user.photo_img('l') %}
 </div>
 
-<div class="column grid_8">
-<h2>Recent activity</h2>
-{% for art, art_actions in groupby(actions, key = lambda x: x.article) %}
-<span>{% module art_item(art, show_icons=False, show_pubdate=True) %}</span>
-<ul class="action-list">
-    <li class="user-actions">
-        <ul>
-        {% for act in art_actions %}
-        <li class="action"> {% module action(act) %}
-        <span class="when">{{ locale.format_date(act.performed, shorter=True) }}</span></li>
-        {% end %}
-        </ul>
-    </li>
-</ul>
-{% end %}
-
-</div>
 </div><!-- end .row -->
 {% end %}
 

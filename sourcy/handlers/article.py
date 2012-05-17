@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 
 from sourcy import util,analyser,highlight
-from sourcy.models import Article,Source,Tag,TagKind
+from sourcy.models import Article,Source,Tag,TagKind,Action
 from sourcy.forms import AddPaperForm, AddPRForm, AddOtherForm
 
 from base import BaseHandler
@@ -112,6 +112,18 @@ class ArticleHandler(BaseHandler):
         donetag = self.session.query(Tag).filter(Tag.name=='done').one()
         helptag = self.session.query(Tag).filter(Tag.name=='help').one()
 
+        recent_actions = self.session.query(Action).\
+            filter(Action.article_id==art.id).\
+            filter(Action.what.in_(('src_add','src_remove','art_add','tag_add','tag_remove'))).\
+            order_by(Action.performed.desc()).slice(0,10)
+
+        recent_comments = self.session.query(Action).\
+            filter(Action.article_id==art.id).\
+            filter(Action.what.in_(('comment',))).\
+            order_by(Action.performed.desc()).slice(0,10)
+
+
+
         add_paper_form = AddPaperForm()
         add_pr_form = AddPRForm()
         add_other_form = AddOtherForm()
@@ -130,6 +142,8 @@ class ArticleHandler(BaseHandler):
             TagKind=TagKind,
             donetag=donetag,
             helptag=helptag,
+            recent_actions=recent_actions,
+            recent_comments=recent_comments,
 #            add_tag_form=add_tag_form
         )
         #self.finish()

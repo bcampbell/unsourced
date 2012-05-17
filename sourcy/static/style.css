@@ -41,7 +41,7 @@ input[type="checkbox"],
 input[type="radio"] {
     display: inline;
 }
-
+textarea { width: 100%; }
 select { display: block; }
 
 .error input {
@@ -133,17 +133,6 @@ ul.l-4col {
  * SPECIFICS
  */
 
-
-/* the site header */
-.site-header {
-    margin: 0 0 1em 0;
-    padding: 0;
-}
-
-.site-header .inner {
-    position: relative;
-    height: 64px;
-}
 
 
 /*****/
@@ -244,6 +233,16 @@ ul.l-4col {
  * MODULES
  */
 
+/* the site header */
+.site-header {
+    margin: 0 0 1em 0;
+    padding: 0;
+}
+.site-header .inner {
+    position: relative;
+    height: 64px;   /* height of logo */
+}
+
 
 /* Site Footer */
 .site-footer {
@@ -270,6 +269,38 @@ ul.l-4col {
     position:absolute;
     left:0.2em;
     bottom:0.2em;
+}
+
+
+/*****/
+.act-list {
+    list-style: none;
+    padding: 0;
+}
+
+/*****
+ * act module for action summaries
+ */
+.act {
+  text-align: top;
+  margin: 0.5em 0;
+}
+
+.act:after {
+    content: '';
+    clear: both;
+    display: block;
+}
+
+.act .timestamp {
+    padding-left: 1em;
+}
+
+/****/
+.attribution {
+    float: left;
+    display: block;
+    margin-right: 0.5em;
 }
 
 
@@ -349,6 +380,14 @@ ul.l-4col {
     display: inline-block;
 }
 
+/*****
+ * a user-presented timestamp (eg when an action was performed)
+ */
+.timestamp {
+    font-style: italic;
+    color: #888;
+    font-size: small;
+}
 
 /*****/
 .pubdate {

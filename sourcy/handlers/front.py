@@ -70,8 +70,9 @@ class FrontHandler(BaseHandler):
             order_by(func.rand()).\
             limit(4).all()
 
-        recent_actions = self.session.query(Action).order_by(Action.performed.desc()).slice(0,20)
-
+        recent_actions = self.session.query(Action).\
+            filter(Action.what.in_(('src_add','art_add'))).\
+            order_by(Action.performed.desc()).slice(0,10)
 
         all_users = self.session.query(UserAccount).slice(0,10).all()
         top_sourcers = [random.choice(all_users) for i in range(8)]

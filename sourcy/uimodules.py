@@ -91,8 +91,51 @@ class art_item(tornado.web.UIModule):
 
 class action(tornado.web.UIModule):
     """ describe an action """
-    def render(self, action):
-        return self.render_string("modules/action.html", act=action)
+    def render(self, act, show_article=True, show_full_source=True, user_display='m' ):
+
+        desc = u''
+
+        art = act.article
+        if art:
+            artlink = u'<a href="%s">%s</a>' % (art.art_url(), art.headline)
+
+        src_kinds = {
+            SourceKind.PAPER: u'a paper',
+            SourceKind.PR: u'a press release',
+            SourceKind.OTHER: u'a link' }
+
+        if not show_article:
+            # article point of view - show without article link
+            if act.what == 'src_add':
+                desc = u"added %s" % (src_kinds[act.source.kind],)
+            elif act.what == 'src_remove':
+                desc = u"removed a source from %s" % (artlink,)
+            elif act.what =='art_add':
+                desc = u'submitted'
+            elif act.what =='comment':
+                desc = u'said "%s"' % (act.comment.content,)
+#            elif act.what =='tag_add':
+#                desc = u'said "%s"' % (act.comment.content,)
+        else:
+            if act.what == 'src_add':
+                desc = u"added %s to %s" % (src_kinds[act.source.kind], artlink)
+            elif act.what == 'src_remove':
+                desc = u"removed a source from %s" % (artlink,)
+            elif act.what =='art_add':
+                desc = u'submitted article: %s' % (artlink,)
+            elif act.what =='comment':
+                desc = u'said "%s" on %s' % (act.comment.content, artlink)
+#            elif act.what =='tag_add':
+#                desc = u'said "%s" on %s' % (act.comment.content, artlink)
+
+        return self.render_string("modules/action.html",
+            act=act,
+            show_article=show_article,
+            show_full_source=show_full_source,
+            desc_html=desc,
+            user_display=user_display
+        )
+
 
 
 class daily(tornado.web.UIModule):
@@ -271,7 +314,7 @@ class paginator(tornado.web.UIModule):
 
 
 class fmt_datetime(tornado.web.UIModule):
-    def render(self, dt, cls):
+    def render(self, dt, cls=''):
 
         if cls:
             extra = 'class="%s"' % (cls,)
@@ -284,7 +327,7 @@ class fmt_datetime(tornado.web.UIModule):
             ) 
 
 class fmt_date(tornado.web.UIModule):
-    def render(self, d, cls):
+    def render(self, d, cls=''):
 
         if cls:
             extra = 'class="%s"' % (cls,)
