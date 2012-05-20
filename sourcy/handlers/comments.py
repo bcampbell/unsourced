@@ -13,7 +13,13 @@ class PostCommentHandler(BaseHandler):
 
         msg = self.get_argument("msg", None)
         if msg:
-            comment = Comment(author=self.current_user, article=art, content=msg)
+            # mark up and record any "@user" occurrances
+            content,mentioned_users = Comment.extract_users(self.session, msg)
+
+            print content, mentioned_users
+
+            comment = Comment(author=self.current_user, article=art, content=content, mentioned_users=mentioned_users)
+
             self.session.add(comment)
             action = Action('comment', user=self.current_user, comment=comment, article=comment.article)
             self.session.add(action)

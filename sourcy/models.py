@@ -5,6 +5,7 @@ from urlparse import urlparse
 from PIL import Image
 import os
 import re
+import logging
 
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
@@ -355,6 +356,10 @@ class TwitterAccessToken(Base):
     def __repr__(self):
         return "<TwitterAccessToken(%s)>" % (self.token,)
 
+comment_user_map = Table('comment_user_map', Base.metadata,
+    Column('comment_id', Integer, ForeignKey('comment.id')),
+    Column('useraccount_id', Integer, ForeignKey('useraccount.id'))
+)
 
 class Comment(Base):
     __tablename__ = 'comment'
@@ -367,10 +372,58 @@ class Comment(Base):
 
     author = relationship("UserAccount")
 
+    mentioned_users = relationship("UserAccount", secondary=comment_user_map, backref="comment_refs" )
+
     def __init__(self, **kw):
         for key,value in kw.iteritems():
-            assert(key in ('article','author','post_time','content'))
+            assert(key in ('article','author','post_time','content','mentioned_users'))
             setattr(self,key,value)
+
+
+    @staticmethod
+    def extract_users(session, comment_txt):
+        """ extract referenced users from a message
+
+        replaces "@name" with "@NN" where NN is userid (because username might change, but id won't)
+        returns new comment string and list of resolved users
+        """
+
+        userpat = re.compile('@([-\w]+)', re.I)
+
+        # look them all up in the db
+        usernames = set(m.group(1) for m in userpat.finditer(comment_txt))
+        users = session.query(UserAccount).\
+            filter(UserAccount.username.in_(usernames)).\
+            all()
+        user_lookup = dict((u.username,u) for u in users)
+
+        def user_replace(m):
+            if m.group(1) not in user_lookup:
+                return m.group(0)
+            user = user_lookup[m.group(1)]
+            return u"@%d" % (user.id,)
+
+        comment_txt = userpat.sub(user_replace, comment_txt)
+
+        return comment_txt,users
+
+
+    def format(self):
+        """ mark up links to mentioned users in the comment """
+        user_map = dict((u.id,u) for u in self.mentioned_users)
+
+        userpat = re.compile('@(\d+)', re.I)
+        def mkup(m):
+            uid = int(m.group(1))
+            u = user_map.get(uid,None)
+            if u is not None:
+                return '@<a href="/user/%d">%s</a>' %(u.id,u.username)
+            else:
+                return m.group(0)
+
+        txt = userpat.sub(mkup, self.content)
+        logging.info(txt)
+        return txt
 
 
 def sanitise_filename(filename):

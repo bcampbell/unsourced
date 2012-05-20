@@ -113,7 +113,7 @@ class action(tornado.web.UIModule):
             elif act.what =='art_add':
                 desc = u'submitted'
             elif act.what =='comment':
-                desc = u'said "%s"' % (act.comment.content,)
+                desc = u'said "%s"' % (act.comment.format(),)
 #            elif act.what =='tag_add':
 #                desc = u'said "%s"' % (act.comment.content,)
         else:
@@ -124,7 +124,7 @@ class action(tornado.web.UIModule):
             elif act.what =='art_add':
                 desc = u'submitted article: %s' % (artlink,)
             elif act.what =='comment':
-                desc = u'said "%s" on %s' % (act.comment.content, artlink)
+                desc = u'said "%s" on %s' % (act.comment.format(), artlink)
 #            elif act.what =='tag_add':
 #                desc = u'said "%s" on %s' % (act.comment.content, artlink)
 
