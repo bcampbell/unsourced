@@ -180,7 +180,7 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
         user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
         if user is None:
             # new user
-            # TODO: should check for and handle username clashes!
+            username = UserAccount.calc_unique_username(self.session, username)
             user = UserAccount(username=username, prettyname=prettyname, email=email, auth_supplier=auth_supplier, auth_uid=auth_uid, verified=True)
             self.session.add(user)
             self.session.commit()
@@ -230,9 +230,8 @@ class TwitterLoginHandler(BaseHandler, MyTwitterMixin):
         user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
         if user is None:
             # new user
-            # TODO: should check for and handle username clashes!
-
-            user = UserAccount(username, prettyname, email, auth_supplier, auth_uid, verified=True)
+            username = UserAccount.calc_unique_username(self.session, username)
+            user = UserAccount(username=username, prettyname=prettyname, email=email, auth_supplier=auth_supplier, auth_uid=auth_uid, verified=True)
             self.session.add(user)
             self.session.commit()
 
