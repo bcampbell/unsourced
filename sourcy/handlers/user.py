@@ -40,7 +40,7 @@ class EditProfileForm(Form):
     """ page for user to edit their profile """
 
     username     = TextField('Username', [validators.Length(min=1, max=25)])
-    email        = TextField('Email Address', [validators.Email()])
+    email        = TextField('Email Address', [validators.Optional(), validators.Email()])
 
     password = PasswordField(u'New Password', [
         validators.Optional(),
@@ -52,6 +52,7 @@ class EditProfileForm(Form):
     photo = FileField(u'Upload a profile photo')
 
 
+
 class EditProfileHandler(BaseHandler):
     """profile editing"""
 
@@ -59,19 +60,23 @@ class EditProfileHandler(BaseHandler):
     def get(self):
         user=self.current_user
         form = EditProfileForm(obj=user)
-        self.render('profile.html', user=user, form=form, msgs=[])
+        self.render('profile.html', user=user, form=form )
 
     @tornado.web.authenticated
     def post(self):
         user=self.current_user
 
-        msgs = []
-
         form = EditProfileForm(TornadoMultiDict(self))
         if not form.validate():
-            self.render('profile.html', user=user, form=form, msgs=msgs)
+            self.render('profile.html', user=user, form=form)
             return
 
+        # username already taken?
+        foo = self.session.query(UserAccount.id).filter(UserAccount.username==form.username.data).first()
+        if foo is not None and foo.id != user.id:
+            form.username.errors.append("username already in use. Please pick another.")
+            self.render('profile.html', user=user, form=form)
+            return
 
         # update stuff.
         if form.password.data:
@@ -81,7 +86,7 @@ class EditProfileHandler(BaseHandler):
         user.email = form.email.data
 
         # any photo uploaded?
-        uploaded_photos = self.request.files.get('photo')
+        uploaded_photos = self.request.files.get('photo',[])
         photo = None
         if len(uploaded_photos)>0:
             photo = UploadedFile.create(uploaded_photos[0], creator=user)
@@ -93,10 +98,8 @@ class EditProfileHandler(BaseHandler):
                 self.session.delete(old_photo)
 
 
-        msgs.append("Your account has been updated")
-
         self.session.commit()
-        self.render('profile.html', user=user, form=form, msgs=msgs)
+        self.redirect('/user/%d' % (user.id,))
 
 
 

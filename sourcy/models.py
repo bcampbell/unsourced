@@ -277,6 +277,8 @@ class UserAccount(Base):
     username = Column(String(64), nullable=False, unique=True)
     prettyname = Column(String(256), nullable=False, default=u'')
     hashed_password = Column(String(128), nullable=True)
+
+    # only verified users can log in
     verified = Column(Boolean, nullable=False, default=False)
     created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     # eg "twitter", "google" etc...

@@ -17,7 +17,7 @@
 </div>
 
 <div class="column grid_4">
-{% if current_user %}
+{% if current_user and current_user.id==user.id %}
 <a class="btn" href="/editprofile">Edit your details</a><br/>
 {% end %}
 
