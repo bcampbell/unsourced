@@ -168,7 +168,7 @@ class tool_googlescholar(tornado.web.UIModule):
 
     def embedded_javascript(self):
         return """
-    $('.help form .researcher').each(function(index) {
+    $('.helper form .researcher').each(function(index) {
         var fullname = '"' + $.trim($(this).text()) + '"';
 
         var cb = $('<input type="checkbox" />').change(function() {
@@ -185,7 +185,7 @@ class tool_googlescholar(tornado.web.UIModule):
         $(this).wrap("<label/>");
     });
 
-    $('.help form .journal').each(function(index) {
+    $('.helper form .journal').each(function(index) {
         var fullname = $.trim($(this).text()); 
 
         var cb = $('<input type="radio" name="j"/>').change(function() {
@@ -340,30 +340,30 @@ class fmt_date(tornado.web.UIModule):
             ) 
 
 
-class help_paper(tornado.web.UIModule):
+class helper_paper(tornado.web.UIModule):
     """ show help on tracking down academic papers """
     def render(self, art, journals, institutions, researchers):
-        return self.render_string('modules/help_paper.html',
+        return self.render_string('modules/helper_paper.html',
             art=art,
             institutions=institutions,
             journals=journals,
             researchers=researchers)
 
 
-class help_pr(tornado.web.UIModule):
+class helper_pr(tornado.web.UIModule):
     """ show help on tracking down press releases """
     def render(self, art, journals, institutions, researchers):
-        return self.render_string('modules/help_pr.html',
+        return self.render_string('modules/helper_pr.html',
             art=art,
             institutions=institutions,
             journals=journals,
             researchers=researchers)
 
 
-class help_other(tornado.web.UIModule):
+class helper_other(tornado.web.UIModule):
     """ show help on tracking down other links """
     def render(self, art, journals, institutions, researchers):
-        return self.render_string('modules/help_other.html',
+        return self.render_string('modules/helper_other.html',
             art=art,
             institutions=institutions,
             journals=journals,

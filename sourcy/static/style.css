@@ -41,14 +41,24 @@ input[type="checkbox"],
 input[type="radio"] {
     display: inline;
 }
-textarea { width: 100%; }
+
+textarea,
+input[type="text"],
+input[type="password"] {
+    width: 98%;
+}
+
 select { display: block; }
 
 .error input {
     border: 1px solid #c00;
 }
 
-
+.help {
+    color: #888;
+    font-style: italic;
+    font-size: smaller;
+}
 
 /**********************************************************************
  * GENERIC LAYOUT
@@ -444,8 +454,10 @@ ul.l-4col {
 }
 
 
-/*****/
-.help {
+/*****
+ * helper - shows info about tracking down sources
+ */
+.helper {
     background-color: #ccc;
     padding: 0.5em;
 }

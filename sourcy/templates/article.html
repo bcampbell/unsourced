@@ -9,23 +9,23 @@
 $('.add-source .add').click(function() {
     /* hide all others */
     $('.add-source>form').hide();
-    $('.add-source>.help').hide();
+    $('.add-source>.helper').hide();
     $('.add-source>.add').show();
 
     /* show just one */
     $(this).nextAll('form').show();
-    $(this).nextAll('.help').show();
+    $(this).nextAll('.helper').show();
     $(this).hide();
     return false;
 });
 
 $('.add-source>form').hide();
-$('.add-source>.help').hide();
+$('.add-source>.helper').hide();
 
 $('.add-source form .cancel').click(function() {
-    $(this).closest('.add-source').find('form').hide();
-    $(this).closest('.add-source').find('.help').hide();
-    $(this).closest('.add-source').find('.add').show();
+    $(this).closest('.add-source').children('form').hide();
+    $(this).closest('.add-source').children('.helper').hide();
+    $(this).closest('.add-source').children('.add').show();
     return false;
 });
 
@@ -43,7 +43,7 @@ pubsub.source_added.add(function(new_src) {
 
 
     $('.add-source form').hide();
-    $('.add-source .help').hide();
+    $('.add-source .helper').hide();
     $('.add-source .add').show();
 
 });
@@ -131,7 +131,7 @@ pubsub.source_added.add(function(new_src) {
     <div class="add-source">
     <a class="add" href="/art/{{art.id}}/paper/add" method="GET">Add</a>
     {% module add_paper(art, add_paper_form) %}
-    {% module help_paper(art,journals,institutions,researchers) %}
+    {% module helper_paper(art,journals,institutions,researchers) %}
     </div>
 
     <h3>Press release</h3>
@@ -141,7 +141,7 @@ pubsub.source_added.add(function(new_src) {
     <div class="add-source">
     <a class="add" href="/art/{{art.id}}/pr/add" method="GET">Add</a>
     {% module add_pr(art, add_pr_form) %}
-    {% module help_pr(art,journals,institutions,researchers) %}
+    {% module helper_pr(art,journals,institutions,researchers) %}
     </div>
 
 
@@ -152,7 +152,7 @@ pubsub.source_added.add(function(new_src) {
     <div class="add-source">
     <a class="add" href="/art/{{art.id}}/other/add" method="GET">Add</a>
     {% module add_other(art, add_other_form) %}
-    {% module help_other(art,journals,institutions,researchers) %}
+    {% module helper_other(art,journals,institutions,researchers) %}
     </div>
 
 
