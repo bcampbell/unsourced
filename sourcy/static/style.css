@@ -2,11 +2,35 @@
  * BASE STYLES
  */
 
+@font-face {
+  font-family: 'Contrail One';
+  font-style: normal;
+  font-weight: normal; 
+  src: url('/static/ContrailOne-Regular.ttf');
+}
+@font-face {
+  font-family: 'Oleo Script';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/static/OleoScript-Regular.ttf');
+}
+
+
+
 body {
     font-family: Helvetica, Arial, Sans-Serif;
-    background-color: #fff;
+    background: url(/static/canvas.png) repeat;
     margin: 0;
     padding: 0;
+    font-size: smaller;
+}
+
+
+h1, h2, h3, h4 {
+    font-family: 'Contrail One';
+    font-style: normal;
+    font-weight: normal;
+    margin: 0.1em 0 0.4em 0;
 }
 
 
@@ -329,19 +353,32 @@ ul.l-4col {
  * full article display
  */
 .fullart {
-    border: 1px solid #000;
     margin: 0;
-    padding: 0.5em;
+    padding: 2em;
+    background: #fff;
 }
 
-
-
-/*****/
-.tool {
-    border: 1px solid #000;
-    margin: 0 0 0.5em 0;
-    padding: 0.5em;
+.fullart header {
+    margin-top: 1em;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
+
+.fullart-headline {
+    font-family: "Oleo Script";
+    font-size: 250%; 
+}
+.fullart-headline a {
+    color: #000;
+}
+.fullart-headline a:hover {
+    color: #000;
+}
+
+.fullart .body {
+ margin: 2em 0;
+}
+
 
 /*****/
 /*.filters {
@@ -442,9 +479,22 @@ ul.l-4col {
  */
 
 .btn {
-    border: 1px solid #000;
+    border: none;
+    border-radius: 4px;
     display: inline;
+    background-color: #33B7FF;
+    color: #fff;
 }
+a.btn,
+input.btn
+ { color: #fff; padding: 0.1em 1em; }
+
+.btn:hover {
+    color: #fff;
+    background-color: #66ffff;
+    text-decoration: none;
+}
+
 
 
 /*****/
@@ -510,4 +560,36 @@ ul.l-4col {
     width: 70%;
 }
 
+
+
+.row {
+    background-color: rgba(0,0,0,0.075);
+}
+
+
+#tools {
+  margin: 1em;
+}
+.sidebar {
+    background-image: url('/static/lattice.png');
+}
+
+/*****/
+.tool header {
+    background-color: rgba(31,82,162,0.8);
+    color: #fff;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 0.1em 0.75em;
+}
+
+.tool .bod {
+    margin: 0 0 0.5em 0;
+    padding: 0.75em;
+    background: #fff;
+}
+
+.tool h2,
+.tool h3 {
+}
 

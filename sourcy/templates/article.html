@@ -59,7 +59,7 @@ pubsub.source_added.add(function(new_src) {
 <div class="fullart">
 
 <header>
-<h2><a href="{{art.permalink}}">{{art.headline}}</a></h2>
+<h2 class="fullart-headline"><a href="{{art.permalink}}">{{art.headline}}</a></h2>
 <span class="pubdate">{{art.pubdate}}</span> - <span class="publication">{% module domain(art.permalink) %}</span>
 </header>
 
@@ -94,68 +94,55 @@ pubsub.source_added.add(function(new_src) {
 
 
 </div> <!-- end .fullart -->
-<br/>
-<div class="infobox">
-   <h2>Comments</h2>
-    <ul class="act-list">
-{% for act in recent_comments %}
-      <li class="act">{% module action(act, show_article=False) %}</li>
-{% end %}
-    </ul>
-    {% if current_user %}
-    <h3>Leave a reply</h3>
-    <form action="/art/{{art.id}}/postcomment" method="POST">
-    {% raw xsrf_form_html() %}
-    <textarea name="msg" />
-    </textarea>
-    <input type="submit" value="Add comment"/>
-    </form>
-    {% else %}
-    <a href="/login?next=/art/{{art.id}}">Log in</a> to add a comment
-    {% end %}
-</div>
 </div> <!-- end #view -->
 </div>
 
-<div class="column grid_5">
+<div class="column grid_5 sidebar">
 <div id="tools">
 
   <div class="tool sources">
+    <header>
     <h2>Sources</h2>
+    </header>
 
+    <div class="bod">
     <h3>Academic paper</h3>
     <ul class="list-paper">
     {% for src in art.papers() %}{% module source(src, container='li') %}{% end %}
     </ul>
 
     <div class="add-source">
-    <a class="add" href="/art/{{art.id}}/paper/add" method="GET">Add</a>
+    <a class="btn add" href="/art/{{art.id}}/paper/add" method="GET">Add</a>
     {% module add_paper(art, add_paper_form) %}
     {% module helper_paper(art,journals,institutions,researchers) %}
     </div>
 
+    <br/>
+    <br/>
     <h3>Press release</h3>
     <ul class="list-pr">
     {% for src in art.press_releases() %}{% module source(src, container='li') %}{% end %}
     </ul>
     <div class="add-source">
-    <a class="add" href="/art/{{art.id}}/pr/add" method="GET">Add</a>
+    <a class="btn add" href="/art/{{art.id}}/pr/add" method="GET">Add</a>
     {% module add_pr(art, add_pr_form) %}
     {% module helper_pr(art,journals,institutions,researchers) %}
     </div>
 
 
+    <br/>
+    <br/>
     <h3>Other link</h3>
     <ul class="list-other">
     {% for src in art.other_links() %}{% module source(src, container='li') %}{% end %}
     </ul>
     <div class="add-source">
-    <a class="add" href="/art/{{art.id}}/other/add" method="GET">Add</a>
+    <a class="btn add" href="/art/{{art.id}}/other/add" method="GET">Add</a>
     {% module add_other(art, add_other_form) %}
     {% module helper_other(art,journals,institutions,researchers) %}
     </div>
 
-
+    </div>  <!-- end .bod -->
   </div>
 
     {% if donetag not in art.tags %}
@@ -211,19 +198,49 @@ pubsub.source_added.add(function(new_src) {
 
 
 
-</div> <!-- /#tools -->
 
-<div class="infobox">
-<h2>Recent activity</h2>
+<div class="tool">
+<header>
+  <h2>Recent activity</h2>
+</header>
+  <div class="bod">
     <ul class="act-list">
 {% for act in recent_actions %}
       <li class="act">{% module action(act, show_article=False, user_display='s') %}</li>
 {% end %}
     </ul>
-</div>
+  </div>
+</div> <!-- /.tool -->
+
+<div class="tool">
+  <header>
+    <h2>Comments</h2>
+  </header>
+  <div class="bod">
+    <ul class="act-list">
+{% for act in recent_comments %}
+      <li class="act">{% module action(act, show_article=False) %}</li>
+{% end %}
+    </ul>
+    {% if current_user %}
+    <h3>Leave a reply</h3>
+    <form action="/art/{{art.id}}/postcomment" method="POST">
+    {% raw xsrf_form_html() %}
+    <textarea name="msg" />
+    </textarea>
+    <input type="submit" value="Add comment"/>
+    </form>
+    {% else %}
+    <a href="/login?next=/art/{{art.id}}">Log in</a> to add a comment
+    {% end %}
+  </div>
+</div> <!-- /.tool -->
+
+
+
+</div> <!-- /#tools -->
 
 </div>
-
 </div> <!-- end .row -->
 {% end %}
 
