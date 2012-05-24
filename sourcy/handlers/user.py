@@ -9,10 +9,12 @@ import tornado.auth
 import tornado.web
 from tornado import httpclient
 from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, FileField, validators
+from sqlalchemy.orm import subqueryload
+
 
 from base import BaseHandler
 from sourcy.util import TornadoMultiDict
-from sourcy.models import Action,UserAccount,UploadedFile,Token
+from sourcy.models import Action,UserAccount,UploadedFile,Token,comment_user_map
 from sourcy.util import TornadoMultiDict
 
 from sourcy.cache import cache
@@ -30,9 +32,27 @@ class UserHandler(BaseHandler):
         actions = self.session.query(Action)\
             .filter(Action.user==user)\
             .order_by(Action.performed.desc())\
-            .slice(0,100)\
+            .slice(0,10)\
             .all()
-        self.render('user.html', user=user, actions=actions, groupby=itertools.groupby)
+
+
+        subq = self.session.query(comment_user_map.c.comment_id).\
+            filter(comment_user_map.c.useraccount_id==user.id).\
+            subquery()
+
+        mentions = self.session.query(Action).\
+            options(subqueryload(Action.comment,Action.article,Action.user)).\
+            filter(Action.what=='comment').\
+            filter(Action.comment_id.in_(subq)).\
+            order_by(Action.performed.desc()).\
+            slice(0,10).\
+            all()
+
+
+        self.render('user.html', user=user, actions=actions, mentions=mentions )
+
+
+
 
 
 

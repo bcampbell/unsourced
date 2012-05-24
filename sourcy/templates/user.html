@@ -14,6 +14,14 @@
 {% end %}
 </ul>
 
+<h3>Recent mentions</h3>
+
+<ul class="act-list">
+{% for act in mentions %}
+<li class="act">{% module action(act, user_display='s') %}</li>
+{% end %}
+</ul>
+
 </div>
 
 <div class="column grid_4">
