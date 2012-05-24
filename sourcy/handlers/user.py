@@ -155,10 +155,10 @@ class LoginHandler(BaseHandler):
 
         # user exists?
         user = self.session.query(UserAccount).filter(UserAccount.email==form.email.data).first()
-        # password ok?
-        if not user.check_password(form.password.data):
-            user = None
-
+        if user is not None:
+            # password ok?
+            if not user.check_password(form.password.data):
+                user = None
 
         if user is None:
             form.email.errors.append("Either your email address or password was not recognised. Please try again.")
