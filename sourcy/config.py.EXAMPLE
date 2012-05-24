@@ -8,6 +8,11 @@ class Settings:
 here = os.path.dirname(__file__)
 
 settings = Settings(
+    site_name = "unsourced.org",
+    root_url="http://localhost:8888",
+    # for testing - show confirmation email instead of sending it
+    bypass_email=True,
+
     mysql_host="127.0.0.1:3306",
     mysql_database="",
     mysql_user="",
