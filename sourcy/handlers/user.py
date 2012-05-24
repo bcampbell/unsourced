@@ -325,10 +325,13 @@ class RegisterHandler(BaseHandler):
         else:
             # TODO: send the damn email!
 
-            self.render('token_sent.html',
-                bypass_email=settings.bypass_email)
+            # redirect to avoid multiple emails due to refresh clicking!
+            self.redirect('/emailsent')
 
 
+class TokenSentHandler(BaseHandler):
+    def get(self):
+        self.render('token_sent.html',bypass_email=False)
 
 
 class ThumbHandler(BaseHandler):
@@ -360,6 +363,7 @@ handlers = [
     (r"/user/([0-9]+)", UserHandler),
     (r"/editprofile", EditProfileHandler),
     (r"/register", RegisterHandler),
+    (r"/emailsent", TokenSentHandler),
     (r"/thumb/([a-z0-9]+)/([^!#?&]+)", ThumbHandler),
 ]
 
