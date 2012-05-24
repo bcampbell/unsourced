@@ -15,7 +15,7 @@ import uimodules
 import db
 import config
 
-from handlers import user,article,addarticle,front,sources,tagging,comments,browse
+from handlers import user,article,addarticle,front,sources,tagging,comments,browse,tokens
 import analyser
 from util import parse_config_file
 
@@ -31,6 +31,7 @@ class Application(tornado.web.Application):
         handlers.extend(tagging.handlers)
         handlers.extend(comments.handlers)
         handlers.extend(browse.handlers)
+        handlers.extend(tokens.handlers)
 
         ui_modules = [ uimodules, ]
 
@@ -51,7 +52,7 @@ class Application(tornado.web.Application):
         )
         tornado.web.Application.__init__(self, handlers, **settings)
 
-        self.engine = create_engine(db.engine_url(), echo=False, pool_recycle=3600)
+        self.engine = create_engine(db.engine_url(), echo=True, pool_recycle=3600)
         self.Session = sessionmaker(bind=self.engine)
 
         session = self.Session()

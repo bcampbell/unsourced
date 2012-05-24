@@ -6,6 +6,8 @@ from PIL import Image
 import os
 import re
 import logging
+import json
+import base64
 
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
@@ -319,6 +321,10 @@ class UserAccount(Base):
         return "/user/%d" %(self.id,)
 
     @staticmethod
+    def hash_password(password):
+        return bcrypt.hashpw(password, bcrypt.gensalt())
+
+    @staticmethod
     def calc_unique_username(session,base_username):
         """ return a unique username """
         foo = session.query(UserAccount.username).filter(UserAccount.username==base_username).first()
@@ -507,4 +513,52 @@ class UploadedFile(Base):
 # hook in some bookkeeping to delete uploaded files/thumbs after removal from database
 event.listen(UploadedFile, 'after_delete', UploadedFile.on_delete)
 
+
+
+class Token(Base):
+    """ Token with payload, for email verification tasks """
+    __tablename__ = 'token'
+
+    name = Column(String(64), primary_key=True, default=lambda: base64.urlsafe_b64encode(os.urandom(12)))
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    expires = Column(DateTime, nullable=False, default=lambda: datetime.datetime.utcnow() + datetime.timedelta(days=7))
+    payload = Column(String(2048), nullable=False)
+
+    def __init__(self, **kw):
+        for key,value in kw.iteritems():
+            assert(key in ('name','expires','payload'))
+            setattr(self,key,value)
+
+    def set_payload_from_dict(self,d):
+        self.payload = json.dumps(d)
+        
+    def get_payload_as_dict(self):
+        return json.loads(self.payload)
+
+
+    @staticmethod
+    def create_registration(email, password):
+        """ create a token which will register a new user when used """
+
+        # we don't _ever_ want to store raw passwords
+        hashed_password = UserAccount.hash_password(password)
+
+        payload=dict(
+            op='register',
+            email=email,
+            hashed_password=hashed_password)
+        tok = Token()
+        tok.set_payload_from_dict(payload)
+        return tok
+
+    @staticmethod
+    def create_login(user_id, next=None):
+        """ create a token which will log in an existing user """
+        payload=dict(op='login', user_id=user_id)
+        if next is not None:
+            payload['next'] = next
+
+        tok = Token()
+        tok.set_payload_from_dict(payload)
+        return tok
 

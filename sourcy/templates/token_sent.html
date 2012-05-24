@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Confirmation email sent{% end %}
+
+{% block main %}
+<div class="row">
+<div class="column grid_2">&nbsp;</div>
+<div class="column grid_8">
+
+<strong>
+We've sent you an email with a confirmation link. Click the link to verify.
+</strong>
+
+{% if bypass_email %}
+<div style="border: 2px dashed red; padding: 2em;">
+actually, we're in test mode, so that's a complete lie.<br/>
+Here's your link: <a href="{{confirmation_url}}">{{confirmation_url}}</a><br/>
+<br/>
+Here's what _would_ have been in the email:
+<code><pre>
+{% raw email_subject %}
+<hr/>
+{% raw email_body %}
+</pre></code>
+</div>
+{% end %}
+
+</div>
+<div class="column grid_2">&nbsp;</div>
+</div><!-- end .row -->
+{% end %}

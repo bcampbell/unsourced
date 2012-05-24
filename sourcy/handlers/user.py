@@ -12,7 +12,7 @@ from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, Pas
 
 from base import BaseHandler
 from sourcy.util import TornadoMultiDict
-from sourcy.models import Action,UserAccount,UploadedFile
+from sourcy.models import Action,UserAccount,UploadedFile,Token
 from sourcy.util import TornadoMultiDict
 
 from sourcy.cache import cache
@@ -50,6 +50,8 @@ class EditProfileForm(Form):
         validators.EqualTo('password', message='Passwords must match')]
     )
     photo = FileField(u'Upload a profile photo')
+
+
 
 
 
@@ -269,10 +271,6 @@ class RegisterForm(Form):
 
 
 
-def username_from_email(email):
-    username = email.split("@")[0].lower()
-    return username
-
 
 
 
@@ -297,26 +295,38 @@ class RegisterHandler(BaseHandler):
         # user might already exist - people _do_ forget.
         # outwardly, we don't want to reflect that an email address is
         # already registered, but we can send a different email.
+
+
         user = self.session.query(UserAccount).filter(UserAccount.email==form.email.data).first()
         if user is None:
-
-            # ok - let's create the new user then!
-            username = username_from_email(form.email.data)
-            username = UserAccount.calc_unique_username(self.session, username)
-
-            user = UserAccount( username=username,
-                email=form.email.data,
-                password=form.password.data,
-                verified=False)
-            self.session.add(user)
-            self.session.commit()
-            # TODO: send them a verification email
-
+            token = Token.create_registration(
+                form.email.data,
+                form.password.data)
+            email_template = 'email/confirm_register.txt'
+            email_subject = "%s - confirm your account" % settings.site_name
         else:
-            # TODO: send them a reminder email
-            pass
+            token = Token.create_login(user.id)
+            email_template = 'email/forgotten_password.txt'
+            email_subject = "%s - forgotten password" % settings.site_name
 
-        self.render('register.html',form=None)
+        self.session.add(token)
+        self.session.commit()
+
+        confirmation_url = "%s/t/%s" % (settings.root_url,token.name)
+        email_body = self.render_string(email_template,
+            confirmation_url=confirmation_url)
+
+        if settings.bypass_email:
+            self.render('token_sent.html',
+                bypass_email=settings.bypass_email,
+                confirmation_url=confirmation_url,
+                email_subject=email_subject,
+                email_body=email_body)
+        else:
+            # TODO: send the damn email!
+
+            self.render('token_sent.html',
+                bypass_email=settings.bypass_email)
 
 
 
