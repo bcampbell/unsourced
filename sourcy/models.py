@@ -32,16 +32,16 @@ class Action(Base):
     __tablename__ = 'action'
 
     id = Column(Integer, primary_key=True)
-    what = Column(String(32), nullable=False)
+    what = Column(String(32), nullable=False, index=True)
 
     # 'tag_add','art_add', 'lookup_add',
     # 'src_add',
     # 'src_downvote',
     # 'src_upvote',
 
-    user_id = Column(Integer, ForeignKey('useraccount.id'))
+    user_id = Column(Integer, ForeignKey('useraccount.id'), index=True)
     performed = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
-    article_id = Column(Integer, ForeignKey('article.id'))
+    article_id = Column(Integer, ForeignKey('article.id'), index=True)
     source_id = Column(Integer, ForeignKey('source.id'))
     lookup_id = Column(Integer, ForeignKey('lookup.id'))
     tag_id = Column(Integer, ForeignKey('tag.id'))
@@ -146,13 +146,13 @@ class Article(Base):
     id = Column(Integer, primary_key=True)
     headline = Column(String(512), nullable=False)
     permalink = Column(String(512), nullable=False)
-    pubdate = Column(DateTime)
+    pubdate = Column(DateTime, index=True)
     added = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
-    tags = relationship("Tag", secondary=article_tags, backref="articles" )
+    tags = relationship("Tag", secondary=article_tags, backref="articles", lazy='joined')
 
-    sources = relationship("Source", backref="article", cascade="all, delete-orphan")
+    sources = relationship("Source", backref="article", cascade="all, delete-orphan", lazy='joined')
     urls = relationship("ArticleURL", backref="article", cascade="all, delete-orphan")
-    comments = relationship("Comment", backref="article", cascade="all, delete-orphan", order_by="Comment.post_time")
+    comments = relationship("Comment", backref="article", cascade="all, delete-orphan", order_by="Comment.post_time", lazy='joined')
 
     actions = relationship("Action", backref="article", cascade="all, delete-orphan")
 
@@ -275,8 +275,8 @@ class UserAccount(Base):
     __tablename__ = 'useraccount'
 
     id = Column(Integer, primary_key=True)
-    email = Column(String(256), nullable=False)
-    username = Column(String(64), nullable=False, unique=True)
+    email = Column(String(256), nullable=False, index=True)
+    username = Column(String(64), nullable=False, unique=True, index=True)
     prettyname = Column(String(256), nullable=False, default=u'')
     hashed_password = Column(String(128), nullable=True)
 

@@ -51,8 +51,7 @@ class BrowseHandler(BaseHandler):
 
         filters = FiltersForm(TornadoMultiDict(self))
 
-        arts = self.session.query(Article).\
-            options(subqueryload(Article.tags,Article.sources,Article.comments))
+        arts = self.session.query(Article)
 
         if filters.validate():
             date_def = next((d for d in date_defs if d['id']==filters.date.data), None)
