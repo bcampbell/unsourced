@@ -171,26 +171,14 @@ ul.l-4col {
 
 /*****/
 
-#logo {
-    position: absolute;
-    left: 0;
-    top: 0;
-}
-
-#logo h1 {
-    margin: 0;
-    padding: 0;
-}
-#logo img { display: block; }
-
 
 /*****/
 
 #topnav {
-    position: absolute;
+/*    position: absolute; */
     display: block;
-    left: 220px;    /* logo is 200px */
-    bottom: 0.2em;
+/*    left: 220px; */   /* logo is 200px */
+/*    bottom: -0.5em; */
     margin: 0;
     padding: 0;
 }
@@ -208,26 +196,28 @@ ul.l-4col {
 }
 
 #topnav ul.menu a {
-    border: 1px solid #000;
-    padding: 0.2em;
+    padding: 0.3em 0.5em 0.7em 0.5em;
     margin: 0;
     display: block;
+    font-family: 'Contrail One';
+    font-size: large;
+    color: #fff;
+    background-color: #CC2A2D;
+    min-width: 6em;
+}
+
+#topnav ul.menu a:visited {
+    color: #fff;
 }
 
 #topnav ul.menu a:hover {
-    background-color: #ccc;
+    color: #fff;
+    -moz-transform: rotate(-2deg) scale(1.1);
+    background-color: #f43632;
+    text-decoration: none;
 }
 
 
-
-
-/*****/
-
-#login-status {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
 
 
 
@@ -271,10 +261,53 @@ ul.l-4col {
 .site-header {
     margin: 0 0 1em 0;
     padding: 0;
+
 }
 .site-header .inner {
-    position: relative;
-    height: 64px;   /* height of logo */
+/*    position: relative;
+    height: 64px; */  /* height of logo */
+}
+
+.site-header .site-logo {
+/*    position: absolute;
+    left: 0;
+    top: 2em;
+*/
+}
+
+.site-header .site-logo h1 {
+    margin: 0.5em 0;
+    padding: 0;
+}
+
+.site-header .site-logo img { display: block; }
+
+
+
+.site-header .mst-logo {
+/*
+    position: absolute;
+    display: block;
+    right: 0;
+    top: 2em;
+*/
+    margin-top: 1em;
+    float:right;
+}
+
+
+.site-header .login-status {
+    background-color: rgba(248, 210, 21,0.75);
+    padding: 0.5em;
+    text-align: right;
+    margin: 0;
+}
+
+.site-header .site-search {
+  background-color: #423F38;
+  color: #fff;
+    padding: 0.5em;
+    margin: 0;
 }
 
 

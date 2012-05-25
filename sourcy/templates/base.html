@@ -19,27 +19,42 @@
 
 <header class="site-header">
   <div class="inner">
-    <div id="logo">
-      <h1><a href="/"><img src="/static/unsourced.png" width="200" height="64" alt="Unsourced" /></a> </h1>
-    </div>
 
-    <nav id="topnav">
-      <ul class="menu">
-          <li><a href="/browse">browse articles</a></li>
-          <li><a href="/daily">view by day</a></li>
-          <li><a href="/about">about</a></li>
-      </ul>
-    </nav>
 
-    <div id="login-status">
+    <div class="row">
+    <div class="column grid_9 login-status">
+
+    <div class="">
 {% if current_user is None %}
       <a href="/login">log in</a>
 {% else %}
-Hello, <a href="/user/{{current_user.id}}">{{current_user.username}}</a>
-{% if current_user.photo %}{% raw current_user.photo_img('s') %}{% end %}
-(<a href="/logout">log out</a>)
+Hello <a href="/user/{{current_user.id}}">{{current_user.username}}</a> |
+<a href="/logout">log out</a>
 {% end %}
     </div>
+
+    </div>
+    <div class="column grid_3 site-search">
+    <div>
+        Search...
+    </div>
+
+    </div>
+    </div> <!-- end .row -->
+
+    <a class="mst-logo" href="/"><img src="/static/mst_logo.png" width="70" height="50" alt="Media Standards Trust" /></a>
+
+    <div class="site-logo">
+      <h1><a href="/"><img src="/static/unsourced.png" width="210" height="64" alt="Unsourced" /></a> </h1>
+    </div>
+
+
+    <nav id="topnav">
+      <ul class="menu">
+          <li><a href="/browse">browse</a></li>
+          <li><a href="/daily">view by day</a></li>
+      </ul>
+    </nav>
   </div>
 </header>
 
