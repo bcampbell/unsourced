@@ -512,6 +512,7 @@ ul.l-4col {
     border-bottom: 1px dashed #ccc;
     background-color: #eee;
     vertical-align: top;
+    padding: 0.5em 0;
 }
 .moderation:after {
     content: "";
@@ -525,7 +526,6 @@ ul.l-4col {
 */
 .moderation>.creator img {
  float: left;
- padding: 0.5em 0;
  margin-right: 0.5em;
 }
 
