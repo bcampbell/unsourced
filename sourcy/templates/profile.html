@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Edit your details{% end %}
+{% block extra_js %}
+$('input#username').bind("propertychange keyup input paste", function (event) {
+    var txt = $(this).val();
+    if(!txt.match(/^[a-zA-Z0-9_]+$/)) {
+       $(this).val(txt.replace(/[^a-zA-Z0-0_]/,''));
+    }
+});
+{% end %}
+
 {% block main %}
 <div class="row">
 <div class="column grid_2">&nbsp;</div>

@@ -12,8 +12,7 @@ import base64
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, DateTime, Date, Boolean, ForeignKey
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, validates, sessionmaker
 from sqlalchemy.sql import func
 from sqlalchemy import create_engine
 from sqlalchemy import event
@@ -274,6 +273,8 @@ class Tag(Base):
 class UserAccount(Base):
     __tablename__ = 'useraccount'
 
+    USERNAME_PAT = re.compile('^[A-Za-z0-9_]+$')
+
     id = Column(Integer, primary_key=True)
     email = Column(String(256), nullable=False, index=True)
     username = Column(String(64), nullable=False, unique=True, index=True)
@@ -292,6 +293,13 @@ class UserAccount(Base):
 
     photo_id = Column(Integer, ForeignKey('uploaded_file.id', use_alter=True, name='fk_useraccount_photo_id'), nullable=True)
     photo = relationship("UploadedFile", primaryjoin="UserAccount.photo_id==UploadedFile.id")
+
+    @validates('username')
+    def validate_username(self, key, username):
+        print "BING!"
+        assert self.USERNAME_PAT.match(username) is not None
+        return username
+
 
     def __init__(self, **kw):
         if 'password' in kw:
@@ -326,15 +334,21 @@ class UserAccount(Base):
 
     @staticmethod
     def calc_unique_username(session,base_username):
-        """ return a unique username """
-        foo = session.query(UserAccount.username).filter(UserAccount.username==base_username).first()
+        """ return a unique, valid username based on some existing name """
+
+        # scrub and sanitise
+        base_username = re.sub('[^a-zA-Z0-9_]','',base_username)
+        assert UserAccount.USERNAME_PAT.match(base_username) is not None;
+
+        foo = session.query(UserAccount.username).filter(func.lower(UserAccount.username)==func.lower(base_username)).first()
         if foo is None:
             return base_username
+
         # append a number, keep incrementing until free name found.
         i=1
         while True:
             u = "%s%d" %(base_username, i)
-            foo = session.query(UserAccount.username).filter(UserAccount.username==u).first()
+            foo = session.query(UserAccount.username).filter(func.lower(UserAccount.username)==func.lower(u)).first()
             if foo is None:
                 return u
             i=i+1
@@ -396,19 +410,19 @@ class Comment(Base):
         returns new comment string and list of resolved users
         """
 
-        userpat = re.compile('@([-\w]+)', re.I)
+        userpat = re.compile('@([a-zA-Z0-9_]+)', re.I)
 
         # look them all up in the db
         usernames = set(m.group(1) for m in userpat.finditer(comment_txt))
         users = session.query(UserAccount).\
-            filter(UserAccount.username.in_(usernames)).\
+            filter(func.lower(UserAccount.username).in_([u.lower() for u in usernames])).\
             all()
-        user_lookup = dict((u.username,u) for u in users)
+        user_lookup = dict((u.username.lower(),u) for u in users)
 
         def user_replace(m):
-            if m.group(1) not in user_lookup:
+            if m.group(1).lower() not in user_lookup:
                 return m.group(0)
-            user = user_lookup[m.group(1)]
+            user = user_lookup[m.group(1).lower()]
             return u"@%d" % (user.id,)
 
         comment_txt = userpat.sub(user_replace, comment_txt)
@@ -508,6 +522,8 @@ class UploadedFile(Base):
     @staticmethod
     def on_delete(mapper,connection,target):
         # bookkeeping
+        # TODO: actually delete the file!
+
         print "NOW DELETE ", target.filename
 
 # hook in some bookkeeping to delete uploaded files/thumbs after removal from database

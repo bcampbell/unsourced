@@ -59,7 +59,11 @@ class UserHandler(BaseHandler):
 class EditProfileForm(Form):
     """ page for user to edit their profile """
 
-    username     = TextField('Username', [validators.Length(min=1, max=25)])
+    username     = TextField('Username', [
+        validators.Required(),
+        validators.Length(min=3, message=u"Username must be at lease %(min)d characters long"),
+        validators.Length(max=25, message=u"Username too long - maximum %(max)d characters"),
+        validators.Regexp(UserAccount.USERNAME_PAT, message=u"Alphanumerics only, please")])
     email        = TextField('Email Address', [validators.Optional(), validators.Email()])
 
     password = PasswordField(u'New Password', [
@@ -196,7 +200,7 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
         prettyname = google_user['name']
         auth_supplier = 'google'
         auth_uid = email
-        username = google_user["email"].split("@")[0].replace(".", "_").lower()
+        username = google_user["email"].split("@")[0].replace(".", "_")
 
         # TODO: the rest of this could be shared between handlers...
         user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
