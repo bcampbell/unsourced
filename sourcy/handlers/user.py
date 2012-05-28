@@ -16,11 +16,9 @@ from base import BaseHandler
 from sourcy.util import TornadoMultiDict
 from sourcy.models import Action,UserAccount,UploadedFile,Token,comment_user_map
 from sourcy.util import TornadoMultiDict
-
 from sourcy.cache import cache
-
 from sourcy.config import settings
-
+from sourcy import mailer
 
 class UserHandler(BaseHandler):
     """show summary for a given user"""
@@ -320,7 +318,6 @@ class RegisterHandler(BaseHandler):
         # outwardly, we don't want to reflect that an email address is
         # already registered, but we can send a different email.
 
-
         user = self.session.query(UserAccount).filter(UserAccount.email==form.email.data).first()
         if user is None:
             token = Token.create_registration(
@@ -347,7 +344,11 @@ class RegisterHandler(BaseHandler):
                 email_subject=email_subject,
                 email_body=email_body)
         else:
-            # TODO: send the damn email!
+            # send it
+            mailer.send_email(addr_from=settings.site_email,
+                addr_to=form.email.data,
+                subject=email_subject,
+                content=email_body)
 
             # redirect to avoid multiple emails due to refresh clicking!
             self.redirect('/emailsent')
