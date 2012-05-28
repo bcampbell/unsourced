@@ -17,7 +17,7 @@ class TokenHandler(BaseHandler):
                 tok_ok = True
 
         if not tok_ok:
-            raise tornado.web.HTTPError(404)
+            raise tornado.web.HTTPError(404, "This link has been used already, or has expired")
 
         payload = tok.get_payload_as_dict()
         if payload['op'] == 'register':
