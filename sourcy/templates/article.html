@@ -107,7 +107,7 @@ pubsub.source_added.add(function(new_src) {
 
     <div class="bod">
     <h3>Academic paper</h3>
-    <ul class="list-paper">
+    <ul class="srclist">
     {% for src in art.papers() %}{% module source(src, container='li') %}{% end %}
     </ul>
 
@@ -120,7 +120,7 @@ pubsub.source_added.add(function(new_src) {
     <br/>
     <br/>
     <h3>Press release</h3>
-    <ul class="list-pr">
+    <ul class="srclist">
     {% for src in art.press_releases() %}{% module source(src, container='li') %}{% end %}
     </ul>
     <div class="add-source">
@@ -133,7 +133,7 @@ pubsub.source_added.add(function(new_src) {
     <br/>
     <br/>
     <h3>Other link</h3>
-    <ul class="list-other">
+    <ul class="srclist">
     {% for src in art.other_links() %}{% module source(src, container='li') %}{% end %}
     </ul>
     <div class="add-source">

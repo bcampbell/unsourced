@@ -1,14 +1,12 @@
 {% comment output a source link %}
 
-<{{container}} id="src-{{src.id}}" class="src {{src.kind}}">
-<div>
+<{{container}} id="src-{{src.id}}" class="src src-{{src.kind}}">
+<div class="src-info">
 {% if src.title %}
 <a href="{{src.url}}">{{src.title}}</a>
 {% else %}
 <a href="{{src.url}}">{{src.url}}</a>
 {% end %}
-</div>
-
 
 {% if src.publication %}
 {% if src.pubdate %}
@@ -17,7 +15,7 @@
 <span class="publication">{{src.publication}}</span>
 {% end %}
 {% end %}
-
+</div>
 
 <div class="moderation">
 <!--
@@ -31,7 +29,7 @@
 -->
 
 {% if src.creator %}
-  <span class="creator"><a href="/user/{{src.creator.id}}">{% raw src.creator.photo_img('m') %}</a> added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
+  <span class="creator"><a href="/user/{{src.creator.id}}">{% raw src.creator.photo_img('m') %}</a> Added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
 {% if current_user and src.creator==current_user %}
     <form action="/source/{{src.id}}/delete" method="POST"><input class="btn"  type="submit" name="submit" value="delete"/></form>
 {% end %}
