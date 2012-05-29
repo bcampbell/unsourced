@@ -586,6 +586,14 @@ input.btn
 .hilite.institution { background-color: #aaf; border-color: #88c; }
 
 
+/****/
+.email-sent {
+    font-size: large;
+    background-color: #fff;
+    padding: 2em 2em;
+}
+
+
 
 /* STATES */
 

@@ -273,6 +273,56 @@ class LogoutHandler(BaseHandler):
 
 
 
+class ForgotForm(Form):
+    email = TextField(u'Email address', [
+        validators.required(message="Please enter your email address"),
+        validators.Email(message="Please enter a valid email address")
+    ])
+
+
+class ForgotHandler(BaseHandler):
+    def get(self):
+        form = ForgotForm(TornadoMultiDict(self))
+        self.render('forgot.html', form=form)
+
+    def post(self):
+        form = ForgotForm(TornadoMultiDict(self))
+        if not form.validate():
+            self.render('forgot.html', form=form)
+            return
+
+        user = self.session.query(UserAccount).filter(UserAccount.email==form.email.data).first()
+        # don't leak existence of email addresses.
+        if user is not None:
+            token = Token.create_login(user.id)
+            email_template = 'email/forgotten_password.txt'
+            email_subject = "%s - forgotten details" % settings.site_name
+
+            self.session.add(token)
+            self.session.commit()
+
+            confirmation_url = "%s/t/%s" % (settings.root_url,token.name)
+            email_body = self.render_string(email_template,
+                confirmation_url=confirmation_url)
+
+            if settings.bypass_email:
+                self.render('token_sent.html',
+                    bypass_email=settings.bypass_email,
+                confirmation_url=confirmation_url,
+                email_subject=email_subject,
+                email_body=email_body)
+            else:
+                # send it
+                mailer.send_email(addr_from=settings.site_email,
+                    addr_to=form.email.data,
+                    subject=email_subject,
+                    content=email_body)
+
+        # redirect to avoid multiple emails due to refresh clicking!
+        self.redirect('/emailsent')
+
+
+
 
 
 class RegisterForm(Form):
@@ -290,8 +340,6 @@ class RegisterForm(Form):
     )
     # for passing on a redirection after registration/login is complete
     next = HiddenField()
-
-
 
 
 
@@ -382,6 +430,7 @@ class ThumbHandler(BaseHandler):
 
 handlers = [
     (r'/login', LoginHandler),
+    (r'/login/forgot', ForgotHandler),
     (r'/login/google', GoogleLoginHandler),
     (r'/login/twitter', TwitterLoginHandler),
     (r'/logout', LogoutHandler),

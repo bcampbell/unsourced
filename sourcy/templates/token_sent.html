@@ -4,11 +4,19 @@
 {% block main %}
 <div class="row">
 <div class="column grid_2">&nbsp;</div>
-<div class="column grid_8">
 
-<strong>
-We've sent you an email with a confirmation link. Click the link to verify.
-</strong>
+<div class="column grid_8">
+<div class="email-sent">
+<h2>Now check your email</h2>
+
+<p>We've sent you an email with a confirmation link.</p>
+<p>You'll need to click the link to continue.</p>
+
+<h3>If it doesn't arrive?</h3>
+<ul>
+<li>Be patient - sometimes emails can sometimes take a few minutes to deliver</li>
+<li>If you have a junk mail folder, check there</li>
+</ul>
 
 {% if bypass_email %}
 <div style="border: 2px dashed red; padding: 2em;">
@@ -23,6 +31,7 @@ Here's what _would_ have been in the email:
 </pre></code>
 </div>
 {% end %}
+</div>
 
 </div>
 <div class="column grid_2">&nbsp;</div>

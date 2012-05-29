@@ -251,13 +251,14 @@ class add_other(tornado.web.UIModule):
 class login(tornado.web.UIModule):
     def render(self, form):
         reg_url = '/register'
+        forgot_url = '/login/forgot'
         try:
             next = form.next.data
             if next is not None:
                 reg_url += "?" + urllib.urlencode({'next':next})
         except AttributeError:
             pass
-        return self.render_string('modules/login.html', form=form, reg_url=reg_url)
+        return self.render_string('modules/login.html', form=form, reg_url=reg_url, forgot_url=forgot_url)
 
 
 class register(tornado.web.UIModule):
@@ -270,6 +271,19 @@ class register(tornado.web.UIModule):
         except AttributeError:
             pass
         return self.render_string('modules/register.html', form=form, login_url=login_url)
+
+
+
+class forgot(tornado.web.UIModule):
+    """user forgot login details - request a login link"""
+    def render(self, form):
+        reg_url = '/register'
+        login_url = '/login'
+        return self.render_string('modules/forgot.html',
+            form=form,
+            login_url=login_url,
+            reg_url=reg_url
+            )
 
 
 class filters(tornado.web.UIModule):
