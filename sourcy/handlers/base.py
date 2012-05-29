@@ -29,3 +29,14 @@ class BaseHandler(tornado.web.RequestHandler):
     def is_xhr(self):
         """check if request AJAX"""
         return self.request.headers.get('X-requested-with', '').lower() == 'xmlhttprequest'
+
+    def write_error(self, status_code, **kwargs):
+        self.render("error.html", status_code=status_code)
+
+
+class MissingHandler(BaseHandler):
+    """catch-all handler to generate 404s"""
+    def prepare(self):
+        super(MissingHandler, self).prepare()
+        raise tornado.web.HTTPError(404, "Page not found")
+
