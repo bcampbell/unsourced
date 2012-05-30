@@ -22,8 +22,8 @@
 {{src.score}} points
 {% if current_user %}
   <span class="vote">
-    <form action="/source/{{src.id}}/upvote" method="POST"><input class="upvote btn" type="submit" value="&#9650;" {% if not can_upvote %}disabled{% end %}/></form>
-    <form action="/source/{{src.id}}/downvote" method="POST"><input class="downvote btn" type="submit" value="&#9660;" {% if not can_downvote %}disabled{% end %}/></form>
+    <form action="/source/{{src.id}}/upvote" method="POST">{% raw xsrf_form_html() %}<input class="upvote btn" type="submit" value="&#9650;" {% if not can_upvote %}disabled{% end %}/></form>
+    <form action="/source/{{src.id}}/downvote" method="POST">{% raw xsrf_form_html() %}<input class="downvote btn" type="submit" value="&#9660;" {% if not can_downvote %}disabled{% end %}/></form>
   </span>
 {% end %}
 -->
@@ -31,7 +31,7 @@
 {% if src.creator %}
   <span class="creator"><a href="/user/{{src.creator.id}}">{% raw src.creator.photo_img('m') %}</a> Added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
 {% if current_user and src.creator==current_user %}
-    <form action="/source/{{src.id}}/delete" method="POST"><input class="btn"  type="submit" name="submit" value="delete"/></form>
+    <form action="/source/{{src.id}}/delete" method="POST">{% raw xsrf_form_html() %}<input class="btn"  type="submit" name="submit" value="delete"/></form>
 {% end %}
 {% end %}
 

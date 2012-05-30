@@ -225,14 +225,13 @@ class tool_googlescholar(tornado.web.UIModule):
 
 class add_paper(tornado.web.UIModule):
     def render(self, art, add_paper_form):
-        return self.render_string('modules/add_paper.html', art=art, form=add_paper_form)
+        return self.render_string('modules/add_paper.html', art=art, form=add_paper_form, field=add_paper_form.url)
 
     def embedded_javascript(self):
         return """
             ajaxifyAddSourceForm(
                 $('#add-paper'),
-                "Looking up details...",
-                $('.sources .list-paper'));
+                "Looking up details...");
         """
 
 
@@ -244,8 +243,7 @@ class add_pr(tornado.web.UIModule):
         return """
             ajaxifyAddSourceForm(
                 $('#add-pr'),
-                "Adding...",
-                $('.sources .list-pr'));
+                "Adding..." );
         """
 
 
@@ -258,8 +256,7 @@ class add_other(tornado.web.UIModule):
         return """
             ajaxifyAddSourceForm(
                 $('#add-other'),
-                "Adding...",
-                $('.sources .list-other'));
+                "Adding...");
         """
 
 

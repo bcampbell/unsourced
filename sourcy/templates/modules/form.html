@@ -1,10 +1,6 @@
 {% for field in form %}
 {% if field.type != 'HiddenField' %}
-{% if field.errors %}
-<div class="field errors">
-{% else %}
-<div>
-{% end %}
+<div class="field{% if field.errors %} errors{% end %}">
   {% raw field.label%} {% raw unicode(field) %}
   <ul class="errorlist">{% for error in field.errors %}<li>{{ error }}</li>{% end %}</ul>
   {% if field.description %}<span class="help">{{field.description}}</span>{% end %}

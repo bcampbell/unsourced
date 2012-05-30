@@ -132,29 +132,35 @@ function showFormErrs(form,errs) {
 
   // clear out any previous messages
   form.find('.error').removeClass('error');
-  form.find('.errorlist').remove();
+  form.find('.errorlist').empty();
 
-  for( var field in errs ) {
-    var html = '<ul class="errorlist">';
-    for( var msg in errs[field] ) {
-      html += '<li>' + errs[field][msg] + '</li>';
+  for( var fieldname in errs ) {
+    field_container = form.find('#'+fieldname).parent()
+    errlist = field_container.find('.errorlist')
+    console.log(errlist);
+    if(errlist.length==0) {
+      console.log("FOOO");
+      errlist = form.find('.errorlist');
     }
-    html += '</ul>';
-    form.find('#'+field).after(html);
-    form.find('#'+field).parent().addClass('error');
+
+    for( var msg in errs[fieldname] ) {
+      errlist.append('<li>' + errs[fieldname][msg] + '</li>');
+    }
+    field_container.addClass('error');
   }
 }
 
 
-function ajaxifyAddSourceForm(form, busytext, destlist) {
+function ajaxifyAddSourceForm(form, busytext) {
   form.submit( function(e){
     e.preventDefault();
 
     var form = $(this);
     var url = form.attr('action');
     var params = form.serialize();
-    // clear off any errors
-    showFormErrs(form, {});
+    // clear off any old errors
+    form.find('.error').removeClass('error');
+    form.find('.errorlist>*').remove();
 
     form.addClass('is-busy');
     form.find('.busy-message').html(busytext);

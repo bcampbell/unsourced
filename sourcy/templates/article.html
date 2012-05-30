@@ -6,34 +6,37 @@
 
 
 // ugly gubbins for showing/hiding forms
-$('.add-source .add').click(function() {
-    /* hide all others */
-    $('.add-source>form').hide();
-    $('.add-source>.helper').hide();
-    $('.add-source>.add').show();
+$('.add + .add-source').hide();
 
+$('.add').click(function() {
+    /* hide all others */
+    $('.add + .add-source').slideUp(200,function() {
+        $(this).prev('.add').show();
+    });
+
+    var button = $(this);
+    button.hide();
     /* show just one */
-    $(this).nextAll('form').show();
-    $(this).nextAll('.helper').show();
-    $(this).hide();
+    $(this).next('.add-source').slideDown(200);
     return false;
 });
 
-$('.add-source>form').hide();
-$('.add-source>.helper').hide();
-
-$('.add-source form .cancel').click(function() {
-    $(this).closest('.add-source').children('form').hide();
-    $(this).closest('.add-source').children('.helper').hide();
-    $(this).closest('.add-source').children('.add').show();
+$('.add-source .cancel').click(function() {
+    var button = $(this).closest('.add-source').prev('.add');
+    $(this).closest('.add-source').slideUp( 200, function() {
+        button.show();
+    });
     return false;
 });
 
 
 // when a source is added, insert it into the appropriate list
 pubsub.source_added.add(function(new_src) {
-  var kinds = {paper: '.list-paper', pr: '.list-pr', other: '.list-other'};
+  var kinds = {paper: '.srclist-paper', pr: '.srclist-pr', other: '.srclist-other'};
   var destlist = kinds[new_src.kind];
+
+    console.log(new_src);
+
   $(new_src.html)
     .hide()
     .css('opacity',0.0)
@@ -41,10 +44,10 @@ pubsub.source_added.add(function(new_src) {
     .slideDown('fast')
     .animate({opacity: 1.0});
 
-
-    $('.add-source form').hide();
-    $('.add-source .helper').hide();
-    $('.add-source .add').show();
+    // reset the add-source boxes and buttons
+    $('.add-source').hide();
+    $('.add-source .cancel').hide();
+    $('.add').show();
 
 });
 
@@ -106,25 +109,28 @@ pubsub.source_added.add(function(new_src) {
     </header>
 
     <div class="bod">
-    <h3>Academic paper</h3>
-    <ul class="srclist">
+    <h3>Academic papers</h3>
+    <ul class="srclist srclist-paper">
     {% for src in art.papers() %}{% module source(src, container='li') %}{% end %}
     </ul>
 
-    <div class="add-source">
     <a class="btn add" href="/art/{{art.id}}/paper/add" method="GET">Add</a>
+    <div class="add-source">
+    <h3>Add paper</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_paper(art, add_paper_form) %}
     {% module helper_paper(art,journals,institutions,researchers) %}
     </div>
 
     <br/>
     <br/>
-    <h3>Press release</h3>
-    <ul class="srclist">
+    <h3>Press releases</h3>
+    <ul class="srclist srclist-pr">
     {% for src in art.press_releases() %}{% module source(src, container='li') %}{% end %}
     </ul>
-    <div class="add-source">
+
     <a class="btn add" href="/art/{{art.id}}/pr/add" method="GET">Add</a>
+    <div class="add-source">
+    <h3>Add press release</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_pr(art, add_pr_form) %}
     {% module helper_pr(art,journals,institutions,researchers) %}
     </div>
@@ -132,12 +138,14 @@ pubsub.source_added.add(function(new_src) {
 
     <br/>
     <br/>
-    <h3>Other link</h3>
-    <ul class="srclist">
+    <h3>Other links</h3>
+    <ul class="srclist srclist-other">
     {% for src in art.other_links() %}{% module source(src, container='li') %}{% end %}
     </ul>
-    <div class="add-source">
+
     <a class="btn add" href="/art/{{art.id}}/other/add" method="GET">Add</a>
+    <div class="add-source">
+    <h3>Add other link</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_other(art, add_other_form) %}
     {% module helper_other(art,journals,institutions,researchers) %}
     </div>

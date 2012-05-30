@@ -9,14 +9,12 @@ from sourcy.models import SourceKind
 
 
 class AddPaperForm(Form):
-    url = TextField(u'Url (or <abbr title="Digital Object Identifier">DOI</abbr>)', [validators.required(),validators.URL()], filters=[fix_url])
-    kind= HiddenField(default=SourceKind.PAPER)
+    # TODO: allow DOI instead of url when adding papers
+    url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url])
 
 class AddPRForm(Form):
     url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url])
-    kind= HiddenField(default=SourceKind.PR)
 
 class AddOtherForm(Form):
     url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url])
-    kind= HiddenField(default=SourceKind.OTHER)
 
