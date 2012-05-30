@@ -114,8 +114,17 @@ class action(tornado.web.UIModule):
                 desc = u'submitted'
             elif act.what =='comment':
                 desc = u'said "%s"' % (act.comment.format(),)
-#            elif act.what =='tag_add':
-#                desc = u'said "%s"' % (act.comment.content,)
+            elif act.what =='tag_add':
+                if act.tag.name=='help':
+                    desc = u'asked for help'
+                elif act.tag.name=='done':
+                    desc = u'marked article as complete'
+            elif act.what =='tag_remove':
+                if act.tag.name=='help':
+                    desc = u'turned off the help request'
+                elif act.tag.name=='done':
+                    desc = u'marked article as incomplete'
+
         else:
             if act.what == 'src_add':
                 desc = u"added %s to %s" % (src_kinds[act.source.kind], artlink)
@@ -125,8 +134,16 @@ class action(tornado.web.UIModule):
                 desc = u'submitted article: %s' % (artlink,)
             elif act.what =='comment':
                 desc = u'said "%s" on %s' % (act.comment.format(), artlink)
-#            elif act.what =='tag_add':
-#                desc = u'said "%s" on %s' % (act.comment.content, artlink)
+            elif act.what =='tag_add':
+                if act.tag.name=='help':
+                    desc = u'asked for help with %s' %(artlink,)
+                elif act.tag.name=='done':
+                    desc = u'marked article %s as complete' %(artlink,)
+            elif act.what =='tag_remove':
+                if act.tag.name=='help':
+                    desc = u'closed help request on %s' %(artlink,)
+                elif act.tag.name=='done':
+                    desc = u'marked article %s as incomplete' %(artlink,)
 
         return self.render_string("modules/action.html",
             act=act,
