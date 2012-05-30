@@ -10,6 +10,10 @@ here = os.path.dirname(__file__)
 settings = Settings(
     site_name = "unsourced.org",
     root_url="http://localhost:8888",
+
+    # from addr used for any emails the site sends
+    site_email = "team@unsourced.org",
+
     # for testing - show confirmation email instead of sending it
     bypass_email=True,
 
@@ -26,7 +30,7 @@ settings = Settings(
     twitter_consumer_secret="",
 
     uploads_path = os.path.join(here,'uploads'),
-    thumb_sizes = {'s':(20,20),'m':(50,50), 'l': (170,170)},
+    thumb_sizes = {'s':(20,20),'m':(32,32), 'l': (170,170)},
     default_user_photos = {'s':'rupe-s.png', 'm':'rupe-m.png', 'l':'rupe-l.png'},  # images in static dir, one per thumb size
     )
 
