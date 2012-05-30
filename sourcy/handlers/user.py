@@ -308,15 +308,16 @@ class ForgotHandler(BaseHandler):
             if settings.bypass_email:
                 self.render('token_sent.html',
                     bypass_email=settings.bypass_email,
-                confirmation_url=confirmation_url,
-                email_subject=email_subject,
-                email_body=email_body)
-            else:
-                # send it
-                mailer.send_email(addr_from=settings.site_email,
-                    addr_to=form.email.data,
-                    subject=email_subject,
-                    content=email_body)
+                    confirmation_url=confirmation_url,
+                    email_subject=email_subject,
+                    email_body=email_body)
+                return
+
+            # send it
+            mailer.send_email(addr_from=settings.site_email,
+                addr_to=form.email.data,
+                subject=email_subject,
+                content=email_body)
 
         # redirect to avoid multiple emails due to refresh clicking!
         self.redirect('/emailsent')
@@ -391,15 +392,15 @@ class RegisterHandler(BaseHandler):
                 confirmation_url=confirmation_url,
                 email_subject=email_subject,
                 email_body=email_body)
-        else:
-            # send it
-            mailer.send_email(addr_from=settings.site_email,
-                addr_to=form.email.data,
-                subject=email_subject,
-                content=email_body)
+            return
 
-            # redirect to avoid multiple emails due to refresh clicking!
-            self.redirect('/emailsent')
+        # send it
+        mailer.send_email(addr_from=settings.site_email,
+            addr_to=form.email.data,
+            subject=email_subject,
+            content=email_body)
+        # redirect to avoid multiple emails due to refresh clicking!
+        self.redirect('/emailsent')
 
 
 class TokenSentHandler(BaseHandler):
