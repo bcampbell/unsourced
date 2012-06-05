@@ -61,61 +61,6 @@ class Action(Base):
         return "<Action(%s, %s, %s)>" % (self.what,self.performed, self.user)
 
 
-    def describe(self):
-        """describe the action with a short html snippet"""
-        frag = None
-
-        def art_link(art):
-            return '<a href="/art/%s">%s</a> (%s)' % (art.id, art.headline, util.domain(art.permalink))
-
-        if self.what == 'tag_add':
-            frag = u"tagged '%s' as %s" %(art_link(self.article),self.tag.name)
-        elif self.what == 'tag_remove':
-            frag = u"removed %s tag from '%s'" %(self.tag.name,art_link(self.article))
-        elif self.what == 'art_add':
-            frag = u'added an article: %s' %(art_link(self.article),)
-        elif self.what == 'src_add':
-            if self.source.kind=='pr':
-                thing = u'a press release'
-            elif self.source.kind=='paper':
-                thing = u'an academic paper'
-            else:
-                thing = u'a source'
-
-            frag = u'added %s to %s' %(thing,art_link(self.article),)
-        elif self.what == 'lookup_add':
-            if self.lookup is not None:
-                frag = u'added a %s: %s' %(self.lookup.kind, self.lookup.name)
-#        elif self.what == 'src_upvote':
-#            if self.article is not None:
-#                frag = u'voted up a source on %s' % (art_link(self.article))
-#        elif self.what == 'src_downvote':
-#            if self.article is not None:
-#                frag = u'voted down a source on %s' % (art_link(self.article))
-        elif self.what == 'src_vote':
-            if self.article is not None:
-                assert self.value != 0
-                if self.value<0:
-                    frag = u'voted down a source on %s' % (art_link(self.article))
-                else: 
-                    frag = u'voted up a source on %s' % (art_link(self.article))
-        elif self.what == 'tag_vote':
-            if self.article is not None:
-                assert self.value != 0
-                if self.value<0:
-                    frag = u"voted down '%s' tag on %s" % (self.tag.name,art_link(self.article))
-                else: 
-                    frag = u"voted up '%s' tag on %s" % (self.tag.name,art_link(self.article))
-        elif self.what == 'comment':
-            if self.article is not None:
-                frag = u"left a comment on '%s': '%s'" % (art_link(self.article),self.comment.content)
-            else:
-                frag = u"left a comment: '%s'" % (self.comment.content,)
-
-        if frag is None:
-            frag = "unknown ('%s' id=%d)" % (self.what, self.id,)
-        return frag
-
 
 class ArticleURL(Base):
     __tablename__ = 'article_url'
