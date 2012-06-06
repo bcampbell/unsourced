@@ -226,10 +226,10 @@ class UserAccount(Base):
     prettyname = Column(String(256), nullable=False, default=u'')
     hashed_password = Column(String(128), nullable=True)
 
-    # only verified users can log in
-    verified = Column(Boolean, nullable=False, default=False)
     created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
-    # eg "twitter", "google" etc...
+
+    # which supplier authenticated the user eg "twitter", "google" etc...
+    # empty if user signed up via email verification.
     auth_supplier = Column(String(16), nullable=False, default=u'')
     # unique id on provider - email, twitter name, whatever makes sense
     auth_uid = Column(String(1024), nullable=False, default=u'')

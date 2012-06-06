@@ -1,0 +1,6 @@
+to autogenerate a database change:
+$ alembic revision --autogenerate -m "...description..."
+
+
+to run local smtp server for testing email sending:
+$ sudo python -m smtpd -n -c DebuggingServer localhost:25
