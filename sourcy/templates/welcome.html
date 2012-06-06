@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Edit your details{% end %}
+{% block main %}
+<div class="row">
+<div class="column grid_2">&nbsp;</div>
+<div class="column grid_8">
+
+<div class="notice">
+<h2>Welcome, {{current_user.username}}</h2>
+
+<p>(don't like your user name? You can <a href="/editprofile">change it</a>)</p>
+
+<p>
+Thanks for joining us in the never-ending fight against unsourced news!
+</p>
+<p>
+Together we shall right wrongs, correct injustices and force the forces of untruth to be more... uh... truthy.
+</p>
+
+<a class="btn" href="/">Get started!</a>
+</div>
+
+</div>
+<div class="column grid_2">&nbsp;</div>
+</div><!-- end .row -->
+{% end %}
+

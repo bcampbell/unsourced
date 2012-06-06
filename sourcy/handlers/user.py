@@ -59,7 +59,7 @@ class EditProfileForm(Form):
 
     username     = TextField('Username', [
         validators.Required(),
-        validators.Length(min=3, message=u"Username must be at lease %(min)d characters long"),
+        validators.Length(min=3, message=u"Username must be at least %(min)d characters long"),
         validators.Length(max=25, message=u"Username too long - maximum %(max)d characters"),
         validators.Regexp(UserAccount.USERNAME_PAT, message=u"Alphanumerics only, please")])
     email        = TextField('Email Address', [validators.Optional(), validators.Email()])
@@ -84,7 +84,7 @@ class EditProfileHandler(BaseHandler):
     def get(self):
         user=self.current_user
         form = EditProfileForm(obj=user)
-        self.render('profile.html', user=user, form=form )
+        self.render('profile.html', form=form)
 
     @tornado.web.authenticated
     def post(self):
@@ -92,7 +92,7 @@ class EditProfileHandler(BaseHandler):
 
         form = EditProfileForm(TornadoMultiDict(self))
         if not form.validate():
-            self.render('profile.html', user=user, form=form)
+            self.render('profile.html', form=form)
             return
 
         # username already taken?
@@ -201,16 +201,18 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
         username = google_user["email"].split("@")[0].replace(".", "_")
 
         # TODO: the rest of this could be shared between handlers...
+        next = self.get_argument("next", "/")
         user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
         if user is None:
             # new user
             username = UserAccount.calc_unique_username(self.session, username)
-            user = UserAccount(username=username, prettyname=prettyname, email=email, auth_supplier=auth_supplier, auth_uid=auth_uid, verified=True)
+            user = UserAccount(username=username, prettyname=prettyname, email=email, auth_supplier=auth_supplier, auth_uid=auth_uid)
             self.session.add(user)
             self.session.commit()
+            next = '/welcome'
 
         self.set_secure_cookie("user", unicode(user.id))
-        self.redirect(self.get_argument("next", "/"))
+        self.redirect(next)
 
 
 class MyTwitterMixin(tornado.auth.TwitterMixin):
@@ -251,16 +253,18 @@ class TwitterLoginHandler(BaseHandler, MyTwitterMixin):
         username = twit_user['username']
 
         # TODO: the rest of this could be shared between handlers...
+        next = self.get_argument("next", "/")
         user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
         if user is None:
             # new user
             username = UserAccount.calc_unique_username(self.session, username)
-            user = UserAccount(username=username, prettyname=prettyname, email=email, auth_supplier=auth_supplier, auth_uid=auth_uid, verified=True)
+            user = UserAccount(username=username, prettyname=prettyname, email=email, auth_supplier=auth_supplier, auth_uid=auth_uid)
             self.session.add(user)
             self.session.commit()
+            next = '/welcome'
 
         self.set_secure_cookie("user", unicode(user.id))
-        self.redirect(self.get_argument("next", "/"))
+        self.redirect(next)
 
 
 class LogoutHandler(BaseHandler):
@@ -429,6 +433,17 @@ class ThumbHandler(BaseHandler):
         return 'image/png',buf.getvalue()
 
 
+
+
+class WelcomeHandler(BaseHandler):
+    """ welcome newly-registered user to the site """
+
+    @tornado.web.authenticated
+    def get(self):
+        self.render('welcome.html')
+
+
+
 handlers = [
     (r'/login', LoginHandler),
     (r'/login/forgot', ForgotHandler),
@@ -439,6 +454,7 @@ handlers = [
     (r"/editprofile", EditProfileHandler),
     (r"/register", RegisterHandler),
     (r"/emailsent", TokenSentHandler),
+    (r"/welcome", WelcomeHandler),
     (r"/thumb/([a-z0-9]+)/([^!#?&]+)", ThumbHandler),
 ]
 

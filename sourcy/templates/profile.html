@@ -4,7 +4,7 @@
 $('input#username').bind("propertychange keyup input paste", function (event) {
     var txt = $(this).val();
     if(!txt.match(/^[a-zA-Z0-9_]+$/)) {
-       $(this).val(txt.replace(/[^a-zA-Z0-0_]/,''));
+       $(this).val(txt.replace(/[^a-zA-Z0-9_]/,''));
     }
 });
 {% end %}
@@ -20,6 +20,7 @@ $('input#username').bind("propertychange keyup input paste", function (event) {
     {% raw xsrf_form_html() %}
     {% module form(form) %}
     <input type="submit" value="Update details"/>
+    <a href="/user/{{current_user.id}}">cancel</a>
 </form>
 
 </div>

@@ -23,6 +23,17 @@ class TokenHandler(BaseHandler):
         if payload['op'] == 'register':
 
             email = payload['email']
+
+            # user already created?
+            user = self.session.query(UserAccount).filter(UserAccount.email==email).first()
+            if user is not None:
+                # yes - just log them in
+                self.set_secure_cookie("user", unicode(user.id))
+                self.redirect('/welcome')
+                return
+
+
+
             hashed_password = payload['hashed_password']
 
             # default username derived from email address
@@ -31,23 +42,20 @@ class TokenHandler(BaseHandler):
 
             user = UserAccount(username=username,
                 email=email,
-                hashed_password=hashed_password,
-                verified=True)
+                hashed_password=hashed_password)
             self.session.add(user)
-            self.session.delete(tok)
+#            self.session.delete(tok)
             self.session.commit()
 
             # log them in
             self.set_secure_cookie("user", unicode(user.id))
 
-            # TODO: better welcome for new users
-            self.redirect('/editprofile')
+            self.redirect('/welcome')
             return
         elif payload['op'] == 'login':
             user_id = payload['user_id']
             next = payload.get('next','/')
             self.set_secure_cookie("user", unicode(user_id))
-            # TODO: should expire token?
             self.redirect(next)
             return
 
