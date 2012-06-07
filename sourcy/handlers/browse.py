@@ -68,7 +68,7 @@ class BrowseHandler(BaseHandler):
             if filters.help.data:
                 arts = arts.filter(Article.tags.any(Tag.name.in_(['help'])))
             if filters.sourced.data:
-                arts = arts.filter(Article.tags.any(Tag.name.in_(['done'])))
+                arts = arts.filter(Article.needs_sourcing==False)
 
         arts = arts.order_by(Article.pubdate.desc())
 

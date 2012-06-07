@@ -153,31 +153,25 @@ pubsub.source_added.add(function(new_src) {
     </div>  <!-- end .bod -->
   </div>
 
-    {% if donetag not in art.tags %}
+{% if art.needs_sourcing %}
  <div class="act tool">
     {% if len(art.sources)>0 %}
     Have all the sources for this article have been added?
     {% else %}
     Think this article doesn't need any sources?
     {% end %}
-    <form action="/art/{{art.id}}/addtag" method="post">
+    <form action="/art/{{art.id}}/mark-sourced" method="post">
     {% raw xsrf_form_html() %}
-    <input type="hidden" name="tag" value="done" />
-    <input class="btn" type="submit" value="Mark it completed" />
+    <input class="btn" type="submit" value="Mark it sourced" />
     </form>
  </div>
-    {% end %}
-
-
-{% if donetag in art.tags %}
-  <div class="act tool"><img src="/static/tag_med/tick.png" />This article has been marked complete - all sources tracked down and added.
-    <form action="/art/{{art.id}}/deltag" method="post">
+{% else %}
+  <div class="act tool"><img src="/static/tag_med/tick.png" />This article has been marked as sourced - all sources tracked down and added.
+    <form action="/art/{{art.id}}/mark-unsourced" method="post">
     {% raw xsrf_form_html() %}
-    <input type="hidden" name="tag" value="done" />
     <input class="btn" type="submit" value="disagree" />
     </form>
   </div>
-
 {% end %}
 
 

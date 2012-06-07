@@ -16,7 +16,6 @@ from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,
 def daily_breakdown(session):
     stats = {}
 
-    donetag = session.query(Tag).filter(Tag.name=='done').one()
     helptag = session.query(Tag).filter(Tag.name=='help').one()
     q = session.query(cast(Article.pubdate,Date), Article).\
         options(subqueryload(Article.tags))
@@ -27,7 +26,7 @@ def daily_breakdown(session):
         else:
             foo = stats[day]
         foo['total'] += 1
-        if donetag in art.tags:
+        if not art.needs_sourcing:
             foo['done'] += 1
         if helptag in art.tags:
             foo['help'] += 1
@@ -57,16 +56,10 @@ class DailyBreakdown(BaseHandler):
 class FrontHandler(BaseHandler):
     def get(self):
 
-        donetag = self.session.query(Tag).filter(Tag.name=='done').one()
-
-
-        subq = self.session.query("article_tag.article_id").\
-            filter(not_(article_tags.c.tag_id==donetag.id)).\
-            subquery()
-
+        # some articles which need sourcing
         random_arts = self.session.query(Article).\
             options(subqueryload(Article.tags,Article.sources,Article.comments)).\
-            filter(not_(Article.id.in_(subq))).\
+            filter(Article.needs_sourcing==True).\
             order_by(func.rand()).\
             limit(4).all()
 

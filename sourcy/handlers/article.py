@@ -140,7 +140,6 @@ class ArticleHandler(BaseHandler):
             add_other_form=add_other_form,
             all_tags = all_tags,
             TagKind=TagKind,
-            donetag=donetag,
             helptag=helptag,
             recent_actions=recent_actions,
             recent_comments=recent_comments,
@@ -165,9 +164,47 @@ class ArticleHandler(BaseHandler):
 
         return highlight_spans
 
+class MarkSourcedHandler(BaseHandler):
+    """ mark an article as sourced """
+
+    @tornado.web.authenticated
+    def post(self,art_id):
+        art = self.session.query(Article).get(art_id)
+        if art is None:
+            raise tornado.web.HTTPError(404, "Article not found")
+
+        act = Action('mark_sourced', self.current_user, article=art)
+        art.needs_sourcing = False
+        self.session.add(act)
+        self.session.commit()
+
+        self.redirect('/art/%s' %(art.id,))
+
+
+class MarkUnsourcedHandler(BaseHandler):
+    """ mark an article as not sourced """
+
+    @tornado.web.authenticated
+    def post(self,art_id):
+        art = self.session.query(Article).get(art_id)
+        if art is None:
+            raise tornado.web.HTTPError(404, "Article not found")
+
+        act = Action('mark_unsourced', self.current_user, article=art)
+        art.needs_sourcing = True
+        self.session.add(act)
+        self.session.commit()
+
+        self.redirect('/art/%s' %(art.id,))
+
+
+
+
 
 handlers = [
     (r"/art/([0-9]+)", ArticleHandler),
+    (r"/art/([0-9]+)/mark-sourced",MarkSourcedHandler),
+    (r"/art/([0-9]+)/mark-unsourced", MarkUnsourcedHandler),
 ]
 
 

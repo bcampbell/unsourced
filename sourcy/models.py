@@ -92,6 +92,12 @@ class Article(Base):
     permalink = Column(String(512), nullable=False)
     pubdate = Column(DateTime, index=True)
     added = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    
+    needs_sourcing = Column(Boolean, nullable=False, default=True)
+    help_req_id = Column(Integer, ForeignKey('useraccount.id'), nullable=True)
+    
+    help_req = relationship("UserAccount", backref="help_reqs", lazy='joined')
+
     tags = relationship("Tag", secondary=article_tags, backref="articles", lazy='joined')
 
     sources = relationship("Source", backref="article", cascade="all, delete-orphan", lazy='joined')

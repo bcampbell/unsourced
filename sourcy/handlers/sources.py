@@ -121,11 +121,17 @@ class AddSourceHandler(BaseHandler):
             creator=self.current_user,
             kind=kind,
             **details)
+        self.session.add(src)
+
+        if self.art.needs_sourcing:
+            self.art.needs_sourcing = False
+
         action = Action('src_add', self.current_user,
             article=self.art,
             source=src)
-        self.session.add(src)
+        self.art.needs_sourcing = False
         self.session.add(action)
+
         self.session.commit()
         return action
 

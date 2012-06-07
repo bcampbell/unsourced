@@ -124,6 +124,10 @@ class action(tornado.web.UIModule):
                     desc = u'turned off the help request'
                 elif act.tag.name=='done':
                     desc = u'marked article as incomplete'
+            elif act.what =='mark_sourced':
+                desc = u'marked article as sourced'
+            elif act.what =='mark_unsourced':
+                desc = u'marked article as unsourced'
 
         else:
             if act.what == 'src_add':
@@ -144,6 +148,10 @@ class action(tornado.web.UIModule):
                     desc = u'closed help request on %s' %(artlink,)
                 elif act.tag.name=='done':
                     desc = u'marked article %s as incomplete' %(artlink,)
+            elif act.what =='mark_sourced':
+                desc = u'marked article %s as sourced' % (artlink,)
+            elif act.what =='mark_unsourced':
+                desc = u'marked article %s as unsourced' % (artlink,)
 
         return self.render_string("modules/action.html",
             act=act,
