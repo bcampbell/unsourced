@@ -64,7 +64,7 @@ class FrontHandler(BaseHandler):
             limit(4).all()
 
         recent_actions = self.session.query(Action).\
-            filter(Action.what.in_(('src_add','art_add'))).\
+            filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
             order_by(Action.performed.desc()).slice(0,10)
 
         all_users = self.session.query(UserAccount).slice(0,10).all()

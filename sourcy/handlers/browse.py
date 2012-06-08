@@ -66,7 +66,8 @@ class BrowseHandler(BaseHandler):
                 arts = arts.filter(cast(Article.pubdate, Date) <= day_to)
 
             if filters.help.data:
-                arts = arts.filter(Article.tags.any(Tag.name.in_(['help'])))
+                arts = arts.filter(Article.help_reqs.any())
+
             if filters.sourced.data:
                 arts = arts.filter(Article.needs_sourcing==False)
 

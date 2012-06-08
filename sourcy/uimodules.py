@@ -128,6 +128,10 @@ class action(tornado.web.UIModule):
                 desc = u'marked article as sourced'
             elif act.what =='mark_unsourced':
                 desc = u'marked article as unsourced'
+            elif act.what =='helpreq_open':
+                desc = u'asked for help'
+            elif act.what =='helpreq_close':
+                desc = u'closed a help request'
 
         else:
             if act.what == 'src_add':
@@ -152,6 +156,10 @@ class action(tornado.web.UIModule):
                 desc = u'marked article %s as sourced' % (artlink,)
             elif act.what =='mark_unsourced':
                 desc = u'marked article %s as unsourced' % (artlink,)
+            elif act.what =='helpreq_open':
+                desc = u'asked for help on article %s' % (artlink,)
+            elif act.what =='helpreq_close':
+                desc = u'closed a help request on article %s' % (artlink,)
 
         return self.render_string("modules/action.html",
             act=act,

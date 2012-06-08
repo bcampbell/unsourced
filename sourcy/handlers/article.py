@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 
 from sourcy import util,analyser,highlight
-from sourcy.models import Article,Source,Tag,TagKind,Action
+from sourcy.models import Article,Source,Tag,TagKind,Action,HelpReq
 from sourcy.forms import AddPaperForm, AddPRForm, AddOtherForm
 
 from base import BaseHandler
@@ -114,7 +114,7 @@ class ArticleHandler(BaseHandler):
 
         recent_actions = self.session.query(Action).\
             filter(Action.article_id==art.id).\
-            filter(Action.what.in_(('src_add','src_remove','art_add','tag_add','tag_remove'))).\
+            filter(Action.what.in_(('src_add','src_remove','art_add','tag_add','tag_remove','mark_sourced','mark_unsourced','helpreq_open','helpreq_close','comment'))).\
             order_by(Action.performed.desc()).slice(0,10)
 
         recent_comments = self.session.query(Action).\
@@ -198,6 +198,45 @@ class MarkUnsourcedHandler(BaseHandler):
         self.redirect('/art/%s' %(art.id,))
 
 
+class OpenHelpReqHandler(BaseHandler):
+    """ open a help request on the article """
+
+    @tornado.web.authenticated
+    def post(self,art_id):
+        art = self.session.query(Article).get(art_id)
+        if art is None:
+            raise tornado.web.HTTPError(404, "Article not found")
+
+        act = Action('helpreq_open', self.current_user, article=art)
+        self.session.add(act)
+        helpreq = HelpReq(article=art,user=self.current_user)
+        self.session.add(helpreq)
+        self.session.commit()
+
+        self.redirect('/art/%s' %(art.id,))
+
+
+class CloseHelpReqHandler(BaseHandler):
+    """ close a help request on article """
+
+    @tornado.web.authenticated
+    def post(self,art_id):
+        art = self.session.query(Article).get(art_id)
+        if art is None:
+            raise tornado.web.HTTPError(404, "Article not found")
+
+        helpreqs = self.session.query(HelpReq).\
+            filter(HelpReq.article==art).\
+            all()
+        if helpreqs:
+            [self.session.delete(req) for req in helpreqs]
+            act = Action('helpreq_close', self.current_user, article=art)
+            self.session.add(act)
+            self.session.commit()
+
+        self.redirect('/art/%s' %(art.id,))
+
+
 
 
 
@@ -205,6 +244,8 @@ handlers = [
     (r"/art/([0-9]+)", ArticleHandler),
     (r"/art/([0-9]+)/mark-sourced",MarkSourcedHandler),
     (r"/art/([0-9]+)/mark-unsourced", MarkUnsourcedHandler),
+    (r"/art/([0-9]+)/open-helpreq",OpenHelpReqHandler),
+    (r"/art/([0-9]+)/close-helpreq", CloseHelpReqHandler),
 ]
 
 

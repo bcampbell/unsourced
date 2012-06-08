@@ -2,8 +2,8 @@
 {% if show_pubdate %}{{ locale.format_date(art.pubdate, shorter=True) }}<br/>{%end%}
 <a href="/art/{{art.id}}">{{art.headline}}</a>
 {% if show_icons %}
+{% if len(art.help_reqs)>0 %}<img src="/static/tag_small/help.png" title="Help requested"/>{% end %}
 {% for src in art.sources %}{% module source_icon(src) %}{% end %}
-{% for t in art.tags %}<img src="{{t.small_icon()}}" title="{{t.description}}"/>{% end %}
 {% if len(art.comments)>0 %}<span class="cmt-cnt">{{len(art.comments)}}{% end %}
 {% end %}
 

@@ -61,6 +61,22 @@ class Action(Base):
         return "<Action(%s, %s, %s)>" % (self.what,self.performed, self.user)
 
 
+class HelpReq(Base):
+    """ a help request on an article """
+    __tablename__ = 'help_req'
+
+    id = Column(Integer, primary_key=True)
+    article_id = Column(Integer, ForeignKey('article.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('useraccount.id'), nullable=False)
+    created = Column(DateTime,default=datetime.datetime.utcnow)
+
+    user = relationship("UserAccount", backref="help_reqs")
+
+    def __init__(self, **kw):
+        for key,value in kw.iteritems():
+            assert(key in ('article','user','created'))
+            setattr(self,key,value)
+
 
 class ArticleURL(Base):
     __tablename__ = 'article_url'
@@ -94,9 +110,6 @@ class Article(Base):
     added = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     
     needs_sourcing = Column(Boolean, nullable=False, default=True)
-    help_req_id = Column(Integer, ForeignKey('useraccount.id'), nullable=True)
-    
-    help_req = relationship("UserAccount", backref="help_reqs", lazy='joined')
 
     tags = relationship("Tag", secondary=article_tags, backref="articles", lazy='joined')
 
@@ -105,6 +118,8 @@ class Article(Base):
     comments = relationship("Comment", backref="article", cascade="all, delete-orphan", order_by="Comment.post_time", lazy='joined')
 
     actions = relationship("Action", backref="article", cascade="all, delete-orphan")
+
+    help_reqs = relationship("HelpReq", backref="article", cascade="all, delete-orphan", lazy='joined')
 
     def __init__(self, headline, permalink, pubdate, urls):
         self.headline = headline
@@ -528,4 +543,5 @@ class Token(Base):
         tok = Token()
         tok.set_payload_from_dict(payload)
         return tok
+
 

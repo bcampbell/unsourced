@@ -176,11 +176,10 @@ pubsub.source_added.add(function(new_src) {
 
 
 
-{% if helptag in art.tags %}
-  <div class="act tool"><img src="/static/tag_med/help.png" />Someone asked for help on this article
-    <form action="/art/{{art.id}}/deltag" method="post">
+{% if len(art.help_reqs)>0 %}
+  <div class="act tool"><img src="/static/tag_med/help.png" />{% module user(art.help_reqs[0].user, True) %} asked for help on this article
+    <form action="/art/{{art.id}}/close-helpreq" method="post">
     {% raw xsrf_form_html() %}
-    <input type="hidden" name="tag" value="help" />
     <input class="btn" type="submit" value="Close help request" />
     </form>
   </div>
@@ -189,9 +188,8 @@ pubsub.source_added.add(function(new_src) {
 
   <div class="act tool">
     Having trouble tracking down sources for this article?
-    <form action="/art/{{art.id}}/addtag" method="post">
+    <form action="/art/{{art.id}}/open-helpreq" method="post">
     {% raw xsrf_form_html() %}
-    <input type="hidden" name="tag" value="help" />
     <input class="btn" type="submit" value="Ask for help" />
     </form>
   </div>
