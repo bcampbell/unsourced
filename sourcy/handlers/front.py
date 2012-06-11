@@ -72,7 +72,34 @@ class FrontHandler(BaseHandler):
 
         daily = daily_breakdown(self.session)[:7]
 
-        self.render('front.html', random_arts=random_arts, recent_actions=recent_actions,daily=daily, groupby=itertools.groupby, top_sourcers=top_sourcers)
+
+
+        class DailySummary(object):
+            def __init__(self, session, day):
+                self.day = day
+                self.total = session.query(Article).\
+                    filter(cast(Article.pubdate, Date) == day).\
+                    count()
+
+                self.sourced = session.query(Article).\
+                    filter(cast(Article.pubdate, Date) == day).\
+                    filter(Article.needs_sourcing==False).\
+                    count()
+
+                if self.total>0:
+                    self.percent_sourced = (100*self.sourced) / self.total
+                else:
+                    self.percent_sourced = 0
+
+        today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
+
+        self.render('front.html',
+            random_arts = random_arts,
+            recent_actions = recent_actions,
+            daily = daily,
+            groupby = itertools.groupby,
+            top_sourcers = top_sourcers,
+            today_summary = today_summary)
 
 
 
