@@ -1,0 +1,66 @@
+{% import util %}
+{% extends "base.html" %}
+{% block title %}Sourcy{% end %}
+
+
+{% block main %}
+
+
+<div class="row">
+
+<div class="column grid_6">
+ <h3>{{len(unsourced_arts)}} articles unsourced today</h3>
+ <ul>
+{% for art in unsourced_arts %}
+  <li class="art">{% module art_item(art,show_pubdate=False) %}</li>
+{% end %}
+ </ul>
+</div>
+
+<div class="column grid_6">
+ <h3>Help requested</h3>
+ <ul>
+{% for art in helpreq_arts %}
+  <li class="art">{% module art_item(art,show_pubdate=False) %}</li>
+{% end %}
+ </ul>
+</div>
+
+</div> <!-- end .row -->
+
+
+<div class="row">
+<div class="column grid_8">
+<div class="infobox">
+<h2>Right now</h2>
+
+<ul class="act-list">
+{% for act in recent_actions %}
+<li class="act act-full">{% module action(act,user_display='m') %}</li>
+{% end %}
+</ul>
+</div>
+
+</div>
+
+<div class="column grid_4">
+
+<div class="infobox">
+<h2>Today's articles are {{today_summary.percent_sourced}}% complete</h2>
+({{today_summary.sourced}} of {{today_summary.total}})
+</div>
+<br/>
+
+<div class="infobox">
+<h2>Top Sourcers</h2>
+    <ul class="l-4col">
+    {% for u in top_sourcers %}
+    <li>{% raw u.photo_img('m') %}</li>
+    {% end %}
+    </ul>
+</div>
+
+</div>
+</div> <!-- end .row -->
+{% end %}
+
