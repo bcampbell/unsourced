@@ -5,65 +5,58 @@
 
 {% block main %}
 
-<div class="row">
-<div class="column grid_12">
-  <div id="intro">
-    <span>Add missing sources to news articles</span>
-  </div>
-</div>
-</div> <!-- end .row -->
+<div class="site-intro">
+  <h2>Add missing sources to news articles</h2>
 
-
-<div class="row">
+  <div class="random-arts">
+    <div class="l-row">
 {% for art in random_arts %}
-<div class="column grid_3">
- <div id="art-{{art.id}}" class="art art-box">
-  {% module art_item(art,show_pubdate=True) %}
-  <a class="btn findsrc" href="/art/{{art.id}}">Find source</a>
- </div>
-</div>
+      <div class="l-col25">
+        <div id="art-{{art.id}}" class="art art-box">
+          {% module art_item(art,show_pubdate=True) %}
+          <a class="btn findsrc" href="/art/{{art.id}}">Find source</a>
+        </div>
+      </div>
 {% end %}
-</div> <!-- end .row -->
-<div class="row">
-<div class="column grid_12">
-  <div>(<a href="/">show me some others</a>)</div>
-</div>
-</div> <!-- end .row -->
+    </div>
+    <div>(<a href="/">show me some others</a>)</div>
+  </div> <!-- end .random-arts -->
+</div> <!-- end .site-intro -->
 
-<br/>
+<div class="gubbins">
+<div class="l-row">
 
-<div class="row">
-<div class="column grid_8">
-<div class="infobox">
-<h2>Right now</h2>
+  <div class="l-col66">
+    <div class="right-now infobox">
+      <h2>Right now</h2>
 
-<ul class="act-list">
+      <ul class="act-list">
 {% for act in recent_actions %}
-<li class="act act-full">{% module action(act,user_display='m') %}</li>
+        <li class="act act-full">{% module action(act,user_display='m') %}</li>
 {% end %}
-</ul>
-</div>
+      </ul>
+    </div>
+  </div>
 
-</div>
 
-<div class="column grid_4">
+  <div class="l-col33">
 
-<div class="infobox">
-<h2>Today's articles are {{today_summary.percent_sourced}}% complete</h2>
+    <div class="daily-percent infobox">
+      <h2>Today's articles are {{today_summary.percent_sourced}}% complete</h2>
 ({{today_summary.sourced}} of {{today_summary.total}})
-</div>
-<br/>
+    </div>
 
-<div class="infobox">
-<h2>Top Sourcers</h2>
-    <ul class="l-4col">
-    {% for u in top_sourcers %}
-    <li>{% raw u.photo_img('m') %}</li>
-    {% end %}
-    </ul>
-</div>
+    <div class="top-sourcers infobox">
+      <h2>Top Sourcers</h2>
+      <ul class="l-row">
+      {% for u in top_sourcers %}
+        <li class="l-col25">{% raw u.photo_img('m') %}</li>
+      {% end %}
+      </ul>
+    </div>
+  </div>
 
+</div> <!-- end .l-row -->
 </div>
-</div> <!-- end .row -->
 {% end %}
 

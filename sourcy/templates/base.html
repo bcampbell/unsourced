@@ -14,61 +14,47 @@
 </head>
 <body>
 
-<div class="row">
-<div class="column grid_12">
+<div class="l-main main">
+
 
 <header class="site-header">
-  <div class="inner">
-
-
-    <div class="row">
-    <div class="column grid_9 login-status">
-
-    <div class="">
+ <div class="l-row">
+  <div class="l-col75">
+  <div class="login-status">
 {% if current_user is None %}
-      <a href="/login">log in</a>
+    <a href="/login">log in</a>
 {% else %}
 Hello <a href="/user/{{current_user.id}}">{{current_user.username}}</a> |
 <a href="/logout">log out</a>
 {% end %}
-    </div>
-
-    </div>
-    <div class="column grid_3 site-search">
-    <div>
-        Search...
-    </div>
-
-    </div>
-    </div> <!-- end .row -->
-
-    <a class="mst-logo" href="/"><img src="/static/mst_logo.png" width="70" height="50" alt="Media Standards Trust" /></a>
-
-    <div class="site-logo">
-      <h1><a href="/"><img src="/static/unsourced.png" width="210" height="64" alt="Unsourced" /></a> </h1>
-    </div>
-
-
-    <nav id="topnav">
-      <ul class="menu">
-          <li><a href="/browse">browse</a></li>
-          <li><a href="/daily">view by day</a></li>
-      </ul>
-    </nav>
   </div>
+  </div>
+  <div class="l-col25">
+  <div class="site-search">
+   Search...
+  </div>
+  </div>
+ </div> <!-- end .l-row -->
+
+  <a class="mst-logo" href="/"><img src="/static/mst_logo.png" width="70" height="50" alt="Media Standards Trust" /></a>
+
+  <div class="site-logo">
+    <h1><a href="/"><img src="/static/unsourced.png" width="210" height="64" alt="Unsourced" /></a> </h1>
+  </div>
+
+
+  <nav id="topnav">
+    <ul class="menu">
+        <li><a href="/browse">browse</a></li>
+        <li><a href="/daily">view by day</a></li>
+    </ul>
+  </nav>
 </header>
 
-</div>
-</div> <!-- end .row -->
 
-<div id="main">
 {% block main %}
 {% end %}
-</div> <!-- end #main -->
 
-
-<div class="row">
-<div class="column grid_12">
 
 <footer class="site-footer">
   <div class="inner">
@@ -80,8 +66,7 @@ Hello <a href="/user/{{current_user.id}}">{{current_user.username}}</a> |
   </div>
 </footer>
 
-</div>
-</div> <!-- end .row -->
+</div> <!-- end .l-main.main -->
 
 </body>
 </html>
