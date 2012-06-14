@@ -128,13 +128,16 @@ ul.l-4col {
 
 
 /****
+ * centering with various widths
  */
 
-.l-main {
-    margin: auto;
-    width: 75%;
-    overflow: visible;
+.l-mid50, .l-mid66, .l-mid75 {
+  margin: auto;
 }
+
+.l-mid50 { width: 50%; }
+.l-mid66 { width: 66.6666%; }
+.l-mid75 { width: 75%; }
 
 
 /****
@@ -147,7 +150,6 @@ ul.l-4col {
     content: '';
     clear: both;
     display: block;
-    
 }
 
 
@@ -359,7 +361,6 @@ ul.l-4col {
 
 /*****/
 .site-footer {
-    outline: 1px solid green;
     margin: 1em 0;
 }
 
@@ -391,7 +392,10 @@ ul.l-4col {
     z-index: -1;
 }
 
-
+/****/
+.site-content {
+    padding-bottom: 4em;
+}
 
 /****/
 .site-intro {
@@ -710,14 +714,6 @@ input.btn
 }
 
 /****/
-.infobox
-{
-    background: #fff;
-    padding: 1em;
-    margin: 1em 0;
-}
-
-/****/
 .top-sourcers {
 }
 
@@ -738,6 +734,35 @@ input.btn
     right: -4em;
     bottom: -1.5em;
     left: -1em;
+    z-index: -1;
+}
+
+
+/****
+ * base box style. for containing stuff.
+ */
+
+.box
+{
+  background: #fff;
+  padding: 1em;
+}
+
+
+/****/
+.sidebar {
+    position: relative;
+    overflow: visible;
+}
+.sidebar:after {  
+    content: "";  
+    display: block;  
+    position: absolute;  
+    top: 0;  
+    bottom: 0;
+    left: 0;  
+    right: -4em;  
+    background-image: url('/static/lattice.png');
     z-index: -1;
 }
 
@@ -787,23 +812,6 @@ input.btn
   margin: 1em;
     overflow: visible;
 }
-.sidebar {
-    position: relative;
-    overflow: visible;
-}
-.sidebar:after {  
-    content: "";  
-    display: block;  
-    position: absolute;  
-    top: 0;  
-    bottom: 0;
-    left: 0;  
-    right: 0;  
-    background-image: url('/static/lattice.png');
-    -moz-transform: rotate(2deg);
-    z-index: -1;
-}
-
 /*****/
 .tool header {
     background-color: rgba(31,82,162,0.8);

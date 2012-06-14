@@ -1,15 +1,22 @@
 <div id="login">
-<h2>Log in</h2>
-<div class="l-2col">
-<form action="/login" method="post">
-{% raw xsrf_form_html() %}
-{% module form(form) %}
-<input type="submit" value="Log in" />
-</form>
-<div>
-<p><a href="{{forgot_url}}">Forgot your details?</a></p>
-<p>Don't have an account? <a href="{{reg_url}}">Create one</a></p>
-<p>Or log in using your <a href="/login/twitter">Twitter</a> or <a href="/login/google">Google</a> account.</p>
-</div>
-</div>
+  <div class="box">
+    <h2>Log in</h2>
+    <div class="l-row">
 
+      <div class="l-col50">
+        <form action="/login" method="post">
+          {% raw xsrf_form_html() %}
+          {% module form(form) %}
+          <input type="submit" value="Log in" />
+        </form>
+      </div>
+
+      <div class="l-col50">
+        <p><a href="{{forgot_url}}">Forgot your details?</a></p>
+        <p>Don't have an account?<br/> <a class="btn" href="{{reg_url}}">Create one</a></p>
+        <p>Or log in using your <a href="/login/twitter">Twitter</a> or <a href="/login/google">Google</a> account.</p>
+      </div>
+
+    </div>  <!-- end .l-row -->
+  </div>
+</div>  <!-- end #login -->

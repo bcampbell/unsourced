@@ -6,9 +6,10 @@
 {% block main %}
 
 
-<div class="row">
+<div class="l-row">
 
-<div class="column grid_6">
+<div class="l-col50">
+<div class="box">
  <h3>{{len(unsourced_arts)}} articles unsourced today</h3>
  <ul>
 {% for art in unsourced_arts %}
@@ -16,8 +17,10 @@
 {% end %}
  </ul>
 </div>
+</div>
 
-<div class="column grid_6">
+<div class="l-col50">
+<div class="box">
  <h3>Help requested</h3>
  <ul>
 {% for art in helpreq_arts %}
@@ -25,13 +28,14 @@
 {% end %}
  </ul>
 </div>
+</div>
 
-</div> <!-- end .row -->
+</div> <!-- end .l-row -->
 
 
-<div class="row">
-<div class="column grid_8">
-<div class="infobox">
+<div class="l-row">
+<div class="l-col66">
+<div class="box">
 <h2>Right now</h2>
 
 <ul class="act-list">
@@ -43,15 +47,15 @@
 
 </div>
 
-<div class="column grid_4">
+<div class="l-col33">
 
-<div class="infobox">
+<div class="box">
 <h2>Today's articles are {{today_summary.percent_sourced}}% complete</h2>
 ({{today_summary.sourced}} of {{today_summary.total}})
 </div>
 <br/>
 
-<div class="infobox">
+<div class="box">
 <h2>Top Sourcers</h2>
     <ul class="l-4col">
     {% for u in top_sourcers %}
@@ -61,6 +65,6 @@
 </div>
 
 </div>
-</div> <!-- end .row -->
+</div> <!-- end .l-row -->
 {% end %}
 

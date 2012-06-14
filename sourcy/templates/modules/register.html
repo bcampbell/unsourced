@@ -1,19 +1,21 @@
 <div id="register">
-<h2>Create Account</h2>
-<div class="l-2col">
+  <div class="box">
+    <h2>Create Account</h2>
+    <div class="l-row">
+      <div class="l-col50">
+        <form action="/register" method="post">
+          {% raw xsrf_form_html() %}
+          {% module form(form) %}
+          <input type="submit" value="Create Account" />
+        </form>
+      </div>
 
-<form action="/register" method="post">
-{% raw xsrf_form_html() %}
-{% module form(form) %}
-<input type="submit" value="Create Account" />
-</form>
-
-<div>
-<p>Already got an account? <a href="{{login_url}}">log in</a></p>
-<p>Or log in using your <a href="/login/twitter">Twitter</a> or <a href="/login/google">Google</a> account.</p>
-</div>
-
-</div>
-</div>
+      <div class="l-col50">
+        <p>Already got an account?<br/><a class="btn" href="{{login_url}}">log in</a></p>
+        <p>Or log in using your <a href="/login/twitter">Twitter</a> or <a href="/login/google">Google</a> account.</p>
+      </div>
+    </div> <!-- end .l-row -->
+  </div>
+</div> <!-- end #register -->
 
 

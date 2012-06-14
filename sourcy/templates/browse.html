@@ -3,27 +3,22 @@
 
 
 {% block main %}
-<div class="row">
-<div class="column grid_12">
-<h2>Browse</h2>
-</div>
+<div class="l-row">
+
+<div class="l-col66">
+ <div id="results" class="box">
+  <h2>Browse</h2>
+  {% module searchresults(pager) %}
+ </div>
 </div>
 
-<div class="row">
-
-<div class="column grid_8">
-<div id="results">
-{% module searchresults(pager) %}
-</div>
+<div class="l-col33">
+ <div class="filters sidebar box">
+  {% module filters(filters) %}
+ </div>
 </div>
 
-<div class="column grid_4">
-<div class="filters">
-{% module filters(filters) %}
-</div>
-</div>
-
-</div> <!-- end .row -->
+</div> <!-- end .l-row -->
 
 {% end %}
 

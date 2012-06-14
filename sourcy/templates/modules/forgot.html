@@ -1,21 +1,25 @@
 <div id="forgot">
-<h2>Forgot your details?</h2>
-<div class="l-2col">
+  <div class="box">
+    <h2>Forgot your details?</h2>
+    <div class="l-row">
 
-<form action="/login/forgot" method="post">
-<p>Enter your email address. We'll send a link to a page where you can change your password.</p>
-{% raw xsrf_form_html() %}
-{% module form(form) %}
-<input type="submit" value="Continue" />
-</form>
+      <div class="l-col50">
+        <form action="/login/forgot" method="post">
+          <p>Enter your email address. We'll send a link to a page where you can change your password.</p>
+          {% raw xsrf_form_html() %}
+          {% module form(form) %}
+          <input type="submit" value="Continue" />
+        </form>
+      </div>
 
-<div>
-<p>Already got an account? <a href="{{login_url}}">log in</a></p>
-<p>Don't have an account? <a href="{{reg_url}}">Create one</a></p>
-<p>Or log in using your <a href="/login/twitter">Twitter</a> or <a href="/login/google">Google</a> account.</p>
-</div>
 
-</div>
+      <div>
+        <p>Already got an account?<br/><a class="btn" href="{{login_url}}">log in</a></p>
+        <p>Don't have an account?<br/><a class="btn" href="{{reg_url}}">Create one</a></p>
+        <p>Or log in using your <a href="/login/twitter">Twitter</a> or <a href="/login/google">Google</a> account.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 
