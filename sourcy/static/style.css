@@ -18,7 +18,7 @@
 
 body {
     font-family: Helvetica, Arial, Sans-Serif;
-    background: url(/static/canvas.png) repeat;
+    background: url(/static/canvas-pattern.png) repeat;
     margin: 0;
     padding: 0;
     font-size: smaller;
@@ -157,7 +157,7 @@ ul.l-4col {
     display: block;
     float:left;
     margin: 0;
-    padding: 0 0.5em;
+    padding: 0 0.3em;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
@@ -183,6 +183,8 @@ ul.l-4col {
 .l-col50 { width: 50%; }
 .l-col66 { width: 66.6666%; }
 .l-col75 { width: 75%; }
+
+
 
 /**********************************************************************
  * SPECIFICS
@@ -214,15 +216,15 @@ ul.l-4col {
 }
 
 #topnav ul.menu a {
-    padding: 0.3em 0.5em 0.7em 0.5em;
+    padding: 0.2em 0.5em 0.5em 0.5em;
     margin: 0;
     display: block;
     font-family: 'Contrail One';
     font-size: large;
     color: #fff;
-    background-color: #CC2A2D;
-    min-width: 6em;
-    box-shadow: 0.4em 0.1em rgba(255,255,255,0.5);
+    background-color: #cc2a2d;
+    min-width: 7em;
+    box-shadow: 0.2em 0.1em rgba(255,255,255,0.75);
 }
 
 #topnav ul.menu a:visited {
@@ -231,9 +233,9 @@ ul.l-4col {
 
 #topnav ul.menu a:hover {
     color: #fff;
-    -moz-transform: rotate(-2deg) scale(1.1);
-    -webkit-transform: rotate(-2deg) scale(1.1);
-    background-color: #f43632;
+    -moz-transform: rotate(-1.5deg) scale(1.05);
+    -webkit-transform: rotate(-1.5deg) scale(1.05);
+    background-color: #ed2024;
     text-decoration: none;
     z-index: 1;
     box-shadow: none;
@@ -276,38 +278,44 @@ ul.l-4col {
 
 }
 
-.site-header .site-logo {
+
+/****/
+
+.site-logo {
 /*    position: absolute;
     left: 0;
     top: 2em;
 */
+    display: inline-block;
+    margin: 0.5em 0 1em 0;
 }
 
-.site-header .site-logo h1 {
-    margin: 0.5em 0;
+.site-logo h1 {
+    margin: 0 0;
     padding: 0;
 }
 
-.site-header .site-logo img { display: block; }
+.site-logo img { display: block; }
 
 
-
-.site-header .mst-logo {
+/****/
+.mst-logo {
 /*
     position: absolute;
     display: block;
     right: 0;
     top: 2em;
 */
+    display: inline-block;
     margin-top: 1em;
-    float:right;
+    float: right;
 }
 
 
 /****/
 
 .login-status {
-    padding: 0.5em;
+    padding: 0.5em 1em 0.5em 0.5em;
     text-align: right;
     margin: 0;
     position: relative;
@@ -318,7 +326,7 @@ ul.l-4col {
     position: absolute;
     content: "";
 
-    background-color: rgba(248, 210, 21,0.75);
+    background-image: url(/static/dot-pattern-yellow.png);
     top: -2em;
     right: 0;
     bottom: 0.25em;
@@ -345,7 +353,7 @@ ul.l-4col {
     position: absolute;
     content: "";
 
-    background-color: #423F38;
+    background-color: #3e3b35;
     top: -2em;
     right: 0;
     bottom: 0.25em;
@@ -424,9 +432,10 @@ ul.l-4col {
     top: 0;
     right: 0;
     bottom: 0;
-    left: -3em;
+    left: -1em;
 
-    background-color: rgba(255, 200, 0, 0.85);
+    background-color: #fbd415; /* rgb(251,212,21); */
+    box-shadow: -1em 0 rgba(225,190,0, 0.95);
     z-index: -1;
 }
 
@@ -646,10 +655,11 @@ ul.l-4col {
     display: inline;
     background-color: #33B7FF;
     color: #fff;
+    margin: 0.2em 0;
 }
 a.btn,
 input.btn
- { color: #fff; padding: 0.1em 1em; }
+ { color: #fff; padding: 0.15em 1em; }
 
 .btn:hover {
     color: #fff;
@@ -714,7 +724,38 @@ input.btn
 }
 
 /****/
-.top-sourcers {
+.top-sourcers>div {
+ display: inline-block;
+ margin: 0.2em;
+}
+
+/****/
+
+.daily-percent>p {
+  font-family: "Contrail One";
+  color: #000;
+  font-size: 125%;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 1em;
+}
+
+.daily-percent .perc-outer {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.daily-percent .perc-outer>span {
+  display: block;
+}
+
+.daily-percent .perc {
+  font-size: 400%;
+}
+
+.daily-percent .perc+span {
+  margin-top: -1em;
+  text-align: center;
 }
 
 /****/
@@ -729,11 +770,11 @@ input.btn
     position: absolute;
     content: "";
 
-    background-image: url('/static/lattice.png');
+    background-image: url('/static/dot-pattern.png');
     top: -2em;
     right: -4em;
     bottom: -1.5em;
-    left: -1em;
+    left: -0.9em;
     z-index: -1;
 }
 
@@ -746,6 +787,7 @@ input.btn
 {
   background: #fff;
   padding: 1em;
+  margin: 0.5em 0;
 }
 
 
@@ -762,7 +804,7 @@ input.btn
     bottom: 0;
     left: 0;  
     right: -4em;  
-    background-image: url('/static/lattice.png');
+    background-image: url('/static/dot-pattern.png');
     z-index: -1;
 }
 

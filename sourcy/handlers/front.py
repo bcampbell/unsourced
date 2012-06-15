@@ -81,8 +81,8 @@ class FrontHandler(BaseHandler):
 
 
         #TODO: top sourcers
-        all_users = self.session.query(UserAccount).slice(0,10).all()
-        top_sourcers = [random.choice(all_users) for i in range(8)]
+        all_users = self.session.query(UserAccount).all()
+        top_sourcers = [random.choice(all_users) for i in range(12)]
 
 
         today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
@@ -103,7 +103,7 @@ class FrontHandler(BaseHandler):
 
             recent_actions = self.session.query(Action).\
                 filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
-                order_by(Action.performed.desc()).slice(0,10)
+                order_by(Action.performed.desc()).slice(0,6)
 
 
             self.render('front_loggedin.html',
@@ -117,7 +117,7 @@ class FrontHandler(BaseHandler):
         else:
             recent_actions = self.session.query(Action).\
                 filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
-                order_by(Action.performed.desc()).slice(0,10)
+                order_by(Action.performed.desc()).slice(0,6)
 
             # some articles which need sourcing
             random_arts = self.session.query(Article).\

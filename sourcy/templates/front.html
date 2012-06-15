@@ -32,7 +32,7 @@
 
       <ul class="act-list">
 {% for act in recent_actions %}
-        <li class="act act-full">{% module action(act,user_display='m') %}</li>
+        <li class="act act-full">{% module action(act,user_display='m',show_timestamp=False) %}</li>
 {% end %}
       </ul>
     </div>
@@ -42,17 +42,18 @@
   <div class="l-col33">
 
     <div class="daily-percent box">
-      <h2>Today's articles are {{today_summary.percent_sourced}}% complete</h2>
-({{today_summary.sourced}} of {{today_summary.total}})
+      <p>Today's articles are <span class="perc-outer"><span class="perc">{{today_summary.percent_sourced}}%</span><span>complete</span></span></p>
+
+      <a class="btn" href="/browse">View remaining</a>
     </div>
 
     <div class="top-sourcers box">
+
       <h2>Top Sourcers</h2>
-      <ul class="l-row">
+      Week | Month | Year | All time<br/><br/>
       {% for u in top_sourcers %}
-        <li class="l-col25">{% raw u.photo_img('m') %}</li>
+        <div><a href="{{u.profile_url()}}">{% raw u.photo_img('m') %}</a></div>
       {% end %}
-      </ul>
     </div>
   </div>
 

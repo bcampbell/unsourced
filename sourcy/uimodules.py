@@ -91,7 +91,7 @@ class art_item(tornado.web.UIModule):
 
 class action(tornado.web.UIModule):
     """ describe an action """
-    def render(self, act, show_article=True, show_full_source=True, user_display='m' ):
+    def render(self, act, show_article=True, show_full_source=True, user_display='m', show_timestamp=True ):
 
         desc = u''
 
@@ -165,6 +165,7 @@ class action(tornado.web.UIModule):
             act=act,
             show_article=show_article,
             show_full_source=show_full_source,
+            show_timestamp=show_timestamp,
             desc_html=desc,
             user_display=user_display
         )

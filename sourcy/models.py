@@ -328,7 +328,7 @@ class UserAccount(Base):
             url = '/static/%s' % (settings.default_user_photos[size],)
 
         w,h = settings.thumb_sizes[size]
-        return '<img src="%s" width="%d" height="%d" />' % (url,w,h)
+        return '<img src="%s" width="%d" height="%d" alt="%s"/>' % (url,w,h,self.username)
 
 
 

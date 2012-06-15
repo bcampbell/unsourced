@@ -3,5 +3,5 @@
 {% if user_display is not None %}<a class="user" href="{{act.user.profile_url()}}">{{act.user.username}}</a>{% end %}
 <span>{% raw desc_html %}</span>
 <br/>
-<span class="timestamp">- {% module fmt_datetime(act.performed) %}</span>
+{% if show_timestamp %}<span class="timestamp">- {% module fmt_datetime(act.performed) %}</span>{% end %}
 </div>
