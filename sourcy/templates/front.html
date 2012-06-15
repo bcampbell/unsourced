@@ -13,7 +13,9 @@
 {% for art in random_arts %}
       <div class="l-col25">
         <div id="art-{{art.id}}" class="art art-box">
-          {% module art_item(art,show_pubdate=True) %}
+          <img src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />
+          <a href="/art/{{art.id}}">{{art.headline}}</a>
+          <time class="timestamp" datetime="{{art.pubdate.isoformat()}}">{{locale.format_date(art.pubdate, shorter=True)}}</time>
           <a class="btn findsrc" href="/art/{{art.id}}">Find source</a>
         </div>
       </div>

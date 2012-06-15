@@ -22,7 +22,7 @@ body {
     margin: 0;
     padding: 0;
     font-size: smaller;
-    color: #444;
+    color: #595959;
 }
 
 
@@ -36,9 +36,9 @@ h1, h2, h3, h4 {
 
 
 a { text-decoration:none; }
-a:link { color: #000; }
+a:link { color: #262626; }
 a:visited { color: #000; }
-a:hover { color: #222; text-decoration: underline; }
+a:hover { color: #262626; text-decoration: underline; }
 a:visited:hover { color: #000; }
 
 
@@ -194,7 +194,7 @@ ul.l-4col {
 
 /*****/
 
-#topnav {
+.topnav {
 /*    position: absolute; */
     display: block;
 /*    left: 220px; */   /* logo is 200px */
@@ -203,19 +203,19 @@ ul.l-4col {
     padding: 0;
 }
 
-#topnav ul.menu {
+.topnav ul {
     padding: 0;
     margin: 0;
     list-style: none;
 }
 
-#topnav ul.menu li {
+.topnav ul li {
     display: inline-block;
     margin: 0;
     padding: 0;
 }
 
-#topnav ul.menu a {
+.topnav ul a {
     padding: 0.2em 0.5em 0.5em 0.5em;
     margin: 0;
     display: block;
@@ -227,11 +227,11 @@ ul.l-4col {
     box-shadow: 0.2em 0.1em rgba(255,255,255,0.75);
 }
 
-#topnav ul.menu a:visited {
+.topnav ul a:visited {
     color: #fff;
 }
 
-#topnav ul.menu a:hover {
+.topnav ul a:hover {
     color: #fff;
     -moz-transform: rotate(-1.5deg) scale(1.05);
     -webkit-transform: rotate(-1.5deg) scale(1.05);
@@ -241,25 +241,6 @@ ul.l-4col {
     box-shadow: none;
 }
 
-
-
-
-
-
-
-
-/*****/
-
-/*
-#get-started li .art-box {
-    margin-right: 1em;
-    min-height: 12em;
-}
-
-#get-started li:last-child .art-box {
-    margin-right: 0;
-}
-*/
 
 
 
@@ -411,9 +392,11 @@ ul.l-4col {
     padding: 1em 1em 3em 1em;
 }
 
+
 .site-intro h2 {
     font-family: "Oleo Script";
     font-size: 275%; 
+    margin-left: 1em;
 }
 
 /****/
@@ -449,10 +432,24 @@ ul.l-4col {
 
 /* box version of .art */
 .art-box {
-    padding: 0.5em;
+    padding: 0.5em 0.5em 0.5em 0.5em;
     position: relative;
-    min-height: 12em;
+    min-height: 10em;
     background-color: #fff;
+}
+
+.art-box img {
+    float: left;
+    max-width: 20px;
+    max-height: 20px;
+    overflow: hidden;
+}
+
+.art-box a,
+.art-box time
+{
+    display: block;
+    margin-left: 24px;
 }
 
 .art-box .btn {
@@ -578,7 +575,7 @@ ul.l-4col {
  */
 .timestamp {
     font-style: italic;
-    color: #888;
+    color: #808080;
     font-size: small;
 }
 
@@ -667,6 +664,9 @@ input.btn
     text-decoration: none;
 }
 
+a.btn:visited {
+    color: #fff;
+}
 
 
 /*****/

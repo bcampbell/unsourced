@@ -3,6 +3,10 @@
 <head>
     <title>{% block title %}{% end %} - Sourcy</title>
     <link rel="stylesheet" href="/static/style.css" />
+<!--[if lt IE 9]>
+<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+<![endif]-->
+
     <script src="/static/jquery-1.7.2.min.js"></script>
     <script src="/static/site.js"></script>
     <script>
@@ -42,8 +46,8 @@ Hello <a href="/user/{{current_user.id}}">{{current_user.username}}</a> |
 
   <a class="mst-logo" href="/"><img src="/static/mst_logo.png" width="70" height="50" alt="Media Standards Trust" /></a>
 
-  <nav id="topnav">
-    <ul class="menu">
+  <nav class="topnav">
+    <ul>
         <li><a href="/browse">Browse</a></li>
         <li><a href="/daily">View by day</a></li>
     </ul>
