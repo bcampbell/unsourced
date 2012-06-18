@@ -1,12 +1,15 @@
-import tornado.web
-from tornado import httpclient
-#import tornado.auth
-
 #import logging
 import urllib
 import collections
 import json
 from pprint import pprint
+import re
+
+import tornado.web
+from tornado import httpclient
+#import tornado.auth
+from lxml.html.clean import Cleaner
+
 
 from sourcy import util,analyser,highlight
 from sourcy.models import Article,Source,Tag,TagKind,Action,HelpReq
@@ -72,7 +75,17 @@ class ArticleHandler(BaseHandler):
         html = None
         if scrape_err is None:
             html = results['article']['content']
-            html = util.sanitise_html(html)
+
+
+
+            cleaner = Cleaner(
+                page_structure=False,
+                kill_tags = ['h1','h2','h3','h4','h5'],
+                remove_tags = ['a','strong'],
+                allow_tags = ['p','br','b','i','em','li','ul','ol','blockquote', 'a'],
+                remove_unknown_tags = False)
+            html = cleaner.clean_html(html)
+
 
         self.go(html,scrape_err)
 
