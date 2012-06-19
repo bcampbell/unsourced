@@ -5,27 +5,16 @@
 {% block extra_js %}
 
 
-// ugly gubbins for showing/hiding forms
-$('.add + .add-source').hide();
-
-$('.add').click(function() {
-    /* hide all others */
-    $('.add + .add-source').slideUp(200,function() {
-        $(this).prev('.add').show();
-    });
-
-    var button = $(this);
-    button.hide();
-    /* show just one */
-    $(this).next('.add-source').slideDown(200);
+$('.add-source').hide();
+$('.vis-toggler').click(function() {
+    var targ = $(this).attr('href');
+    $('.add-source').hide();
+    $(targ).slideDown(200);
     return false;
 });
 
 $('.add-source .cancel').click(function() {
-    var button = $(this).closest('.add-source').prev('.add');
-    $(this).closest('.add-source').slideUp( 200, function() {
-        button.show();
-    });
+    $(this).closest('.add-source').slideUp(200);
     return false;
 });
 
@@ -58,46 +47,37 @@ pubsub.source_added.add(function(new_src) {
 <div class="l-row">
 
 <div class="l-col66">
-<div id="view">
 <div class="fullart">
 
-<header>
-<h2 class="fullart-headline"><a href="{{art.permalink}}">{{art.headline}}</a></h2>
-<span class="pubdate">{{art.pubdate}}</span> - <span class="publication">{% module domain(art.permalink) %}</span>
-</header>
+  <div class="fullart-meta">
+    <span class="publication"><img src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />{% module domain(art.permalink) %}</span> - 
+    <span class="pubdate">{{locale.format_date(art.pubdate, shorter=True)}}</span>
+    <a href="{{art.permalink}}">view article</a>
+  </div>
 
-<div class="body">
-
-{% for w in [t for t in art.tags if t.kind==TagKind.WARNING] %}
-<div class="warning-label"><img src="{{w.big_icon()}}"/><b>WARNING</b><br/>{{w.description}}
-      {% if current_user %}
-      <form style="float:right;" action="/art/{{art.id}}/deltag" method="post">
-        {% raw xsrf_form_html() %}
-        <input type="hidden" name="tag" value="{{w.name}}"/>
-        <input class="btn" type="submit" value="Remove" />
-      </form>
-      {% end %}
-</div>
-{% end %}
-
-
+  <div class="art-text">
+    <h2>{{art.headline}}</h2>
 {% if scrape_err %}
-<p>Sorry, but there was a problem fetching the article text: {{scrape_err}}</p>
-<p>if you'd like, you can paste the text in here manually:</p>
-<form action="/art/{{art.id}}" method="post">
-{% raw xsrf_form_html() %}
-<textarea name="text">
-</textarea>
-<input type="submit" />
-</form>
+    <p>Sorry, but there was a problem fetching the article text: {{scrape_err}}</p>
+    <p>if you'd like, you can paste the text in here manually:</p>
+    <form action="/art/{{art.id}}" method="post">
+      {% raw xsrf_form_html() %}
+      <textarea name="text">
+      </textarea>
+      <input type="submit" />
+    </form>
 {% else %}
 {% raw article_content %}
 {% end %}
-</div>
+  </div> <!-- end .art-display -->
 
+  <div class="fullart-meta">
+    <span class="publication"><img src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />{% module domain(art.permalink) %}</span> - 
+    <span class="pubdate">{{locale.format_date(art.pubdate, shorter=True)}}</span>
+    <a href="{{art.permalink}}">view article</a>
+  </div>
 
 </div> <!-- end .fullart -->
-</div> <!-- end #view -->
 </div>
 
 <div class="l-col33 sidebar">
@@ -109,49 +89,40 @@ pubsub.source_added.add(function(new_src) {
     </header>
 
     <div class="bod">
-    <h3>Academic papers</h3>
-    <ul class="srclist srclist-paper">
-    {% for src in art.papers() %}{% module source(src, container='li') %}{% end %}
-    </ul>
 
-    <a class="btn add" href="/art/{{art.id}}/paper/add" method="GET">Add</a>
-    <div class="add-source">
+    {% if art.sources %}
+    <ul class="srclist">
+    {% for src in art.sources %}{% module source(src, container='li') %}{% end %}
+    </ul>
+    {% else %}
+    <p>No sources yet.<br/>
+    Can <strong>you</strong> track any down?</p>
+    {% end %}
+
+    <p>
+    Add a source...<br/>
+    <a class="btn vis-toggler" href="#add-paper">Paper</a>
+    <a class="btn vis-toggler" href="#add-pr">Press release</a>
+    <a class="btn vis-toggler" href="#add-other">Other</a>
+    </p>
+
+    <div class="add-source" id="add-paper">
     <h3>Add paper</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_paper(art, add_paper_form) %}
     {% module helper_paper(art,journals,institutions,researchers) %}
     </div>
 
-    <br/>
-    <br/>
-    <h3>Press releases</h3>
-    <ul class="srclist srclist-pr">
-    {% for src in art.press_releases() %}{% module source(src, container='li') %}{% end %}
-    </ul>
-
-    <a class="btn add" href="/art/{{art.id}}/pr/add" method="GET">Add</a>
-    <div class="add-source">
+    <div class="add-source" id="add-pr">
     <h3>Add press release</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_pr(art, add_pr_form) %}
     {% module helper_pr(art,journals,institutions,researchers) %}
     </div>
 
-
-    <br/>
-    <br/>
-    <h3>Other links</h3>
-    <ul class="srclist srclist-other">
-    {% for src in art.other_links() %}{% module source(src, container='li') %}{% end %}
-    </ul>
-
-    <a class="btn add" href="/art/{{art.id}}/other/add" method="GET">Add</a>
-    <div class="add-source">
+    <div class="add-source" id="add-other">
     <h3>Add other link</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_other(art, add_other_form) %}
     {% module helper_other(art,journals,institutions,researchers) %}
     </div>
-
-    </div>  <!-- end .bod -->
-  </div>
 
 {% if art.needs_sourcing %}
  <div class="act tool">
@@ -173,6 +144,10 @@ pubsub.source_added.add(function(new_src) {
     </form>
   </div>
 {% end %}
+
+    </div>  <!-- end .bod -->
+  </div>
+
 
 
 
