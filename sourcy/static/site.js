@@ -137,9 +137,7 @@ function showFormErrs(form,errs) {
   for( var fieldname in errs ) {
     field_container = form.find('#'+fieldname).parent()
     errlist = field_container.find('.errorlist')
-    console.log(errlist);
     if(errlist.length==0) {
-      console.log("FOOO");
       errlist = form.find('.errorlist');
     }
 
@@ -158,6 +156,7 @@ function ajaxifyAddSourceForm(form, busytext) {
     var form = $(this);
     var url = form.attr('action');
     var params = form.serialize();
+
     // clear off any old errors
     form.find('.error').removeClass('error');
     form.find('.errorlist>*').remove();

@@ -86,68 +86,78 @@ pubsub.source_added.add(function(new_src) {
   <div class="tool sources">
     <header>
     <h2>Sources</h2>
-    {% if not art.needs_sourcing %}
+{% if not art.needs_sourcing %}
     <span class="sourced">Sourced</span>
-    {% end %}
+{% end %}
     </header>
 
     <div class="bod">
 
 
-    {% if art.sources %}
+{% if not art.sources %}
+    <div>No sources</div>
+{% end %}
     <ul class="srclist">
     {% for src in art.sources %}{% module source(src, container='li') %}{% end %}
     </ul>
-    {% else %}
-    <p>No sources yet.<br/>
-    Can <strong>you</strong> track any down?</p>
-    {% end %}
+
+
 
     <p>
     Add a source...<br/>
-    <a class="btn vis-toggler" href="#add-paper">Paper</a>
-    <a class="btn vis-toggler" href="#add-pr">Press release</a>
-    <a class="btn vis-toggler" href="#add-other">Other</a>
+    <a class="btn vis-toggler" href="#add-paper-pane">Paper</a>
+    <a class="btn vis-toggler" href="#add-pr-pane">Press release</a>
+    <a class="btn vis-toggler" href="#add-other-pane">Other</a>
     </p>
 
-    <div class="add-source" id="add-paper">
+    <div class="add-source" id="add-paper-pane">
     <h3>Add paper</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_paper(art, add_paper_form) %}
     {% module helper_paper(art,journals,institutions,researchers) %}
     </div>
 
-    <div class="add-source" id="add-pr">
+    <div class="add-source" id="add-pr-pane">
     <h3>Add press release</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_pr(art, add_pr_form) %}
     {% module helper_pr(art,journals,institutions,researchers) %}
     </div>
 
-    <div class="add-source" id="add-other">
+    <div class="add-source" id="add-other-pane">
     <h3>Add other link</h3><a class="cancel" href="/art/{{art.id}}">cancel</a>
     {% module add_other(art, add_other_form) %}
     {% module helper_other(art,journals,institutions,researchers) %}
     </div>
 
-{% if art.needs_sourcing %}
- <div class="act tool">
-    {% if len(art.sources)>0 %}
-    Have all the sources for this article have been added?
-    {% else %}
+
+  {% if len(art.help_reqs)>0 %}
+  <div class=""><img src="/static/tag_med/help.png" />{% module user(art.help_reqs[0].user, True) %} asked for help on this article
+    <form action="/art/{{art.id}}/close-helpreq" method="post">
+    {% raw xsrf_form_html() %}
+    <input class="btn" type="submit" value="Close help request" />
+    </form>
+  </div>
+  {% end %}
+
+  {% if art.needs_sourcing and len(art.help_reqs)==0 %}
+  <div class="">
+    Having trouble tracking down sources for this article?
+    <form action="/art/{{art.id}}/open-helpreq" method="post">
+    {% raw xsrf_form_html() %}
+    <input class="btn" type="submit" value="Ask for help" />
+    </form>
+  </div>
+  {% end %}
+
+
+  {% if art.needs_sourcing and len(art.sources)==0 %}
+  <div>
     Think this article doesn't need any sources?
-    {% end %}
     <form action="/art/{{art.id}}/mark-sourced" method="post">
     {% raw xsrf_form_html() %}
     <input class="btn" type="submit" value="Mark it sourced" />
     </form>
- </div>
-{% else %}
-  <div class="act tool"><img src="/static/tag_med/tick.png" />This article has been marked as sourced - all sources tracked down and added.
-    <form action="/art/{{art.id}}/mark-unsourced" method="post">
-    {% raw xsrf_form_html() %}
-    <input class="btn" type="submit" value="disagree" />
-    </form>
   </div>
-{% end %}
+  {% end %}
 
     </div>  <!-- end .bod -->
   </div>
@@ -155,25 +165,6 @@ pubsub.source_added.add(function(new_src) {
 
 
 
-{% if len(art.help_reqs)>0 %}
-  <div class="act tool"><img src="/static/tag_med/help.png" />{% module user(art.help_reqs[0].user, True) %} asked for help on this article
-    <form action="/art/{{art.id}}/close-helpreq" method="post">
-    {% raw xsrf_form_html() %}
-    <input class="btn" type="submit" value="Close help request" />
-    </form>
-  </div>
-
-{% else %}
-
-  <div class="act tool">
-    Having trouble tracking down sources for this article?
-    <form action="/art/{{art.id}}/open-helpreq" method="post">
-    {% raw xsrf_form_html() %}
-    <input class="btn" type="submit" value="Ask for help" />
-    </form>
-  </div>
-
-{% end %}
 
 
 
