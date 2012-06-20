@@ -809,6 +809,13 @@ a.btn:visited {
     z-index: -1;
 }
 
+
+/****/
+.sourced {
+
+}
+
+
 /************************************************
  * STATES
  */
@@ -850,6 +857,7 @@ a.btn:visited {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     padding: 0.1em 0.75em;
+    position: relative;
 }
 
 .tool header h2,
@@ -857,6 +865,21 @@ a.btn:visited {
 .tool header h4 {
     color: #fff;
 }
+
+
+.tool header .sourced {
+    position: absolute;
+    right: -16px;
+    top: -24px;
+    padding-right: 68px;    /* w=64 + 4 margin */
+    padding-top: 30px;  /* 30+15+10 = img h */
+    height: 15px;
+    padding-bottom: 10px;
+
+    background: url(/static/sourced.png) no-repeat top right;
+    font-weight: bold;
+}
+
 
 .tool .bod {
     margin: 0 0 0.5em 0;

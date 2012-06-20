@@ -86,9 +86,13 @@ pubsub.source_added.add(function(new_src) {
   <div class="tool sources">
     <header>
     <h2>Sources</h2>
+    {% if not art.needs_sourcing %}
+    <span class="sourced">Sourced</span>
+    {% end %}
     </header>
 
     <div class="bod">
+
 
     {% if art.sources %}
     <ul class="srclist">
