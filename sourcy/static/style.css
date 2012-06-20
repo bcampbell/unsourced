@@ -402,11 +402,22 @@ ul.l-4col {
 /****/
 .random-arts {
     padding: 1em 2em;
+/*    position:relative;
+    z-index: 1;
+*/
+}
+
+
+/****
+ * annoyingly unsemantic yellow bg frill
+ */
+
+.yellow-frill {
     position:relative;
     z-index: 1;
 }
 
-.random-arts:before {
+.yellow-frill:before {
     /* skewy yellow patch */
     display: block;
     position: absolute;
@@ -421,6 +432,24 @@ ul.l-4col {
     box-shadow: -1em 0 rgba(225,190,0, 0.95);
     z-index: -1;
 }
+
+
+/****/
+.dot-frill {
+    position: relative;
+}
+.dot-frill:after {  
+    content: "";  
+    display: block;  
+    position: absolute;  
+    top: 0;  
+    bottom: 0;
+    left: 0;  
+    right: -4em;  
+    background-image: url('/static/dot-pattern.png');
+    z-index: -1;
+}
+
 
 
 /*****
@@ -798,68 +827,29 @@ a.btn:visited {
 {
   background: #fff;
   padding: 1em;
-  margin: 0.5em 0;
+/*  margin: 0.5em 0; */
 }
 
 
 /****/
 .sidebar {
-    position: relative;
-    overflow: visible;
-}
-.sidebar:after {  
-    content: "";  
-    display: block;  
-    position: absolute;  
-    top: 0;  
-    bottom: 0;
-    left: 0;  
-    right: -4em;  
-    background-image: url('/static/dot-pattern.png');
-    z-index: -1;
+    padding: 1em 0 1em 1em;
 }
 
 
-/****/
-.sourced {
-
+.site-intro h2 {
+    font-family: "Oleo Script";
+    font-size: 275%; 
+    margin-left: 1em;
 }
 
 
-/************************************************
- * STATES
- */
-
-
-/****
- * is-busy - show message/icon during ajax requests
- */
-
-.is-busy .busy-message {
-    padding-left: 20px;
-    background: url(/static/busy-s.gif) left no-repeat;
-    display: block;
-}
-
-.is-busy input[type="submit"] {
-    display: none;
+.username-heading {
+    font-family: "Oleo Script";
+    font-size: 275%; 
 }
 
 
-/************************************************
- * UNSORTED CRAP - REFACTOR RUTHLESSLY!
- */
-
-
-
-
-
-
-
-#tools {
-  margin: 1em;
-    overflow: visible;
-}
 /*****/
 .tool header {
     background-color: rgba(31,82,162,0.8);
@@ -900,4 +890,31 @@ a.btn:visited {
 .tool h2,
 .tool h3 {
 }
+
+
+/************************************************
+ * STATES
+ */
+
+
+/****
+ * is-busy - show message/icon during ajax requests
+ */
+
+.is-busy .busy-message {
+    padding-left: 20px;
+    background: url(/static/busy-s.gif) left no-repeat;
+    display: block;
+}
+
+.is-busy input[type="submit"] {
+    display: none;
+}
+
+
+
+
+
+
+
 

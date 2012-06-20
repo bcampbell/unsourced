@@ -2,36 +2,44 @@
 {% block title %}User {{user.username}}{% end %}
 {% block main %}
 
-<div class="row">
+<div class="l-row">
 
-<div class="column grid_8">
-<h2>{{user.username}}</h2>
-<h3>Recent activity</h3>
+  <div class="l-col66">
+    <div class="box">
+      <h2 class="username-heading">{{user.username}}</h2>
+      <div class="yellow-frill">
 
-<ul class="act-list">
-{% for act in actions %}
-<li class="act">{% module action(act, user_display=None) %}</li>
-{% end %}
-</ul>
+        <h2>Recent activity</h2>
 
-<h3>Recent mentions</h3>
+        <ul class="act-list">
+        {% for act in actions %}
+          <li class="act">{% module action(act, user_display=None) %}</li>
+        {% end %}
+        </ul>
 
-<ul class="act-list">
-{% for act in mentions %}
-<li class="act">{% module action(act, user_display='s') %}</li>
-{% end %}
-</ul>
+        <h2>Recent mentions</h2>
+
+        <ul class="act-list">
+        {% for act in mentions %}
+          <li class="act">{% module action(act, user_display='s') %}</li>
+        {% end %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="l-col33">
+    <div class="sidebar dot-frill">
+    <div class="box">
+    {% if current_user and current_user.id==user.id %}
+    <a class="btn" href="/editprofile">Edit your details</a><br/><br/>
+    {% end %}
+    {% raw user.photo_img('l') %}
+    </div>
+    </div>
+  </div>
 
 </div>
 
-<div class="column grid_4">
-{% if current_user and current_user.id==user.id %}
-<a class="btn" href="/editprofile">Edit your details</a><br/>
-{% end %}
-
-{% raw user.photo_img('l') %}
-</div>
-
-</div><!-- end .row -->
 {% end %}
 
