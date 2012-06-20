@@ -599,19 +599,25 @@ ul.l-4col {
 }
 
 
+
+
+
 /*****
  * details about a source (paper, pr, other...)
  */
 .src {
-    margin-bottom: 2em;
+  border-top: 1px dotted #808080;
+  padding: 0.5em 0.5em 0.5em 20px;
+}
+
+
+.src:nth-child(odd) {
+  background-color: #f2f2f2;
 }
 
 
 /****/
 .src-info {
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    padding: 0.2em 0 0.5em 0;
 }
 
 .src-info>a {
@@ -621,16 +627,17 @@ ul.l-4col {
 
 /*****/
 .moderation {
-    border-bottom: 1px dashed #ccc;
-    background-color: #eee;
+    margin-top: 0.5em;
     vertical-align: top;
-    padding: 0.5em 0;
+    display: block;
 }
+
 .moderation:after {
     content: "";
     clear: both;
     display: block;
 }
+
 /*
 .moderation>.vote {
     float: left;
@@ -642,6 +649,7 @@ ul.l-4col {
 }
 
 .moderation>.creator {
+    float: right;
 /*    float: left; */
 /*    vertical-align: top; */
 }

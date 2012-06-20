@@ -19,25 +19,18 @@ $('.add-source .cancel').click(function() {
 });
 
 
-// when a source is added, insert it into the appropriate list
+// when a source is added, insert it into list of sources
 pubsub.source_added.add(function(new_src) {
-  var kinds = {paper: '.srclist-paper', pr: '.srclist-pr', other: '.srclist-other'};
-  var destlist = kinds[new_src.kind];
-
-    console.log(new_src);
 
   $(new_src.html)
     .hide()
     .css('opacity',0.0)
-    .appendTo($(destlist))
+    .appendTo($('.srclist'))
     .slideDown('fast')
     .animate({opacity: 1.0});
 
     // reset the add-source boxes and buttons
     $('.add-source').hide();
-    $('.add-source .cancel').hide();
-    $('.add').show();
-
 });
 
 {% end %}

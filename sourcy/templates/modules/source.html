@@ -15,6 +15,9 @@
 <span class="publication">{{src.publication}}</span>
 {% end %}
 {% end %}
+{% if current_user and src.creator==current_user %}
+    <form action="/source/{{src.id}}/delete" method="POST">{% raw xsrf_form_html() %}<input class="btn"  type="submit" name="submit" value="remove"/></form>
+{% end %}
 </div>
 
 <div class="moderation">
@@ -29,10 +32,8 @@
 -->
 
 {% if src.creator %}
-  <span class="creator"><a href="/user/{{src.creator.id}}">{% raw src.creator.photo_img('m') %}</a> Added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
-{% if current_user and src.creator==current_user %}
-    <form action="/source/{{src.id}}/delete" method="POST">{% raw xsrf_form_html() %}<input class="btn"  type="submit" name="submit" value="delete"/></form>
-{% end %}
+  <span class="creator"><a href="/user/{{src.creator.id}}">{% raw src.creator.photo_img('s') %}</a> Added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
+
 {% end %}
 
 </div>
