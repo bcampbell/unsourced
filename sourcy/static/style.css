@@ -835,14 +835,13 @@ a.btn:visited {
 /*****/
 
 .hilite {
+    background-color: #fbd415;
+    color: #262626;
     padding: 1px;
-    border: 1px solid;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
 }
-.hilite.journal { background-color: #ff0; border-color: #cc0; }
-.hilite.researcher { background-color: #afa; ; border-color: #8c8; }
-.hilite.institution { background-color: #aaf; border-color: #88c; }
+.hilite.journal { }
+.hilite.researcher { }
+.hilite.institution { }
 
 
 /****
