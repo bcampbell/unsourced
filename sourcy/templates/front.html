@@ -13,7 +13,7 @@
 {% for art in random_arts %}
       <div class="l-col25">
         <div class="art-box">
-          <div id="art-{{art.id}}" class="art">
+          <div class="body">
             <img class="favicon" src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />
             <a href="/art/{{art.id}}">{{art.headline}}</a>
             <time class="timestamp" datetime="{{art.pubdate.isoformat()}}">{{locale.format_date(art.pubdate, shorter=True)}}</time>

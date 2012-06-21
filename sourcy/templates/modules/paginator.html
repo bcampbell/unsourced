@@ -1,15 +1,14 @@
 <nav class="pager">
-<ul>
+page <ul>
 {% for p in pager %}
  {% if p is None %}
-<li class="gap"><span>...</span></li>
+<li class="gap">...</li>
  {% elif p==pager.cur %}
-<li><span>{{p}}</span></li>
+<li><span class="cur">{{p}}</span></li>
  {% else %}
 <li><a href="{{pager.page_url(p)}}">{{p}}</a></li>
  {% end %}
 {% end %}
 </ul>
-page {{pager.cur}} of {{pager.total_pages}}
 </nav>
 

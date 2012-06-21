@@ -185,15 +185,6 @@ ul.l-4col {
 .l-col75 { width: 75%; }
 
 
-/* browse page layout */
-.l-filters {
-    width: 30%;
-    float: right;
-}
-.l-results {
-    width: 70%;
-}
-
 
 
 
@@ -442,9 +433,9 @@ ul.l-4col {
     content: "";  
     display: block;  
     position: absolute;  
-    top: 0;  
-    bottom: 0;
-    left: 0;  
+    top: -0.5em;  
+    bottom: -1.5em;
+    left: -0.7em;  
     right: -4em;  
     background-image: url('/static/dot-pattern.png');
     z-index: -1;
@@ -454,8 +445,9 @@ ul.l-4col {
  * clip favicons to avoid unpleasantness...
  */
 .favicon {
-    max-width: 20px;
-    max-height: 20px;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
     overflow: hidden;
 }
 
@@ -466,6 +458,32 @@ ul.l-4col {
 .art {
 }
 
+.art-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.art {
+    display: block;
+    margin: 0 0 0.4em 40px;
+    position: relative;
+}
+
+
+.art .favicon
+{
+    position: absolute;
+    left: -20px;
+}
+
+.art .icon-sourced,
+.art .icon-help {
+    position: absolute;
+    left: -40px;
+}
+
+
 /* box version of .art */
 
 .art-box {
@@ -474,7 +492,7 @@ ul.l-4col {
     min-height: 12em;
 }
 
-.art-box .art {
+.art-box .body {
     padding: 0.5em 0.5em 0.5em 0.5em;
 }
 
@@ -491,14 +509,14 @@ ul.l-4col {
 }
 
 
-.art-box .art a,
-.art-box .art time
+.art-box .body a,
+.art-box .body time
 {
     display: block;
     margin-left: 24px;
 }
 
-.art-box .art time {
+.art-box .body time {
     margin-top: 0.2em;
     font-size: 85%;
 }
@@ -623,39 +641,43 @@ ul.l-4col {
  * Pagination widget
  */
 
-.pager li a {
-    background-color: #ccc;
-    margin: 0;
-    padding: 0.2em;
-    vertical-align: top;
-    display: inline-block;
-}
-.pager li a:hover {
-    background-color: #88f;
+.pager {
+    border-top: 1px dotted  #808080;
+    border-bottom: 1px dotted  #808080;
+    margin: 1em 0;
+    padding: 0.3em 0;
 }
 
-.pager li span {
-    padding: 0.2em;
-    margin: 0;
-    display: inline-block;
-    vertical-align: top;
+
+.pager li span,
+.pager li a {
+  padding: 0.2em 0.4em;
 }
+
+.pager .cur,
+.pager li a:hover {
+  font-weight: bold;
+  background-color: #37342e;
+  color: #ffffff;
+  text-decoration: none;
+  display: inline-block;
+}
+
 
 .pager li.gap {
-    border: none;
 }
 
 .pager ul {
-    padding: 0;
-    margin: 0;
-    list-style:none;
+  padding: 0;
+  margin: 0;
+  list-style:none;
+  display: inline-block;
 }
 
 .pager li {
-    border: 1px solid #888;
-    margin: 0;
-    padding: 0;
-    display: inline-block;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
 }
 
 /*****
@@ -908,7 +930,7 @@ a.btn:visited {
 
 /****/
 .sidebar {
-    padding: 1em 0 1em 1em;
+    margin-left: 1em;
 }
 
 
@@ -918,7 +940,7 @@ a.btn:visited {
     margin-left: 1em;
 }
 
-
+.browse-heading,
 .username-heading {
     font-family: "Oleo Script";
     font-size: 275%; 
@@ -966,6 +988,31 @@ a.btn:visited {
 .tool h3 {
 }
 
+
+/****/
+.comment-cnt {
+    color: #ffffff;
+    background-color: #1F52A2;
+    border-radius: 4px;
+    padding: 0.1em 0px;
+    width: 24px;
+    display: inline-block;
+    text-align: center;
+    font-size: 90%;
+    position: relative;
+}
+
+.comment-cnt:after {
+   content: "";
+   display: block;
+   position: absolute;
+   left: 24px;
+   top: 5px;
+   width: 0;
+   height: 0;
+   border: 3px solid;
+   border-color: transparent  transparent transparent #1F52A2;
+}
 
 /************************************************
  * STATES
