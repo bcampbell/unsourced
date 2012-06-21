@@ -12,11 +12,30 @@
     <div class="l-row">
 {% for art in random_arts %}
       <div class="l-col25">
-        <div id="art-{{art.id}}" class="art art-box">
-          <img src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />
-          <a href="/art/{{art.id}}">{{art.headline}}</a>
-          <time class="timestamp" datetime="{{art.pubdate.isoformat()}}">{{locale.format_date(art.pubdate, shorter=True)}}</time>
+        <div class="art-box">
+          <div id="art-{{art.id}}" class="art">
+            <img class="favicon" src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />
+            <a href="/art/{{art.id}}">{{art.headline}}</a>
+            <time class="timestamp" datetime="{{art.pubdate.isoformat()}}">{{locale.format_date(art.pubdate, shorter=True)}}</time>
+          </div>
+          {% if art.needs_sourcing %}
+          <div class="l-center">
           <a class="btn findsrc" href="/art/{{art.id}}">Find source</a>
+          </div>
+          {% else %}
+          <div class="sourced">Sourced</div>
+          {% end %}
+
+          {% if len(art.sources)>0 and not art.needs_sourcing %}
+          <ul class="sourcers">
+            {% for user in set([s.creator for s in art.sources]) %}
+            <li>
+                <a class="user" href="{{user.profile_url()}}">{% raw user.photo_img('m') %}</a>
+            By <a class="user" href="{{user.profile_url()}}">{{user.username}}</a>
+            </li>
+            {% end %}
+          </ul>
+          {% end %}
         </div>
       </div>
 {% end %}
@@ -37,6 +56,8 @@
         <li class="act act-full">{% module action(act,user_display='m',show_timestamp=False) %}</li>
 {% end %}
       </ul>
+
+      <a class="btn btn-major" href="/register">Sign up and start finding sources</a>
     </div>
   </div>
 

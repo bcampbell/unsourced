@@ -450,7 +450,14 @@ ul.l-4col {
     z-index: -1;
 }
 
-
+/****
+ * clip favicons to avoid unpleasantness...
+ */
+.favicon {
+    max-width: 20px;
+    max-height: 20px;
+    overflow: hidden;
+}
 
 /*****
  * art module for article summaries
@@ -460,31 +467,79 @@ ul.l-4col {
 }
 
 /* box version of .art */
+
 .art-box {
-    padding: 0.5em 0.5em 0.5em 0.5em;
     position: relative;
-    min-height: 10em;
     background-color: #fff;
+    min-height: 12em;
 }
 
-.art-box img {
+.art-box .art {
+    padding: 0.5em 0.5em 0.5em 0.5em;
+}
+
+/* ugh*/
+.art-box .l-center {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.art-box .favicon {
     float: left;
-    max-width: 20px;
-    max-height: 20px;
-    overflow: hidden;
 }
 
-.art-box a,
-.art-box time
+
+.art-box .art a,
+.art-box .art time
 {
     display: block;
     margin-left: 24px;
 }
 
-.art-box .btn {
-    position:absolute;
-    left:0.2em;
-    bottom:0.2em;
+.art-box .art time {
+    margin-top: 0.2em;
+    font-size: 85%;
+}
+
+
+.l-center {
+    margin: auto;
+    text-align: center;
+    }
+
+
+
+.art-box .sourced {
+    position: absolute;
+    right: 0;
+    bottom: -2em;
+    background: url(/static/sourced.png) no-repeat top right;
+    padding-right: 64px;
+    padding-top: 1em;
+    min-height: 55px;
+    z-index: 1; /* to lift above sourcers list */
+
+    font-family: 'Contrail One';
+    font-size: 125%;
+}
+
+/* list of sourcers */
+.art-box .sourcers {
+    position: absolute;
+    margin-top: 0.3em;
+    padding: 0.5em;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: rgba(214,214,255,0.75);
+}
+
+
+
+.art-box .sourcers div {
+   padding: 1em; 
 }
 
 
@@ -513,6 +568,7 @@ ul.l-4col {
 }
 
 /****/
+/* TODO: KILL -> too vague */
 .attribution {
     float: left;
     display: block;
@@ -692,13 +748,22 @@ ul.l-4col {
     border: none;
     border-radius: 4px;
     display: inline;
-    background-color: #33B7FF;
+    background-color: #24aaf2;
     color: #fff;
     margin: 0.2em 0;
+    font-weight: bold;
+    padding: 0.15em 1em;
+    margin: 0.2em 0; 
+    display: inline-block;
 }
 a.btn,
 input.btn
- { color: #fff; padding: 0.15em 1em; }
+ { color: #fff; }
+
+input.btn {
+    font-size: 1em; /* fudge to unify input buttons... */
+}
+
 
 .btn:hover {
     color: #fff;
@@ -708,6 +773,11 @@ input.btn
 
 a.btn:visited {
     color: #fff;
+}
+
+.btn-major {
+    padding: 0.5em 1em;
+    font-size: 125%;
 }
 
 
@@ -764,6 +834,11 @@ a.btn:visited {
 
 
 /****/
+
+.top-sourcers {
+    margin-top: 1em;
+}
+
 .top-sourcers>div {
  display: inline-block;
  margin: 0.2em;
@@ -914,6 +989,24 @@ a.btn:visited {
 
 
 
+/* UNSORTED CRAP THAT NEEDS REFACTORING */
+
+ul.sourcers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.sourcers li {
+    margin-bottom: 0.5em;
+}
+ul.sourcers li:last-child {
+    margin-bottom: 0;
+}
+
+ul.sourcers img {
+    vertical-align:top;
+}
 
 
 

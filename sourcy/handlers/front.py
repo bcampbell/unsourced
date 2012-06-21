@@ -79,7 +79,6 @@ class FrontHandler(BaseHandler):
     def get(self):
 
 
-
         #TODO: top sourcers
         all_users = self.session.query(UserAccount).all()
         top_sourcers = [random.choice(all_users) for i in range(12)]
@@ -88,7 +87,8 @@ class FrontHandler(BaseHandler):
         today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
 
 
-        if self.current_user:
+        if 0:
+#        if self.current_user:
             today = datetime.datetime.utcnow().date() - datetime.timedelta(days=1)
 
             unsourced_arts = self.session.query(Article).\
@@ -114,17 +114,26 @@ class FrontHandler(BaseHandler):
                 recent_actions = recent_actions)
 
 
-        else:
+        if 1:
             recent_actions = self.session.query(Action).\
                 filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
                 order_by(Action.performed.desc()).slice(0,6)
 
-            # some articles which need sourcing
+            # some random articles
+            # 3 needing sourcing...
             random_arts = self.session.query(Article).\
                 options(subqueryload(Article.tags,Article.sources,Article.comments)).\
                 filter(Article.needs_sourcing==True).\
                 order_by(func.rand()).\
-                limit(4).all()
+                limit(3).all()
+
+            # ...and one sourced
+            random_arts += self.session.query(Article).\
+                    filter(Article.needs_sourcing==False).\
+                    order_by(func.rand()).\
+                    limit(1).all()
+
+            random.shuffle(random_arts)
 
             self.render('front.html',
                 random_arts = random_arts,
