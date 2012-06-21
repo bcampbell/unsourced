@@ -15,7 +15,7 @@
   {% if len(art.help_reqs)>0 %}
   <img class="icon icon-help" width="16" height="16" src="/static/tag_small/help.png" alt="help requested" />
   {% elif not art.needs_sourcing %}
-  <img class="icon icon-sourced" width="16" height="16" src="/static/tag_small/tick.png" alt="sourced" />
+  <img class="icon icon-sourced" width="16" height="16" src="/static/icon-sourced.png" alt="sourced" />
   {% end %}
   <img class="favicon" src="{{art.publisher_favicon_url()}}"/>
   <a href="/art/{{art.id}}" title="{%module domain(art.permalink)%}">{{art.headline}}</a>
