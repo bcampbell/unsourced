@@ -1,8 +1,15 @@
 <form action="/browse" method="get">
 
 <fieldset>
-<legend>Narrow by date</legend>
+<legend>For...</legend>
 {% raw filters.date %}
+</fieldset>
+
+<fieldset>
+<legend>Show...</legend>
+<div>
+{% raw filters.sourced %}
+</div>
 </fieldset>
 
 <fieldset>
@@ -11,9 +18,10 @@
 {% raw filters.help %}{% raw filters.help.label%}
 </div>
 <div>
-{% raw filters.sourced %}{% raw filters.sourced.label%}
+{% raw filters.discussed %}{% raw filters.discussed.label%}
 </div>
 </fieldset>
+
 
 <input type="submit" value="Filter"/>
 </form>

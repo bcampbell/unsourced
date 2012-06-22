@@ -18,40 +18,41 @@ date_defs = {
         order = 0,
         label = "Today",
         delta = timedelta(days=1),
-        desc_fmt = "Today's %(articles)s"
+        desc_fmt = "Today's %(articles)s%(mods)s"
     ),
     '1week': dict(
         order = 1,
         label = "Past week",
         delta = timedelta(days=7),
-        desc_fmt = "%(articles)s%(mods)s from the past week"
+        desc_fmt = "%(articles)s from the past week%(mods)s"
     ),
     '30days': dict(
         order = 2,
         label = "Past 30 days",
         delta = timedelta(days=30),
-        desc_fmt = "%(articles)s%(mods)s from the past 30 days"
+        desc_fmt = "%(articles)s from the past 30 days%(mods)s"
     ),
     '1year': dict(
         order = 3,
         label = "Past year",
         delta = timedelta(days=365),
-        desc_fmt = "%(articles)s%(mods)s from the past year"
+        desc_fmt = "%(articles)s from the past year%(mods)s"
     ),
     'all': dict(
         order = 4,
-        label = "All",
+        label = "All dates",
         delta = None,
         desc_fmt = "All %(articles)s%(mods)s"
     ),
 }
 
 class FiltersForm(Form):
-    DATE_CHOICES = [(k, v['label']) for k,v in date_defs.items()]
+    DATE_CHOICES = sorted([(k, v['label']) for k,v in date_defs.items()], key=lambda x: date_defs[x[0]]['order'])
     date = RadioField("Narrow by Date", choices=DATE_CHOICES, default="today")
+    sourced = RadioField("Sourced", choices=[('all','All'),('unsourced','Unsourced'),('sourced','Sourced')], default='all')
 
     help = BooleanField("Help requested")
-    sourced = BooleanField("Sourced")
+    discussed = BooleanField("Discussed")
 
     def describe(self):
         """ create pretty description of filter, suitable for heading """
@@ -63,15 +64,21 @@ class FiltersForm(Form):
         else:
             fmt= "(%articles)(%mods)"
 
-        if self.sourced.data:
+        if self.sourced.data == 'sourced':
             articles = "sourced articles"
+        elif self.sourced.data == 'unsourced':
+            articles = "unsourced articles"
         else:
             articles = "articles"
 
         mod_parts = []
         if self.help.data:
-            mod_parts.append(" with help requests")
-        mods = 'and'.join(mod_parts)
+            mod_parts.append("help requests")
+        if self.discussed.data:
+            mod_parts.append("comments")
+        mods = ' and '.join(mod_parts)
+        if mods:
+            mods = " with " + mods
 
         desc = fmt % {'articles':articles,'mods':mods}
 
@@ -107,7 +114,12 @@ class BrowseHandler(BaseHandler):
             if filters.help.data:
                 arts = arts.filter(Article.help_reqs.any())
 
-            if filters.sourced.data:
+            if filters.discussed.data:
+                arts = arts.filter(Article.comments.any())
+
+            if filters.sourced.data=='unsourced':
+                arts = arts.filter(Article.needs_sourcing==True)
+            elif filters.sourced.data=='sourced':
                 arts = arts.filter(Article.needs_sourcing==False)
 
         arts = arts.order_by(Article.pubdate.desc())

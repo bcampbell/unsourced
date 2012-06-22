@@ -26,14 +26,14 @@ body {
 }
 
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4,
+legend {
     font-family: 'Contrail One';
     font-style: normal;
     font-weight: normal;
     margin: 0.1em 0 0.4em 0;
     color: #000;
 }
-
 
 a { text-decoration:none; }
 a:link { color: #262626; }
@@ -83,6 +83,17 @@ select { display: block; }
     color: #888;
     font-style: italic;
     font-size: smaller;
+}
+
+legend {
+    font-size: 125%;
+    margin: 0;
+    padding: 0;
+}
+fieldset {
+    border: none;
+    margin: 0 0 1em 0;
+    padding: 0;
 }
 
 /**********************************************************************
