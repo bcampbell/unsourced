@@ -26,6 +26,13 @@ class form(tornado.web.UIModule):
 
 
 
+
+class postbutton(tornado.web.UIModule):
+    """ a button which POSTs to a url, falling back to an <a> with login link if user not logged on """
+    def render(self, url, txt):
+        return self.render_string("modules/postbutton.html", url=url, txt=txt)
+
+
 class domain(tornado.web.UIModule):
     def render(self, url):
         return util.domain(url)

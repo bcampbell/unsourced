@@ -772,15 +772,11 @@ ul.l-4col {
 /*    vertical-align: top; */
 }
 
-/*****
- *
- */
 
-
+/*****/
 .btn {
     border: none;
     border-radius: 4px;
-    display: inline;
     background-color: #24aaf2;
     color: #fff;
     margin: 0.2em 0;
@@ -789,6 +785,7 @@ ul.l-4col {
     margin: 0.2em 0; 
     display: inline-block;
 }
+
 a.btn,
 input.btn
  { color: #fff; }
@@ -813,6 +810,14 @@ a.btn:visited {
     font-size: 125%;
 }
 
+/*****
+ * a wrapper around a button (eg a form, to allow POSTs)
+ */
+.btn-wrapper {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
 
 /*****/
 .busy-message {

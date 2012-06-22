@@ -98,6 +98,7 @@ pubsub.source_added.add(function(new_src) {
 
     <p>
     Add a source...<br/>
+{% if current_user %}
     <a class="btn vis-toggler" href="#add-paper-pane">Paper</a>
     <a class="btn vis-toggler" href="#add-pr-pane">Press release</a>
     <a class="btn vis-toggler" href="#add-other-pane">Other</a>
@@ -120,35 +121,31 @@ pubsub.source_added.add(function(new_src) {
     {% module add_other(art, add_other_form) %}
     {% module helper_other(art,journals,institutions,researchers) %}
     </div>
-
+{% else %}
+    <a class="btn" href="{{ handler.get_login_url() }}">Paper</a>
+    <a class="btn" href="{{ handler.get_login_url() }}">Press release</a>
+    <a class="btn" href="{{ handler.get_login_url() }}">Other</a>
+    </p>
+{% end %}
 
   {% if len(art.help_reqs)>0 %}
-  <div class=""><img src="/static/tag_med/help.png" />{% module user(art.help_reqs[0].user, True) %} asked for help on this article
-    <form action="/art/{{art.id}}/close-helpreq" method="post">
-    {% raw xsrf_form_html() %}
-    <input class="btn" type="submit" value="Close help request" />
-    </form>
+  <div class=""><img src="/static/tag_med/help.png" />{% module user(art.help_reqs[0].user, True) %} asked for help on this article<br/>
+    {% module postbutton("/art/%d/close-helpreq"%(art.id,), "Close help request") %}
   </div>
   {% end %}
 
   {% if art.needs_sourcing and len(art.help_reqs)==0 %}
   <div class="">
-    Having trouble tracking down sources for this article?
-    <form action="/art/{{art.id}}/open-helpreq" method="post">
-    {% raw xsrf_form_html() %}
-    <input class="btn" type="submit" value="Ask for help" />
-    </form>
+    Having trouble tracking down sources for this article?<br/>
+    {% module postbutton("/art/%d/open-helpreq"%(art.id,), "Ask for help") %}
   </div>
   {% end %}
 
 
   {% if art.needs_sourcing and len(art.sources)==0 %}
   <div>
-    Think this article doesn't need any sources?
-    <form action="/art/{{art.id}}/mark-sourced" method="post">
-    {% raw xsrf_form_html() %}
-    <input class="btn" type="submit" value="Mark it sourced" />
-    </form>
+    Think this article doesn't need any sources?<br/>
+    {% module postbutton("/art/%d/mark-sourced"%(art.id,), "Mark it sourced") %}
   </div>
   {% end %}
 

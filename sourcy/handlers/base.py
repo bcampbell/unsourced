@@ -1,4 +1,5 @@
 import sys
+import urllib
 
 
 import tornado.web
@@ -32,6 +33,12 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def write_error(self, status_code, **kwargs):
         self.render("error.html", status_code=status_code)
+
+    def get_login_url(self):
+        if self.request.uri == '/':
+            return '/login'
+        else:
+            return '/login?' + urllib.urlencode(dict(next=self.request.uri))
 
 
 class MissingHandler(BaseHandler):

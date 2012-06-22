@@ -16,7 +16,7 @@
 {% end %}
 {% end %}
 {% if current_user and src.creator==current_user %}
-    <form action="/source/{{src.id}}/delete" method="POST">{% raw xsrf_form_html() %}<input class="btn"  type="submit" name="submit" value="remove"/></form>
+{% module postbutton("/source/%d/delete" %(src.id,), "remove") %}
 {% end %}
 </div>
 

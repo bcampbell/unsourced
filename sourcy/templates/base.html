@@ -26,7 +26,7 @@
   <div class="l-col75">
   <div class="login-status">
 {% if current_user is None %}
-    <a href="/register">join</a> | <a href="/login">log in</a>
+    <a href="/register">join</a> | <a href="{{ handler.get_login_url() }}">log in</a>
 {% else %}
 Hello <a href="/user/{{current_user.id}}">{{current_user.username}}</a> |
 <a href="/logout">log out</a>

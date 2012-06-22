@@ -1,0 +1,8 @@
+{% if current_user %}
+<form class="btn-wrapper" action="{{url}}" method="post">
+  {% raw xsrf_form_html() %}
+  <input class="btn" type="submit" value="{{txt}}" />
+</form>
+{% else %}
+<a class="btn" href="{{ handler.get_login_url() }}">{{txt}}</a>
+{% end %}

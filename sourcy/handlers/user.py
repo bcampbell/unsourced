@@ -170,7 +170,6 @@ class LoginHandler(BaseHandler):
         # logged in successfully
         if next is None:
             next = '/'
-        print "logged in:", user
         self.set_secure_cookie("user", unicode(user.id))
         self.redirect(next)
 
