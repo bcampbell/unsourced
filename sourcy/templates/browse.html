@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Sourcy{% end %}
+{% block title %}Browse articles{% end %}
 
 
 {% block main %}
@@ -7,7 +7,7 @@
 
 <div class="l-col66">
  <div id="results" class="box">
-  {% module searchresults(pager) %}
+  {% module searchresults(filters, paged_results) %}
  </div>
 </div>
 

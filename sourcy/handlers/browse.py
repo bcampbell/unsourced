@@ -13,31 +13,71 @@ from sourcy.util import Paginator
 from sourcy.util import TornadoMultiDict
 from sourcy.uimodules import searchresults
 
-date_defs = [
-    {'id': 'today', 'label': "Today", 'delta': timedelta(days=1)},
-    {'id': '1week', 'label': "Past week", 'delta': timedelta(days=7)},
-    {'id': '30days', 'label': "Past 30 days", 'delta': timedelta(days=30)},
-    {'id': '1year', 'label':"Past year", 'delta': timedelta(days=365)},
-    ]
+date_defs = {
+    'today': dict(
+        order = 0,
+        label = "Today",
+        delta = timedelta(days=1),
+        desc_fmt = "Today's %(articles)s"
+    ),
+    '1week': dict(
+        order = 1,
+        label = "Past week",
+        delta = timedelta(days=7),
+        desc_fmt = "%(articles)s%(mods)s from the past week"
+    ),
+    '30days': dict(
+        order = 2,
+        label = "Past 30 days",
+        delta = timedelta(days=30),
+        desc_fmt = "%(articles)s%(mods)s from the past 30 days"
+    ),
+    '1year': dict(
+        order = 3,
+        label = "Past year",
+        delta = timedelta(days=365),
+        desc_fmt = "%(articles)s%(mods)s from the past year"
+    ),
+    'all': dict(
+        order = 4,
+        label = "All",
+        delta = None,
+        desc_fmt = "All %(articles)s%(mods)s"
+    ),
+}
 
 class FiltersForm(Form):
-    DATE_CHOICES = [('all','All')] + [(v['id'],v['label']) for v in date_defs]
-    date = RadioField("Narrow by Date", choices=DATE_CHOICES, default="all")
+    DATE_CHOICES = [(k, v['label']) for k,v in date_defs.items()]
+    date = RadioField("Narrow by Date", choices=DATE_CHOICES, default="today")
 
     help = BooleanField("Help requested")
     sourced = BooleanField("Sourced")
 
-    def description(self):
-        parts = []
+    def describe(self):
+        """ create pretty description of filter, suitable for heading """
 
-        parts.append(self.date.data)
+        date_def = date_defs.get(self.date.data, None)
 
-        if self.help.data:
-            parts.append(self.help.label.text)
+        if date_def:
+            fmt = date_def['desc_fmt']
+        else:
+            fmt= "(%articles)(%mods)"
+
         if self.sourced.data:
-            parts.append(self.sourced.label.text)
-        
-        return u', '.join(parts)
+            articles = "sourced articles"
+        else:
+            articles = "articles"
+
+        mod_parts = []
+        if self.help.data:
+            mod_parts.append(" with help requests")
+        mods = 'and'.join(mod_parts)
+
+        desc = fmt % {'articles':articles,'mods':mods}
+
+        # awful cheesey hack to ensure starts with uppercase
+        desc = desc[0].upper() + desc[1:]
+        return desc
 
 
 #$('form').bind('submit', function(e){
@@ -54,16 +94,15 @@ class BrowseHandler(BaseHandler):
         arts = self.session.query(Article)
 
         if filters.validate():
-            date_def = next((d for d in date_defs if d['id']==filters.date.data), None)
+            date_def = date_defs.get(filters.date.data, None)
             if date_def:
-                day_from = datetime.utcnow().date() - date_def['delta']
-                arts = arts.filter(cast(Article.pubdate, Date) >= day_from)
+                if date_def['delta'] is not None:
+                    day_from = datetime.utcnow().date() - date_def['delta']
+                    arts = arts.filter(cast(Article.pubdate, Date) >= day_from)
 
-
-            day_to = None
-
-            if day_to:
-                arts = arts.filter(cast(Article.pubdate, Date) <= day_to)
+#            day_to = None
+#            if day_to:
+#                arts = arts.filter(cast(Article.pubdate, Date) <= day_to)
 
             if filters.help.data:
                 arts = arts.filter(Article.help_reqs.any())
@@ -83,13 +122,13 @@ class BrowseHandler(BaseHandler):
             url = "/browse?" + urllib.urlencode(params)
             return url
 
-        pager = Paginator(arts, 100, page, page_url)
+        paged_results = Paginator(arts, 100, page, page_url)
         if self.is_xhr():
             # if ajax, just render a new #searchresults instead of whole page
             results = searchresults(self)
-            self.finish(results.render(pager=pager))
+            self.finish(results.render(filters=filters,paged_results=paged_results))
         else:
-            self.render("browse.html",filters=filters,pager=pager)
+            self.render("browse.html",filters=filters,paged_results=paged_results)
 
 
 handlers = [

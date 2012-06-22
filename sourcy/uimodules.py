@@ -350,8 +350,8 @@ class filters(tornado.web.UIModule):
         """
 
 class searchresults(tornado.web.UIModule):
-    def render(self, pager):
-        return self.render_string("modules/searchresults.html", pager=pager)
+    def render(self, filters, paged_results):
+        return self.render_string("modules/searchresults.html", filters=filters,paged_results=paged_results)
 
 class paginator(tornado.web.UIModule):
     def render(self, pager):

@@ -1,16 +1,15 @@
-{% if pager.total_items == 0 %}
-<h2 class="browse-heading">Browse</h2>
+<h2 class="browse-heading">{{filters.describe()}} ({{paged_results.total_items}})</h2>
+
+{% if paged_results.total_items == 0 %}
 <p>No matching articles</p>
 {% else %}
-<h2 class="browse-heading">Browse ({{pager.total_items}})</h2>
 
-
-{% if pager.total_pages > 1 %}
-{% module paginator(pager) %}
+{% if paged_results.total_pages > 1 %}
+{% module paginator(paged_results) %}
 {% end %}
 
 <ul class="art-list">
-{% for art in pager.items %}
+{% for art in paged_results.items %}
 <li class="art">
   {% if len(art.help_reqs)>0 %}
   <img class="icon icon-help" width="16" height="16" src="/static/tag_small/help.png" alt="help requested" />
@@ -26,8 +25,8 @@
 {% end %}
 </ul>
 
-{% if pager.total_pages > 1 %}
-{% module paginator(pager) %}
+{% if paged_results.total_pages > 1 %}
+{% module paginator(paged_results) %}
 {% end %}
 
 {% end %}
