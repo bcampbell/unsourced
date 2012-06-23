@@ -795,7 +795,8 @@ input.btn {
 }
 
 
-.btn:hover {
+.btn:hover,
+.btn.is-active {
     color: #fff;
     background-color: #66ffff;
     text-decoration: none;

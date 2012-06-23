@@ -6,17 +6,36 @@
 
 
 $('.add-source').hide();
-$('.vis-toggler').click(function() {
-    var targ = $(this).attr('href');
-    $('.add-source').hide();
-    $(targ).slideDown(200);
-    return false;
+
+$('.vis-toggler').each(function() {
+  var button = $(this);
+  var targ = $(button.attr('href'));
+  $targs = $('.add-source');
+
+  button.click(function() {
+    $targs.slideUp(50);
+    console.log($targs);
+
+    if(button.hasClass('is-active')) {
+      $('.vis-toggler').removeClass('is-active');
+    } else {
+      $('.vis-toggler').removeClass('is-active');
+      button.addClass('is-active');
+      $targs.promise().done( function() {
+        targ.slideDown(200);
+      });
+   }
+   return false;
+ });
+
 });
 
 $('.add-source .cancel').click(function() {
-    $(this).closest('.add-source').slideUp(200);
+    $(this).closest('.add-source').slideUp(50);
+    $('.vis-toggler').removeClass('is-active');
     return false;
 });
+
 
 
 // when a source is added, insert it into list of sources
@@ -57,7 +76,7 @@ pubsub.source_added.add(function(new_src) {
       {% raw xsrf_form_html() %}
       <textarea name="text">
       </textarea>
-      <input type="submit" />
+      <input class="btn" type="submit" />
     </form>
 {% else %}
 {% raw article_content %}
@@ -188,7 +207,7 @@ pubsub.source_added.add(function(new_src) {
     {% raw xsrf_form_html() %}
     <textarea name="msg" />
     </textarea>
-    <input type="submit" value="Add comment"/>
+    <input class="btn" type="submit" value="Add comment"/>
     </form>
     {% else %}
     <a href="/login?next=/art/{{art.id}}">Log in</a> to add a comment

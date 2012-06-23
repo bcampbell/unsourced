@@ -1,7 +1,7 @@
 <form id="add-paper" action="/art/{{art.id}}/paper/add" method="POST">
 {% raw xsrf_form_html() %}
 {% module form(form) %}
-<input type="submit" value="Add" />
+<input class="btn" type="submit" value="Add" />
 <div class="busy-message"></div>
 </form>
 
