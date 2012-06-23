@@ -188,6 +188,9 @@ pubsub.source_added.add(function(new_src) {
       <li class="act">{% module action(act, show_article=False, user_display='s') %}</li>
 {% end %}
     </ul>
+{% if more_actions %}
+  <a href="{{art.art_url()+"/history"}}">more...</a>
+{% end %}
   </div>
 </div> <!-- /.tool -->
 

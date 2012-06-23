@@ -14,6 +14,7 @@ from lxml.html.clean import Cleaner
 from sourcy import util,analyser,highlight
 from sourcy.models import Article,Source,Tag,TagKind,Action,HelpReq
 from sourcy.forms import AddPaperForm, AddPRForm, AddOtherForm
+from sourcy.util import Paginator
 
 from base import BaseHandler
 
@@ -125,10 +126,17 @@ class ArticleHandler(BaseHandler):
         donetag = self.session.query(Tag).filter(Tag.name=='done').one()
         helptag = self.session.query(Tag).filter(Tag.name=='help').one()
 
+        n_actions=10
         recent_actions = self.session.query(Action).\
             filter(Action.article_id==art.id).\
             filter(Action.what.in_(('src_add','src_remove','art_add','tag_add','tag_remove','mark_sourced','mark_unsourced','helpreq_open','helpreq_close','comment'))).\
-            order_by(Action.performed.desc()).slice(0,10)
+            order_by(Action.performed.desc()).\
+            slice(0,n_actions+1).\
+            all()
+        more_actions = False
+        if len(recent_actions)>n_actions:
+            more_actions = True
+            recent_actions = recent_actions[:n_actions]
 
         recent_comments = self.session.query(Action).\
             filter(Action.article_id==art.id).\
@@ -155,6 +163,7 @@ class ArticleHandler(BaseHandler):
             TagKind=TagKind,
             helptag=helptag,
             recent_actions=recent_actions,
+            more_actions=more_actions,
             recent_comments=recent_comments,
 #            add_tag_form=add_tag_form
         )
@@ -250,11 +259,38 @@ class CloseHelpReqHandler(BaseHandler):
         self.redirect('/art/%s' %(art.id,))
 
 
+class HistoryHandler(BaseHandler):
+    """ browse an article's history """
 
+
+    def get(self,art_id):
+        art = self.session.query(Article).get(art_id)
+        if art is None:
+            raise tornado.web.HTTPError(404, "Article not found")
+
+        page = int(self.get_argument('p',1))
+
+        actions = self.session.query(Action).\
+            filter(Action.article_id==art.id).\
+            order_by(Action.performed.desc())
+
+        def page_url(page):
+            """ generate url for the given page of this query"""
+            params = {}
+            # preserve all request params, and override page number
+            for k in self.request.arguments:
+                params[k] = self.get_argument(k)
+            params['p'] = page
+            url = "/art/%d/history?%s" % (art.id, urllib.urlencode(params))
+            return url
+
+        paged_results = Paginator(actions, 100, page, page_url)
+        self.render("art_history.html", art=art,paged_results=paged_results)
 
 
 handlers = [
     (r"/art/([0-9]+)", ArticleHandler),
+    (r"/art/([0-9]+)/history",HistoryHandler),
     (r"/art/([0-9]+)/mark-sourced",MarkSourcedHandler),
     (r"/art/([0-9]+)/mark-unsourced", MarkUnsourcedHandler),
     (r"/art/([0-9]+)/open-helpreq",OpenHelpReqHandler),

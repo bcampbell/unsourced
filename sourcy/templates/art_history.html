@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}History: {{art.headline}}{% end %}
+
+
+{% block main %}
+
+<div class="l-mid75">
+<div class="box">
+
+  <h2>Article History</h2>
+
+  <div class="fullart-meta">
+    <span class="publication"><img src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />{% module domain(art.permalink) %}</span> - 
+    <span class="pubdate">{{locale.format_date(art.pubdate, shorter=True)}}</span>
+    <a href="{{art.art_url()}}">go back to article</a>
+  </div>
+
+  <div class="art-text">
+    <h2>{{art.headline}}</h2>
+  </div>
+
+{% if paged_results.total_pages > 1 %}
+{% module paginator(paged_results) %}
+{% end %}
+
+  <ul class="act-list">
+{% for act in paged_results.items %}
+    <li class="act">{% module action(act, show_article=False, user_display='s') %}</li>
+{% end %}
+  </ul>
+
+{% if paged_results.total_pages > 1 %}
+{% module paginator(paged_results) %}
+{% end %}
+
+</div>
+</div>
+{% end %}
+
+
+
