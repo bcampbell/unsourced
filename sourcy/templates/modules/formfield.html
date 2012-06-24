@@ -1,8 +1,5 @@
-<div>
-    {% raw field.label%}: {% raw field%}
-{% if field.errors %}
-        <ul class="errors">{% for error in field.errors %}<li>{{ error }}</li>{% end %}</ul>
-{% end %}
+<div class="field{% if field.errors %} errors{% end %}">
+  {% raw field.label%} {% raw unicode(field) %}
+  <ul class="errorlist">{% for error in field.errors %}<li>{{ error }}</li>{% end %}</ul>
+  {% if field.description %}<span class="help">{{field.description}}</span>{% end %}
 </div>
-
-

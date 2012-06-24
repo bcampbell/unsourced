@@ -266,7 +266,7 @@ class HistoryHandler(BaseHandler):
 
         actions = self.session.query(Action).\
             filter(Action.article_id==art.id).\
-            order_by(Action.performed.desc())
+            order_by(Action.performed.asc())
 
         def page_url(page):
             """ generate url for the given page of this query"""

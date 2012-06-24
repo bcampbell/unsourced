@@ -71,7 +71,7 @@ class EditProfileForm(Form):
     password_confirm = PasswordField(u'Confirm password', [
         validators.EqualTo('password', message='Passwords must match')]
     )
-    photo = FileField(u'Upload a profile photo')
+    photo = FileField(u'Upload a new profile photo')
 
 
 
@@ -84,7 +84,8 @@ class EditProfileHandler(BaseHandler):
     def get(self):
         user=self.current_user
         form = EditProfileForm(obj=user)
-        self.render('profile.html', form=form)
+        form.photo.data=None
+        self.render('profile.html', user=user, form=form)
 
     @tornado.web.authenticated
     def post(self):

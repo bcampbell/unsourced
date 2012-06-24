@@ -1,16 +1,7 @@
-{% for field in form %}
-{% if field.type != 'HiddenField' %}
-<div class="field{% if field.errors %} errors{% end %}">
-  {% raw field.label%} {% raw unicode(field) %}
-  <ul class="errorlist">{% for error in field.errors %}<li>{{ error }}</li>{% end %}</ul>
-  {% if field.description %}<span class="help">{{field.description}}</span>{% end %}
-</div>
+{% for field in filter(lambda f: f.type != 'HiddenField', form) %}
+{% if field.type != 'HiddenField' %}{% module formfield(field) %}{% end %}
 {% end %}
-{% end %}
-
-{% for field in form %}
-{% if field.type == 'HiddenField' %}
+{% for field in filter(lambda f: f.type == 'HiddenField', form) %}
 {% raw unicode(field) %}
-{% end %}
 {% end %}
 

@@ -96,6 +96,10 @@ fieldset {
     padding: 0;
 }
 
+.field {
+    margin: 0.5em 0;
+}
+
 /**********************************************************************
  * GENERIC LAYOUT
  */
@@ -614,6 +618,7 @@ ul.l-4col {
     background-color: #fff;
 }
 
+/*
 .act blockquote:before {
   content: "";
   display: block;
@@ -636,6 +641,31 @@ ul.l-4col {
   height: 0;
   border: 6px solid;
   border-color: transparent #fff transparent transparent;
+}
+*/
+
+.act blockquote:before {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -12px;
+  left: 4px;
+  width: 0;
+  height: 0;
+  border: 6px solid;
+  border-color: #444 transparent transparent transparent;
+}
+
+.act blockquote:after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -11px;
+  left: 4px;
+  width: 0;
+  height: 0;
+  border: 6px solid;
+  border-color: #fff transparent transparent transparent;
 }
 
 /****/

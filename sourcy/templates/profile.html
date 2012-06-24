@@ -10,16 +10,26 @@ $('input#username').bind("propertychange keyup input paste", function (event) {
 {% end %}
 
 {% block main %}
-<div class="l-mid75">
+<div class="l-mid50">
 <div class="box">
-
+<h2 class="username-heading">{{user.username}}</h2>
 <h2>Edit your details</h2>
 
 <form method="POST" action="/editprofile" enctype="multipart/form-data">
-    {% raw xsrf_form_html() %}
-    {% module form(form) %}
-    <input type="submit" value="Update details"/>
-    <a href="/user/{{current_user.id}}">cancel</a>
+  {% raw xsrf_form_html() %}
+
+<div class="box">
+      {% module formfield(form.username) %}
+      {% module formfield(form.email) %}
+      {% module formfield(form.password) %}
+      {% module formfield(form.password_confirm) %}
+ <br/>
+      <div class="l-center">{% raw user.photo_img('l') %}</div>
+      {% module formfield(form.photo) %}
+ <br/>
+    <input class="btn" type="submit" value="Update details"/>
+    or <a href="/user/{{current_user.id}}">cancel</a>
+</div>
 </form>
 
 </div>
