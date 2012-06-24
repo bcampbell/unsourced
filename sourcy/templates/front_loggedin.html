@@ -10,23 +10,15 @@
 
 <div class="l-col50">
 <div class="box">
- <h3>{{len(unsourced_arts)}} articles unsourced today</h3>
- <ul>
-{% for art in unsourced_arts %}
-  <li class="art">{% module art_item(art,show_pubdate=False) %}</li>
-{% end %}
- </ul>
+  <h3>{{len(unsourced_arts)}} articles unsourced today</h3>
+  {% module art_list(unsourced_arts) %}
 </div>
 </div>
 
 <div class="l-col50">
 <div class="box">
- <h3>Help requested</h3>
- <ul>
-{% for art in helpreq_arts %}
-  <li class="art">{% module art_item(art,show_pubdate=False) %}</li>
-{% end %}
- </ul>
+  <h3>Help requested</h3>
+  {% module art_list(helpreq_arts) %}
 </div>
 </div>
 

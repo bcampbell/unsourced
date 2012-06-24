@@ -87,8 +87,8 @@ class FrontHandler(BaseHandler):
         today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
 
 
-        if 0:
-#        if self.current_user:
+        if self.current_user:
+            # logged-in "dashboard" version of front page
             today = datetime.datetime.utcnow().date() - datetime.timedelta(days=1)
 
             unsourced_arts = self.session.query(Article).\
@@ -114,7 +114,9 @@ class FrontHandler(BaseHandler):
                 recent_actions = recent_actions)
 
 
-        if 1:
+        else:
+            # standard front page
+
             recent_actions = self.session.query(Action).\
                 filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
                 order_by(Action.performed.desc()).slice(0,6)

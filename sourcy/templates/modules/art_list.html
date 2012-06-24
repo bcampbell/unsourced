@@ -1,0 +1,10 @@
+{% from itertools import groupby %}
+{% from datetime import datetime %}
+{% for day, daysworth in groupby(arts, lambda x: x.pubdate.date()) %}
+<time class="art-group" datetime="{{day.isoformat()}}">{{day.strftime("%A, %d %B %Y")}}</time>
+<ul class="art-list">
+{%   for art in daysworth %}
+  {% module art_item(art) %}
+{%   end%}
+</ul>
+{%end%}

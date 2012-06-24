@@ -1154,5 +1154,8 @@ ul.sourcers img {
 }
 
 
-
+.art-group {
+    display: block;
+    margin: 1em 0 0.5em 0;
+}
 

@@ -85,11 +85,17 @@ class source(tornado.web.UIModule):
             kind_icon='/static/' + source_presentation[src.kind]['icon'])
 
 
+class art_list(tornado.web.UIModule):
+    """ show a list of articles (eg search results)"""
+    def render(self, arts):
+        return self.render_string("modules/art_list.html", arts=arts)
+
+
 class art_item(tornado.web.UIModule):
     """ handle an article as an entry in a list - ie one line with title, link etc... """
-    def render(self, art, show_pubdate=False, show_icons=True):
-        return self.render_string("modules/art_item.html",
-            art=art, show_pubdate=show_pubdate, show_icons=show_icons)
+    def render(self, art):
+        return self.render_string("modules/art_item.html", art=art)
+
 
 class action(tornado.web.UIModule):
     """ describe an action """
