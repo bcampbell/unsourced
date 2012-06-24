@@ -578,6 +578,13 @@ ul.l-4col {
     padding: 0;
 }
 
+.morelink {
+    float:right;
+}
+
+
+
+
 /*****
  * act module for action summaries
  */
@@ -593,7 +600,42 @@ ul.l-4col {
 }
 
 .act .timestamp {
-    padding-left: 1em;
+    float: right;
+    font-size: 80%;
+}
+
+.act blockquote {
+  display: inline-block;
+  margin: 0 0 0 6px;
+  padding: 0.2em;
+  border: 1px solid #444;
+  border-radius: 4px;
+  position: relative;
+    background-color: #fff;
+}
+
+.act blockquote:before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: -12px;
+  top: 4px;
+  width: 0;
+  height: 0;
+  border: 6px solid;
+  border-color: transparent #444 transparent transparent;
+}
+
+.act blockquote:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: -11px;
+  top: 4px;
+  width: 0;
+  height: 0;
+  border: 6px solid;
+  border-color: transparent #fff transparent transparent;
 }
 
 /****/
@@ -710,6 +752,12 @@ ul.l-4col {
 }
 
 /*****/
+.doi {
+    font-size: 75%;
+    display: block;
+}
+
+/*****/
 .srclist {
     list-style: none;
     padding: 0;
@@ -732,6 +780,10 @@ ul.l-4col {
 .src:nth-child(odd) {
   background-color: #f2f2f2;
 }
+
+.src-paper { background: url(/static/icon-paper.png) no-repeat 0px 8px; }
+.src-pr    { background: url(/static/icon-pr.png) no-repeat 0px 8px; }
+.src-other { background: url(/static/icon-other.png) no-repeat 0px 8px; }
 
 
 /****/

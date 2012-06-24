@@ -120,7 +120,7 @@ class action(tornado.web.UIModule):
             elif act.what =='art_add':
                 desc = u'submitted'
             elif act.what =='comment':
-                desc = u'said "%s"' % (act.comment.format(),)
+                desc = u'<blockquote>%s</blockquote>' % (act.comment.format(),)
             elif act.what =='tag_add':
                 if act.tag.name=='help':
                     desc = u'asked for help'
@@ -148,7 +148,7 @@ class action(tornado.web.UIModule):
             elif act.what =='art_add':
                 desc = u'submitted article: %s' % (artlink,)
             elif act.what =='comment':
-                desc = u'said "%s" on %s' % (act.comment.format(), artlink)
+                desc = u'<blockquote>%s</blockquote> on %s' % (act.comment.format(), artlink)
             elif act.what =='tag_add':
                 if act.tag.name=='help':
                     desc = u'asked for help with %s' %(artlink,)

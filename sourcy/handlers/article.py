@@ -126,7 +126,7 @@ class ArticleHandler(BaseHandler):
         donetag = self.session.query(Tag).filter(Tag.name=='done').one()
         helptag = self.session.query(Tag).filter(Tag.name=='help').one()
 
-        n_actions=10
+        n_actions=6    # show most recent N actions
         recent_actions = self.session.query(Action).\
             filter(Action.article_id==art.id).\
             filter(Action.what.in_(('src_add','src_remove','art_add','tag_add','tag_remove','mark_sourced','mark_unsourced','helpreq_open','helpreq_close','comment'))).\
@@ -137,11 +137,7 @@ class ArticleHandler(BaseHandler):
         if len(recent_actions)>n_actions:
             more_actions = True
             recent_actions = recent_actions[:n_actions]
-
-        recent_comments = self.session.query(Action).\
-            filter(Action.article_id==art.id).\
-            filter(Action.what.in_(('comment',))).\
-            order_by(Action.performed.desc()).slice(0,10)
+        recent_actions = reversed(recent_actions)
 
 
 
@@ -164,8 +160,6 @@ class ArticleHandler(BaseHandler):
             helptag=helptag,
             recent_actions=recent_actions,
             more_actions=more_actions,
-            recent_comments=recent_comments,
-#            add_tag_form=add_tag_form
         )
         #self.finish()
 

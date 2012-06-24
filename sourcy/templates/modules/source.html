@@ -15,12 +15,15 @@
 <span class="publication">{{src.publication}}</span>
 {% end %}
 {% end %}
-{% if current_user and src.creator==current_user %}
-{% module postbutton("/source/%d/delete" %(src.id,), "remove") %}
+{% if src.doi %}
+<span class="doi">doi:<a href="http://dx.doi.org/{{src.doi}}">{{src.doi}}</a></span>
 {% end %}
 </div>
 
 <div class="moderation">
+{% if current_user and src.creator==current_user %}
+{% module postbutton("/source/%d/delete" %(src.id,), "remove") %}
+{% end %}
 <!--
 {{src.score}} points
 {% if current_user %}
