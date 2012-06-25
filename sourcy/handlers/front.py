@@ -11,7 +11,6 @@ from sqlalchemy.orm import subqueryload
 
 from base import BaseHandler
 from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
-from sourcy.dailysummary import DailySummary
 
 
 
