@@ -11,7 +11,6 @@ from sqlalchemy.orm import subqueryload
 
 from base import BaseHandler
 from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
-from sourcy.dailysummary import DailySummary
 
 class DashboardHandler(BaseHandler):
 
@@ -23,7 +22,7 @@ class DashboardHandler(BaseHandler):
         top_sourcers = [random.choice(all_users) for i in range(12)]
 
 
-        today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
+#        today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
 
 
         # logged-in "dashboard" version of front page
