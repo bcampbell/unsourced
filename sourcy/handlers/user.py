@@ -13,9 +13,9 @@ from sqlalchemy.orm import subqueryload
 
 
 from base import BaseHandler
-from sourcy.util import TornadoMultiDict
 from sourcy.models import Action,UserAccount,UploadedFile,Token,comment_user_map
 from sourcy.util import TornadoMultiDict
+from sourcy.util import Paginator
 from sourcy.cache import cache
 from sourcy.config import settings
 from sourcy import mailer
@@ -50,6 +50,27 @@ class UserHandler(BaseHandler):
         self.render('user.html', user=user, actions=actions, mentions=mentions )
 
 
+
+class UsersHandler(BaseHandler):
+    """ a list of all users """
+    def get(self):
+        page = int(self.get_argument('p',1))
+
+
+        def page_url(page):
+            """ generate url for the given page of this query"""
+            params = {}
+            # preserve all request params, and override page number
+            for k in self.request.arguments:
+                params[k] = self.get_argument(k)
+            params['p'] = page
+            url = "/art/%d/history?%s" % (art.id, urllib.urlencode(params))
+            return url
+
+        all_users = self.session.query(UserAccount).\
+            order_by(UserAccount.created.desc())
+        paged_results = Paginator(all_users, 100, page, page_url)
+        self.render("users.html", paged_results=paged_results)
 
 
 
@@ -451,6 +472,7 @@ handlers = [
     (r'/login/twitter', TwitterLoginHandler),
     (r'/logout', LogoutHandler),
     (r"/user/([0-9]+)", UserHandler),
+    (r"/users", UsersHandler),
     (r"/editprofile", EditProfileHandler),
     (r"/register", RegisterHandler),
     (r"/emailsent", TokenSentHandler),

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Users{% end %}
+
+
+{% block main %}
+
+<div class="l-mid66">
+<div class="box">
+
+  <h2>Users</h2>
+{% if paged_results.total_pages > 1 %}
+{% module paginator(paged_results) %}
+{% end %}
+
+<ul class="user-list">
+{% for user in paged_results.items %}
+    <li><a href="{{user.profile_url()}}">{% raw user.photo_img('m') %}{{user.username}}</a></li>
+{% end %}
+  </ul>
+
+{% if paged_results.total_pages > 1 %}
+{% module paginator(paged_results) %}
+{% end %}
+
+</div>
+</div>
+{% end %}
+
+
+
