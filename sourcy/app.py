@@ -56,7 +56,11 @@ class Application(tornado.web.Application):
         )
         tornado.web.Application.__init__(self, handlers, **settings)
 
-        self.engine = create_engine(db.engine_url(), pool_recycle=3600)
+        self.engine = create_engine(db.engine_url(),
+            pool_size=10,
+            max_overflow=10,
+            pool_timeout=10,
+            pool_recycle=3600)
         self.Session = sessionmaker(bind=self.engine)
 
         session = self.Session()

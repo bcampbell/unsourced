@@ -1,5 +1,6 @@
 import sys
 import urllib
+import logging
 
 
 import tornado.web
@@ -11,9 +12,10 @@ class BaseHandler(tornado.web.RequestHandler):
         self.dbsession = None
 
     def on_finish(self):
+        # NOTE: if client closes connection, it's possible on_finish() won't trigger.
+        # see https://github.com/facebook/tornado/issues/473
         if self.dbsession is not None:
             self.dbsession.close()
-
 
     @property
     def session(self):
