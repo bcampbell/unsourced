@@ -10,7 +10,28 @@ from sqlalchemy.sql.expression import cast,func
 from sqlalchemy.orm import subqueryload
 
 from base import BaseHandler
-from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
+from sourcy.models import Source,Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
+
+
+def calc_top_sourcers(session):
+
+    day_to = datetime.datetime.utcnow()
+    day_from = day_to - datetime.timedelta(days=30)
+
+
+    src_cnts = session.query(Source.creator_id, func.count('*').label('cnt')).\
+            filter(cast(Source.created, Date) >= day_from).\
+            filter(cast(Source.created, Date) <= day_to).\
+            group_by(Source.creator_id).\
+            subquery()
+
+    top_sourcers = session.query(UserAccount, src_cnts.c.cnt).\
+        join(src_cnts, UserAccount.id==src_cnts.c.creator_id).\
+        order_by(src_cnts.c.cnt.desc()).\
+        limit(12).\
+        all()
+
+    return top_sourcers 
 
 
 
@@ -80,7 +101,7 @@ class FrontHandler(BaseHandler):
 
         #TODO: top sourcers
         all_users = self.session.query(UserAccount).all()
-        top_sourcers = [random.choice(all_users) for i in range(12)]
+        top_sourcers = calc_top_sourcers(self.session)
 
         today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
 

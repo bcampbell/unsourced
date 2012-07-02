@@ -1,6 +1,6 @@
 {% import util %}
 {% extends "base.html" %}
-{% block title %}Sourcy{% end %}
+{% block title %}Unsourced{% end %}
 
 
 {% block main %}
@@ -72,9 +72,9 @@
     <div class="top-sourcers box">
 
       <h2>Top Sourcers</h2>
-      Week | Month | Year | All time<br/><br/>
-      {% for u in top_sourcers %}
-        <div><a href="{{u.profile_url()}}">{% raw u.photo_img('m') %}</a></div>
+      From the last 30 days<br/><br/>
+      {% for u,cnt in top_sourcers %}
+        <div><a href="{{u.profile_url()}}" title="{{u.username}}, {{cnt}} sources">{% raw u.photo_img('m') %}</a></div>
       {% end %}
     </div>
   </div>
