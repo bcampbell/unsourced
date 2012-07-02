@@ -42,6 +42,8 @@ a:hover { color: #262626; text-decoration: underline; }
 a:visited:hover { color: #000; }
 
 
+img { border-style: none; }
+
 /*
  * BASE FORM STYLE
  */
