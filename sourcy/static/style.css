@@ -201,7 +201,9 @@ ul.l-4col {
 .l-col66 { width: 66.6666%; }
 .l-col75 { width: 75%; }
 
+/* misc rubbish */
 
+.l-right { float: right; }  /* ugh. */
 
 
 
@@ -1123,6 +1125,21 @@ a.btn:visited {
    border: 3px solid;
    border-color: transparent  transparent transparent #1F52A2;
 }
+
+
+/*****/
+.user-details {
+  border-top: 1px dotted #808080;
+  border-bottom: 1px dotted #808080;
+  padding: 0.5em;
+  background-color: #f2f2f2;
+}
+
+.user-details dt {
+    float: left;
+    width: 6em;
+}
+
 
 /************************************************
  * STATES

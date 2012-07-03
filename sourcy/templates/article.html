@@ -62,7 +62,7 @@ pubsub.source_added.add(function(new_src) {
 <div class="fullart">
 
   <div class="fullart-meta">
-    <span class="publication"><img src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />{% module domain(art.permalink) %}</span> - 
+    <span class="publication"><img class="favicon" src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />{% module domain(art.permalink) %}</span> - 
     <span class="pubdate">{{locale.format_date(art.pubdate, shorter=True)}}</span>
     <a href="{{art.permalink}}">view article</a>
   </div>

@@ -6,8 +6,12 @@
 
   <div class="l-col66">
     <div class="box">
+      {% if current_user and current_user.id==user.id %}
+      <a class="btn btn-major l-right" href="/editprofile">Edit your details</a>
+      {% end %}
       <h2 class="username-heading">{{user.username}}</h2>
-      <div class="box">
+      <div class="box yellow-frill">
+
 
         <h2>Recent activity</h2>
 
@@ -31,10 +35,15 @@
   <div class="l-col33">
     <div class="sidebar dot-frill">
     <div class="box">
-    {% if current_user and current_user.id==user.id %}
-    <a class="btn" href="/editprofile">Edit your details</a><br/><br/>
-    {% end %}
-    {% raw user.photo_img('l') %}
+      {% raw user.photo_img('l') %}
+      <div class="user-details">
+        <h2>{{user.username}}</h2>
+        <dl>
+          <dt>Joined:</dt><dd>{{locale.format_date(user.created, shorter=True)}}</dd>
+          <dt>Sourced:</dt><dd>{{source_cnt}}</dd>
+          <dt>Comments:</dt><dd>{{comment_cnt}}</dd>
+        </dl>
+      </div>
     </div>
     </div>
   </div>

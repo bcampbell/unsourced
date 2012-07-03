@@ -74,7 +74,7 @@
       <h2>Top Sourcers</h2>
       From the last 30 days<br/><br/>
       {% for u,cnt in top_sourcers %}
-        <div><a href="{{u.profile_url()}}" title="{{u.username}}, {{cnt}} sources">{% raw u.photo_img('m') %}</a></div>
+        <div><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}</a></div>
       {% end %}
     </div>
   </div>

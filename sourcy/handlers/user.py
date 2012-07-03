@@ -13,7 +13,7 @@ from sqlalchemy.orm import subqueryload
 
 
 from base import BaseHandler
-from sourcy.models import Action,UserAccount,UploadedFile,Token,comment_user_map
+from sourcy.models import Action,UserAccount,Source,Comment,UploadedFile,Token,comment_user_map
 from sourcy.util import TornadoMultiDict
 from sourcy.util import Paginator
 from sourcy.cache import cache
@@ -46,8 +46,20 @@ class UserHandler(BaseHandler):
             slice(0,10).\
             all()
 
+        source_cnt = self.session.query(Source).\
+            filter(Source.creator==user).\
+            count()
 
-        self.render('user.html', user=user, actions=actions, mentions=mentions )
+        comment_cnt = self.session.query(Comment).\
+            filter(Comment.author==user).\
+            count()
+
+        self.render('user.html',
+            user=user,
+            actions=actions,
+            mentions=mentions,
+            source_cnt=source_cnt,
+            comment_cnt=comment_cnt )
 
 
 
