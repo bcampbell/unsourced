@@ -249,6 +249,8 @@ class UserAccount(Base):
 
     created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
+    last_seen = Column(DateTime, nullable=True)
+
     # which supplier authenticated the user eg "twitter", "google" etc...
     # empty if user signed up via email verification.
     auth_supplier = Column(String(16), nullable=False, default=u'')

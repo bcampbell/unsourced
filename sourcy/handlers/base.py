@@ -1,6 +1,7 @@
 import sys
 import urllib
 import logging
+import datetime
 
 
 import tornado.web
@@ -27,7 +28,15 @@ class BaseHandler(tornado.web.RequestHandler):
         user_id = self.get_secure_cookie("user")
         if user_id is None:
             return None
-        return self.session.query(UserAccount).filter_by(id=user_id).first()
+        user = self.session.query(UserAccount).filter_by(id=user_id).first()
+
+        # periodically update the users last_seen field
+        now = datetime.datetime.utcnow()
+        if user.last_seen is None or user.last_seen < now-datetime.timedelta(hours=1):
+            user.last_seen = now
+            self.session.commit()
+
+        return user
 
     def is_xhr(self):
         """check if request AJAX"""
