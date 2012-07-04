@@ -412,7 +412,6 @@ class Comment(Base):
                 return m.group(0)
 
         txt = userpat.sub(mkup, self.content)
-        logging.info(txt)
         return txt
 
 
