@@ -50,6 +50,9 @@ Hello <a href="/user/{{current_user.id}}">{{current_user.username}}</a> |
     <ul>
         <li><a href="/browse">Browse</a></li>
         <li><a href="/daily">View by day</a></li>
+{% if current_user is not None %}
+        <li><a href="/dashboard">Dashboard</a></li>
+{% end %}
     </ul>
   </nav>
 </header>
