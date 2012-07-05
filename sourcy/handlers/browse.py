@@ -9,7 +9,7 @@ from wtforms import Form, SelectField, RadioField, HiddenField, BooleanField, Te
 
 from base import BaseHandler
 from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
-from sourcy.util import Paginator
+from sourcy.paginator import Paginator
 from sourcy.util import TornadoMultiDict
 from sourcy.uimodules import searchresults
 

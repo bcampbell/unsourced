@@ -15,7 +15,7 @@ from sqlalchemy.orm import subqueryload
 from base import BaseHandler
 from sourcy.models import Action,UserAccount,Source,Comment,UploadedFile,Token,comment_user_map
 from sourcy.util import TornadoMultiDict
-from sourcy.util import Paginator
+from sourcy.paginator import Paginator
 from sourcy.cache import cache
 from sourcy.config import settings
 from sourcy import mailer

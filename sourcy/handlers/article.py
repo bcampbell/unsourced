@@ -14,7 +14,7 @@ from lxml.html.clean import Cleaner
 from sourcy import util,analyser,highlight
 from sourcy.models import Article,Source,Tag,TagKind,Action,HelpReq
 from sourcy.forms import AddPaperForm, AddPRForm, AddOtherForm
-from sourcy.util import Paginator
+from sourcy.paginator import Paginator
 
 from base import BaseHandler
 
