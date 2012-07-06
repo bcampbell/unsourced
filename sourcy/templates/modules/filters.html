@@ -2,7 +2,19 @@
 
 <fieldset>
 <legend>For...</legend>
-{% raw filters.date %}
+<ul>
+{% for r in list(filters.date)[:-1] %}
+<li>{% raw r %}{% raw r.label %}</li>
+{% end %}
+{% for r in list(filters.date)[-1:] %}
+<li>{% raw r %}{% raw r.label %}
+<div class="daterange">
+{% module formfield(filters.dayfrom) %}
+{% module formfield(filters.dayto) %}
+</div>
+</li>
+{% end %}
+</ul>
 </fieldset>
 
 <fieldset>

@@ -2,7 +2,7 @@
 class Paginator:
     """ paginator object for wrapping an sqlalchemy query """
 
-    def __init__(self, query, per_page, current_page, page_url_fn):
+    def __init__(self, query=None, per_page=100, current_page=0, page_url_fn=None):
         self.query = query
         self.per_page = per_page
         self.cur = current_page
@@ -11,6 +11,8 @@ class Paginator:
 
     @property
     def items(self):
+        if self.query is None:
+            return []
         return self.query.\
             offset((self.cur-1)*self.per_page).\
             limit(self.per_page).\
@@ -18,6 +20,8 @@ class Paginator:
 
     @property
     def total_items(self):
+        if self.query is None:
+            return 0
         if self._total_items is None:
             self._total_items = self.query.count()
         return self._total_items

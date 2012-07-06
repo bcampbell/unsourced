@@ -331,8 +331,8 @@ class filters(tornado.web.UIModule):
 
     def embedded_javascript(self):
         return """
-    $('.filters input[type="submit"]').hide();
-    $('.filters form').bind('submit', function(e){
+    $('#filters input[type="submit"]').hide();
+    $('#filters form').bind('submit', function(e){
         e.preventDefault();
 
         var form = $(this);
@@ -340,21 +340,50 @@ class filters(tornado.web.UIModule):
         var params = form.serialize();
 
         $('#results').html("<blink>working...</blink>");
+        /* clear off any old errors */
+        showFormErrs(form,[]);
         $.ajax({
 			type: "GET",
 			url: url,
 			data: params,
 			success: function(data){
-				$('#results').html(data);
-                if(window.history.pushState) {
-                    window.history.replaceState('', "FOOO!", url+"?"+params);
+                if(data.status=='ok') {
+				    $('#results').html(data.results_html);
+                    if(window.history.pushState) {
+                        window.history.replaceState('', "FOOO!", url+"?"+params);
+                    }
+                } else {    /* 'badfilters' */
+                    showFormErrs(form, data.errors);
                 }
 			}
 		});
     });
-    $('.filters input').bind("change", function(e) {
-        $('.filters form').submit();
+
+    function update_daterange() {
+        var rangebutton = $('#filters input[name="date"][value="range"]');
+        if(rangebutton.is(':checked')) {
+            $('#dayfrom,#dayto').prop('disabled',false).closest('.field').show();
+        } else {
+            $('#dayfrom,#dayto').prop('disabled',true).closest('.field').hide();
+        }
+    }
+
+    $('#filters input').bind("change", function(e) {
+        if($(this).attr('name') == 'date') {
+            update_daterange();
+            if($(this).val()=='range') {
+                /* only submit if there are dates */
+                /*if( $('#dayfrom').val()=='' &&
+                    $('#dayto').val() == '' ) {
+                    return;
+                }
+                */
+                return;
+            }
+        }
+        $('#filters form').submit();
     });
+    update_daterange();
         """
 
 class searchresults(tornado.web.UIModule):

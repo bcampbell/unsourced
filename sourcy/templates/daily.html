@@ -1,15 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Daily{% end %}
 
-{% block extra_js %}
-
-$('#daily_data').dailychart({});
-{% end %}
-
 {% block main %}
-<div class="row">
-<div class="column grid_2">&nbsp;</div>
-<div class="column grid_8">
+<div class="l-mid75">
+<div class="box">
 
 <h2>breakdown by day</h2>
 
@@ -21,7 +15,6 @@ $('#daily_data').dailychart({});
 </ul>
 
 </div>
-<div class="column grid_2">&nbsp;</div>
-</div><!-- end .row -->
+</div>
 {% end %}
 

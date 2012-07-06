@@ -1188,3 +1188,15 @@ ul.sourcers img {
     margin: 1em 0 0.5em 0;
 }
 
+.daterange {
+    padding-left: 2em;
+}
+
+.graph {
+    border: 1px solid black;
+}
+
+.graph>div {
+    background-color: green;
+}
+
