@@ -61,6 +61,8 @@ date_defs = {
 class MyCrapDateField(Field):
     """
     A text field which stores a `datetime.datetime` matching a format.
+    (the standard wtforms dates don't provide a decent error message for
+    unparsable dates)
     """
     widget = widgets.TextInput()
 
