@@ -1160,6 +1160,28 @@ a.btn:visited {
     display: none;
 }
 
+.is-busy-large {
+    position: relative;
+    z-index: 1;
+}
+
+.is-busy-large:after {
+    display: block;
+    position: absolute;
+    content: "";
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    background-image: url("/static/busy-l.gif");
+    background-position: center 5em;
+    background-repeat: no-repeat;
+    background-color: rgba(255,255,255,0.80);
+    z-index: 2;
+}
+
 
 
 
@@ -1199,4 +1221,5 @@ ul.sourcers img {
 .graph>div {
     background-color: green;
 }
+
 

@@ -338,14 +338,19 @@ class filters(tornado.web.UIModule):
         var form = $(this);
         var url = form.attr('action');
         var params = form.serialize();
-
-        $('#results').html("<blink>working...</blink>");
+        var timeout = setTimeout( function() {
+            $('#results').addClass("is-busy-large");
+        }, 500 );
         /* clear off any old errors */
         showFormErrs(form,[]);
         $.ajax({
 			type: "GET",
 			url: url,
 			data: params,
+            complete: function(jqXHR, textStatus) {
+                clearTimeout(timeout);
+                $('#results').removeClass("is-busy-large");
+            },
 			success: function(data){
                 if(data.status=='ok') {
 				    $('#results').html(data.results_html);
