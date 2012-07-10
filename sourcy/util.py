@@ -1,6 +1,6 @@
 import re
 import HTMLParser
-from urlparse import urlparse
+from urlparse import urlparse, urlunparse
 import lxml.html
 from tornado.options import define, options
 
@@ -92,4 +92,15 @@ def fix_url(url):
     return url
 
 
+
+def www_or_not(url):
+    """ return tuple with both www. and non-www. prefixed versions of url """
+
+    o = list(urlparse(url))
+    if o[1].lower().startswith('www'):
+        o[1] = re.sub('^www[.]', '', o[1])
+    else:
+        o[1] = 'www.' + o[1] 
+
+    return (url, urlunparse(o))
 

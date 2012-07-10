@@ -15,7 +15,7 @@ import uimodules
 import db
 import config
 
-from handlers import base,user,article,addarticle,front,sources,tagging,comments,browse,tokens,dashboard
+from handlers import base,user,article,addarticle,front,sources,tagging,comments,browse,tokens,dashboard,api
 
 import analyser
 from util import parse_config_file
@@ -34,6 +34,7 @@ class Application(tornado.web.Application):
         handlers.extend(browse.handlers)
         handlers.extend(tokens.handlers)
         handlers.extend(dashboard.handlers)
+        handlers.extend(api.handlers)
 
         handlers.append((r".*", base.MissingHandler))
 
