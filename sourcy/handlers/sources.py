@@ -53,12 +53,19 @@ class AddSourceHandler(BaseHandler):
             self.form = AddOtherForm(TornadoMultiDict(self))
 
         if self.form.validate():
+            url = self.form.url.data
             if self.kind == SourceKind.PAPER:
                 # if adding a paper, try getting metadata
-                self.find_doi(self.form.url.data)
+                doi = self.form.get_as_doi()
+                if doi is not None:
+                    # we were given a doi - yay!
+                    dx_url = 'http://dx.doi.org/' + doi
+                    self.find_doi(dx_url)
+                else:
+                    self.find_doi(url)
             else:
                 # otherwise, we're all done - add source and finish up
-                action = self.create_source(self.kind, url=self.form.url.data)
+                action = self.create_source(self.kind, url=url)
                 self.wrap_things_up(action)
         else:
             if self.is_xhr():   # ajax?
@@ -209,7 +216,7 @@ class TweetHandler(BaseHandler, tornado.auth.TwitterMixin):
         self.session.query(TwitterAccessToken).filter_by(user=self.current_user).delete()
         tok = TwitterAccessToken(user=self.current_user, token=json.dumps(twit_user['access_token']))
         self.session.add(tok)
-        pprint(tok)
+        #pprint(tok)
         self.session.commit()
 
         self.redirect(self.request.uri)
