@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Help{% end %}
+{% block main %}
+<div class="l-mid75">
+<div class="box">
+
+<h2 class="browse-heading" id="pr">Help - press releases</h2>
+
+<p>
+In an ideal world, journalists writing about specialist research
+would have an understanding of the field, be able to read the
+original publication and distill the pertinent details out into
+a story which explains the significance of the research to the
+layperson.
+</p>
+
+<p>
+So it should come as no surprise that most such articles are
+written almost entirely from a press release instead.
+</p>
+
+<p>Such press releases are usually issued by the university or
+other institution which orginated the research, and a copy
+will be found on their web site.
+</p>
+
+<p>Failing that, <a href="http://www.eurekalert.org/">EurekAlert!</a>
+publishes a large number of science press releases and has a search
+facility.
+</p>
+
+
+
+<h2 class="browse-heading" id="papers">Help - Academic papers</h2>
+
+<h3>Tracking down papers</h3>
+
+<p>Does the article mention publication of a paper in a particular
+journal? If so, try the journal's web site - most journal sites have
+a good search facility.
+Searching by author is a good technique as newspaper articles 
+very often include quotes from researchers, mentioning them by name.
+</p>
+
+<p>
+Does the article name the university or other institution where the
+research originated?
+It's likely the institution will have put out a press release which
+mentions a journal. Most institution web sites have a news section
+for press releases.
+</p>
+
+<p>
+Researchers often put a full version of their paper up on their
+home page.
+</p>
+
+<p>
+Keep in mind that very recent work might not yet even be online.
+Press releases are often sent out to the media before they are
+published on an institution's own web site. Research is often
+announced prior to appearing in a journal. In such cases, it's
+worth leaving things for a few days and coming back to it.
+</p>
+
+<p>
+Academic search engines such as
+<a href="http://scholar.google.com">Google Scholar</a> or
+<a href="http://academic.research.microsoft.com">Microsoft Academic Search</a>
+can be helpful. It can take a day or two before new papers show up on such
+search engines, so they don't help for very recent articles.
+</p>
+
+
+<h3>Linking to papers</h3>
+
+<p>Academic journals often have confusing web sites, and a lot of them hide
+papers behind paywalls. So it's not always obvious where the best target
+for linking is.</p>
+
+<p>Journal web sites have a summary page for each published paper.
+Even if the full paper is available, the summary page is a good
+place to link as it contains a lot of useful metadata that may not
+be present in the paper itself.
+</p>
+
+<p>
+For journals with paywalls, the summary page is the only public page
+available.
+</p>
+
+<p>
+Most importantly, summary pages usually contain the 
+<a href="http://wikipedia.org/wiki/Digital_object_identifier">
+Digital Object Identifier (DOI)</a> assigned to the paper.
+DOIs usually appear looking something like:<br/>
+&nbsp;&nbsp;<code>doi:10.1080/000164800750000621</code><br/>
+or, in URL form:<br/>
+&nbsp;&nbsp;<code>http://dx.doi.org/10.1080/000164800750000621</code>.<br/>
+<br/>
+
+for example:<br/>
+<a href="{{doi_example_url}}"><img class="screenshot" src="{{doi_example_img}}" /></a>
+</p>
+
+<p>
+The DOI - if there is one - is the best way to uniquely
+identify a paper; DOIs are forever, while URLs can disappear and
+change over time (even though they
+<a href="http://www.w3.org/Provider/Style/URI">really shouldn't</a>).
+</p>
+
+<p>
+Unsourced.org scans summary pages for DOIs. If it finds one, it can
+automatically fetch details about the paper such as title, publication
+date and the name of the journal.
+Alternatively, if you know the DOI already, you can enter it directly
+instead of the URL.
+</p>
+
+<p>
+Can't find a DOI? No summary page? No problem, just use common sense and
+link somewhere useful. For example, you could link to a paper in PDF form
+on a researcher's personal web site.
+</p>
+
+
+
+
+</div>
+</div>
+{% end %}
+
+

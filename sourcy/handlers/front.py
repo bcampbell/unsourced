@@ -142,6 +142,20 @@ class AboutHandler(BaseHandler):
     def get(self):
         self.render('about.html')
 
+class HelpHandler(BaseHandler):
+    def get(self):
+
+
+        doi_examples = [
+            ("http://www.sciencedirect.com/science/article/pii/S1752928X08001728","/static/doi_1.png"),
+            ("http://journals.lww.com/neuroreport/abstract/2009/08050/swearing_as_a_response_to_pain.4.aspx", "/static/doi_2.png"),
+            ("http://aghist.metapress.com/content/q3224660874x8q51/", "/static/doi_3.png"),
+        ]
+
+        ex = random.choice(doi_examples)
+
+        self.render('help.html', doi_example_img=ex[1], doi_example_url=ex[0])
+
 class AcademicPapersHandler(BaseHandler):
     def get(self):
         self.render('academicpapers.html')
@@ -248,6 +262,7 @@ class LeagueTablesHandler(BaseHandler):
 handlers = [
     (r'/', FrontHandler),
     (r'/about', AboutHandler),
+    (r'/help', HelpHandler),
     (r'/academicpapers', AcademicPapersHandler),
     (r"/addjournal", AddJournalHandler),
     (r"/addinstitution", AddInstitutionHandler),

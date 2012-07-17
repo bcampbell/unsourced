@@ -125,21 +125,20 @@ pubsub.source_added.add(function(new_src) {
 
     <div class="add-source" id="add-paper-pane">
     <h3>Add paper</h3>
-    <a class="add-source-help" href="/help">help</a>
+    <a class="add-source-help" href="/help#papers">help</a>
     {% module add_paper(art, add_paper_form) %}
     {% module helper_paper(art,journals,institutions,researchers) %}
     </div>
 
     <div class="add-source" id="add-pr-pane">
     <h3>Add press release</h3>
-    <a class="add-source-help" href="/help">help</a>
+    <a class="add-source-help" href="/help#pr">help</a>
     {% module add_pr(art, add_pr_form) %}
     {% module helper_pr(art,journals,institutions,researchers) %}
     </div>
 
     <div class="add-source" id="add-other-pane">
     <h3>Add other link</h3>
-    <a class="add-source-help" href="/help">help</a>
     {% module add_other(art, add_other_form) %}
     {% module helper_other(art,journals,institutions,researchers) %}
     </div>
