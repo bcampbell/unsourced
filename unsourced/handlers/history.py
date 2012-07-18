@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import cast
 
 from base import BaseHandler
 
-from sourcy.models import Article
+from unsourced.models import Article
 
 
 class HistoryCalendar(calendar.Calendar):

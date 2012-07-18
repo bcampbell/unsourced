@@ -13,12 +13,12 @@ from sqlalchemy.orm import subqueryload
 
 
 from base import BaseHandler
-from sourcy.models import Action,UserAccount,Source,Comment,UploadedFile,Token,comment_user_map
-from sourcy.util import TornadoMultiDict
-from sourcy.paginator import Paginator
-from sourcy.cache import cache
-from sourcy.config import settings
-from sourcy import mailer
+from unsourced.models import Action,UserAccount,Source,Comment,UploadedFile,Token,comment_user_map
+from unsourced.util import TornadoMultiDict
+from unsourced.paginator import Paginator
+from unsourced.cache import cache
+from unsourced.config import settings
+from unsourced import mailer
 
 class UserHandler(BaseHandler):
     """show summary for a given user"""

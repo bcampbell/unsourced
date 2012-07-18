@@ -4,10 +4,10 @@ import tornado.web
 
 
 from base import BaseHandler
-from sourcy.models import Article,ArticleURL
-from sourcy import util
+from unsourced.models import Article,ArticleURL
+from unsourced import util
 
-from sourcy import config
+from unsourced import config
 
 class LookupHandler(BaseHandler):
     """ api to look up an article by url

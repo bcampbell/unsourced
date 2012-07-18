@@ -13,10 +13,10 @@ from wtforms import Form, Field, SelectField, RadioField, HiddenField, BooleanFi
 from wtforms import widgets
 
 from base import BaseHandler
-from sourcy.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
-from sourcy.paginator import Paginator
-from sourcy.util import TornadoMultiDict
-from sourcy import uimodules
+from unsourced.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
+from unsourced.paginator import Paginator
+from unsourced.util import TornadoMultiDict
+from unsourced import uimodules
 
 date_defs = {
     'today': dict(

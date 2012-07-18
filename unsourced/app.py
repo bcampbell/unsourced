@@ -2,9 +2,17 @@ import sys
 import os
 import logging
 import logging.config
+import site
+
+
+# so handlers can import model etc...
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..'))
+site.addsitedir(parent_dir)
+
 
 import tornado.ioloop
 import tornado.web
+import tornado.options
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -18,7 +26,7 @@ import config
 from handlers import base,user,article,addarticle,front,sources,tagging,comments,browse,tokens,dashboard,api
 
 import analyser
-from util import parse_config_file
+
 
 
 class Application(tornado.web.Application):
@@ -69,13 +77,16 @@ class Application(tornado.web.Application):
         self.journal_finder = analyser.Lookerupper(session,'journal')
 
 
+tornado.options.define("port", default="8888", help="port number")
 
 def main():
+    tornado.options.parse_command_line()
+
     log_conf = os.path.join(os.path.dirname(__file__), "logging.ini")
     logging.config.fileConfig(log_conf)
 
     app = Application()
-    app.listen(8888)
+    app.listen(tornado.options.options.port)
     logging.info("start.")
     tornado.ioloop.IOLoop.instance().start()
 

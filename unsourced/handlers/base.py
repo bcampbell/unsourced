@@ -6,7 +6,7 @@ import datetime
 
 import tornado.web
 
-from sourcy.models import UserAccount
+from unsourced.models import UserAccount
 
 class BaseHandler(tornado.web.RequestHandler):
     def initialize(self):

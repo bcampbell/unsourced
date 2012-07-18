@@ -14,10 +14,10 @@ from sqlalchemy.sql import func
 
 
 from base import BaseHandler
-from sourcy.util import TornadoMultiDict
-from sourcy.forms import AddPaperForm,AddPRForm,AddOtherForm
-from sourcy.models import Source,SourceKind,Action,Article,TwitterAccessToken
-from sourcy import uimodules
+from unsourced.util import TornadoMultiDict
+from unsourced.forms import AddPaperForm,AddPRForm,AddOtherForm
+from unsourced.models import Source,SourceKind,Action,Article,TwitterAccessToken
+from unsourced import uimodules
 
 class AddSourceHandler(BaseHandler):
     def get(self, art_id, kind):

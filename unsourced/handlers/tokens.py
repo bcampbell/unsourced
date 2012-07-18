@@ -3,7 +3,7 @@ import datetime
 import tornado.web
 
 from base import BaseHandler
-from sourcy.models import Token,UserAccount
+from unsourced.models import Token,UserAccount
 
 class TokenHandler(BaseHandler):
     """ handle tokens, usually sent out via email """

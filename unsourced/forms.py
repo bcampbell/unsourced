@@ -3,8 +3,8 @@ import re
 
 from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, validators
 
-from sourcy.util import TornadoMultiDict,fix_url
-from sourcy.models import SourceKind
+from util import TornadoMultiDict,fix_url
+from models import SourceKind
 
 doi_pat = re.compile(r'\s*(?:doi:\s*|http://dx.doi.org/|dx.doi.org/)?(10.(\d)+/([^(\s\>\"\<)])+)\s*', re.I)
 

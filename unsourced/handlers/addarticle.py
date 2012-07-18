@@ -7,10 +7,10 @@ from wtforms import Form, TextField, validators
 import tornado.web
 from tornado import httpclient
 
-from sourcy import util,analyser,highlight
+from unsourced import util,analyser,highlight
 from base import BaseHandler
-from sourcy.models import Article,ArticleURL,Action
-from sourcy.util import TornadoMultiDict, fix_url
+from unsourced.models import Article,ArticleURL,Action
+from unsourced.util import TornadoMultiDict, fix_url
 
 
 

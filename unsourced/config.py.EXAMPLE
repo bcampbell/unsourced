@@ -22,7 +22,7 @@ settings = Settings(
     mysql_user="",
     mysql_password="",
 
-    cache_dir="/tmp/sourcy-cache",
+    cache_dir="/tmp/unsourced-cache",
 
     cookie_secret="",
     debug=True,
