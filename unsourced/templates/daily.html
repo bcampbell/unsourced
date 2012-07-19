@@ -7,12 +7,9 @@
 
 <h2>breakdown by day</h2>
 
-<ul class="daily">
-{% for day, row in stats %}
-{% module daily(day,row) %}
-</li>
-{% end %}
-</ul>
+<div>
+{% module daily_chart(stats, max_arts) %}
+</div>
 
 </div>
 </div>

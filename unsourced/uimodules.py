@@ -180,10 +180,19 @@ class action(tornado.web.UIModule):
 
 
 
-class daily(tornado.web.UIModule):
-    def render(self,day,row):
-        return self.render_string("modules/daily.html",
-            day=day,row=row)
+
+class daily_chart(tornado.web.UIModule):
+    def render(self, stats, max_arts):
+
+        def _width(v):
+            perc = int(float(100*v)/ float(max_arts))
+            return "%d%%" % (perc,)
+
+        return self.render_string("modules/daily_chart.html", stats=stats, max_arts=max_arts, w=_width)
+
+
+
+
 
 class source_icon(tornado.web.UIModule):
     """ iconic representation of a source """

@@ -1148,6 +1148,63 @@ a.btn:visited {
     box-shadow: 4px 4px 4px rgba(0,0,0,0.5);
 }
 
+/*****
+ * horizontal stacked chart
+ */
+.cht {
+  padding: 1em;
+  background: #ccc;
+}
+
+
+.cht-row {
+  clear: both;
+  margin: 0.5em;
+  position: relative;
+  display: block;
+}
+
+.cht-row:after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+.cht-label {
+  float: left;
+  padding: 0;
+}
+
+.cht-items {
+  margin-left: 8em; /* room for label */
+  padding: 0;
+}
+
+.cht-item {
+  display: block;
+  margin: 0;
+/* border: 1px solid black; */
+  padding: 0.2em;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float:left;
+
+  white-space: nowrap;
+  overflow: hidden;
+
+  color: #fff;
+}
+
+/* first bar */
+.cht-item-a {
+  background-color: green;
+}
+
+/* second bar */
+.cht-item-b {
+  background-color: red;
+}
+
 
 /************************************************
  * STATES

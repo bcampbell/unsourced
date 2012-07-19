@@ -53,11 +53,41 @@ class DailySummary(object):
         else:
             self.percent_sourced = 0
 
+class DailyStats:
+    """ helper class for wrangling summary stats for a single day """
+    def __init__(self, day, total, sourced):
+        self.day = day
+        self.total = total
+        self.sourced = sourced
+
+    @property
+    def unsourced(self):
+        return self.total-self.sourced
+
+    def percent_complete(self):
+        if self.total>0:
+            return int(float(100*self.sourced) / float(self.total))
+        else:
+            return 0
+
+    def browse(self):
+        """ return browse url for all articles on this day """
+        return "/browse?date=range&dayfrom=%s&dayto=%s" % (self.day,self.day)
+
+    def browse_unsourced(self):
+        """ return browse url for all unsourced articles on this day """
+        return "/browse?date=range&dayfrom=%s&dayto=%s&sourced=unsourced" % (self.day,self.day)
+
+    def browse_sourced(self):
+        """ return browse url for all sourced articles on this day """
+        return "/browse?date=range&dayfrom=%s&dayto=%s&sourced=sourced" % (self.day,self.day)
+
+
 
 def daily_breakdown(session):
     stats = {}
 
-    helptag = session.query(Tag).filter(Tag.name=='help').one()
+    # TODO better query - use groupby
     q = session.query(cast(Article.pubdate,Date), Article).\
         options(subqueryload(Article.tags))
 
@@ -69,28 +99,23 @@ def daily_breakdown(session):
         foo['total'] += 1
         if not art.needs_sourcing:
             foo['done'] += 1
-        if helptag in art.tags:
-            foo['help'] += 1
         stats[day]=foo
 
     stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0], reverse=True )
 
+    return [DailyStats(x[0], x[1]['total'], x[1]['done']) for x in stats]
 
-    for x in stats:
-        perc = 0.0
-        if x[1]['total'] > 0:
-            perc = 100.0 * float(x[1]['done']) / float(x[1]['total'])
-        x[1]['percent'] = int(perc)
 
-    return stats
+
 
 
 class DailyBreakdown(BaseHandler):
     def get(self):
 
         stats = daily_breakdown(self.session)
-       
-        self.render('daily.html', stats=stats)
+        max_arts = max(stats, key=lambda x: x.total).total
+ 
+        self.render('daily.html', stats=stats, max_arts=max_arts)
 
 
 
