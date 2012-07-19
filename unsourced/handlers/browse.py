@@ -14,7 +14,7 @@ from wtforms import widgets
 
 from base import BaseHandler
 from unsourced.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
-from unsourced.paginator import Paginator
+from unsourced.paginator import SAPaginator
 from unsourced.util import TornadoMultiDict
 from unsourced import uimodules
 
@@ -207,7 +207,7 @@ class BrowseHandler(BaseHandler):
 
                 return
             else:
-                paged_results = Paginator()
+                paged_results = SAPaginator()
                 self.render("browse.html",filters=filters_form,paged_results=paged_results)
                 return
 
@@ -257,7 +257,7 @@ class BrowseHandler(BaseHandler):
             url = "/browse?" + urllib.urlencode(params)
             return url
 
-        paged_results = Paginator(arts, 100, page, page_url)
+        paged_results = SAPaginator(arts, page, page_url, per_page=100)
 
         if self.is_xhr():
             # if ajax, just render a new #searchresults instead of whole page

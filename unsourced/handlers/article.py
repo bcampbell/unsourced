@@ -14,7 +14,7 @@ from lxml.html.clean import Cleaner
 from unsourced import util,analyser,highlight
 from unsourced.models import Article,Source,Tag,TagKind,Action,HelpReq
 from unsourced.forms import AddPaperForm, AddPRForm, AddOtherForm
-from unsourced.paginator import Paginator
+from unsourced.paginator import SAPaginator
 
 from base import BaseHandler
 
@@ -278,7 +278,7 @@ class HistoryHandler(BaseHandler):
             url = "/art/%d/history?%s" % (art.id, urllib.urlencode(params))
             return url
 
-        paged_results = Paginator(actions, 100, page, page_url)
+        paged_results = SAPaginator(actions, page, page_url, per_page=100)
         self.render("art_history.html", art=art,paged_results=paged_results)
 
 

@@ -1,31 +1,12 @@
-
 class Paginator:
-    """ paginator object for wrapping an sqlalchemy query """
+    """ basic paginator object """
 
-    def __init__(self, query=None, per_page=100, current_page=0, page_url_fn=None):
-        self.query = query
+    def __init__(self, items=[], total_items=0, current_page=0, page_url_fn=None, per_page=100):
+        self.items = items
+        self.total_items = total_items
         self.per_page = per_page
         self.cur = current_page
-        self._total_items = None
         self.page_url = page_url_fn
-
-    @property
-    def items(self):
-        if self.query is None:
-            return []
-        return self.query.\
-            offset((self.cur-1)*self.per_page).\
-            limit(self.per_page).\
-            all()
-
-    @property
-    def total_items(self):
-        if self.query is None:
-            return 0
-        if self._total_items is None:
-            self._total_items = self.query.count()
-        return self._total_items
-
 
     @property
     def total_pages(self):
@@ -67,4 +48,36 @@ class Paginator:
             return self.cur+1
         else:
             return None
+
+
+
+
+
+class SAPaginator(Paginator):
+    """ paginator object for wrapping an sqlalchemy query """
+
+    def __init__(self, query=None, current_page=0, page_url_fn=None, per_page=100):
+        self.query = query
+        self.per_page = per_page
+        self.cur = current_page
+        self._total_items = None
+        self.page_url = page_url_fn
+
+    @property
+    def items(self):
+        if self.query is None:
+            return []
+        return self.query.\
+            offset((self.cur-1)*self.per_page).\
+            limit(self.per_page).\
+            all()
+
+    @property
+    def total_items(self):
+        if self.query is None:
+            return 0
+        if self._total_items is None:
+            self._total_items = self.query.count()
+        return self._total_items
+
 

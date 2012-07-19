@@ -15,7 +15,7 @@ from sqlalchemy.orm import subqueryload
 from base import BaseHandler
 from unsourced.models import Action,UserAccount,Source,Comment,UploadedFile,Token,comment_user_map
 from unsourced.util import TornadoMultiDict
-from unsourced.paginator import Paginator
+from unsourced.paginator import SAPaginator
 from unsourced.cache import cache
 from unsourced.config import settings
 from unsourced import mailer
@@ -81,7 +81,7 @@ class UsersHandler(BaseHandler):
 
         all_users = self.session.query(UserAccount).\
             order_by(UserAccount.created.desc())
-        paged_results = Paginator(all_users, 100, page, page_url)
+        paged_results = SAPaginator(all_users, page, page_url, per_page=100)
         self.render("users.html", paged_results=paged_results)
 
 
