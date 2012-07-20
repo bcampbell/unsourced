@@ -1,8 +1,10 @@
 import re
 import HTMLParser
+import datetime
 from urlparse import urlparse, urlunparse
 import lxml.html
 from tornado.options import define, options
+
 
 htmlparser = HTMLParser.HTMLParser()
 
@@ -103,4 +105,26 @@ def www_or_not(url):
         o[1] = 'www.' + o[1] 
 
     return (url, urlunparse(o))
+
+
+def human_day(d):
+    today = datetime.datetime.utcnow().date()
+
+    dd = (today-d).days
+    if dd==0:
+        return u"Today"
+    elif dd==-1:
+        return u"Tomorrow"
+    elif dd==1:
+        return u"Yesterday"
+    elif dd>1 and dd<7:
+        return d.strftime('%A')
+    elif d.year == today.year:
+        return d.strftime('%a %d %b')
+    else:
+        return d.strftime('%d %b %Y')
+
+
+
+
 

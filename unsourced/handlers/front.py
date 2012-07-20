@@ -84,12 +84,17 @@ class DailyStats:
 
 
 
-def daily_breakdown(session):
+def daily_breakdown(session, day_from=None, day_to=None):
     stats = {}
 
     # TODO better query - use groupby
     q = session.query(cast(Article.pubdate,Date), Article).\
         options(subqueryload(Article.tags))
+
+    if day_from is not None:
+        q = q.filter(cast(Article.pubdate, Date) >= day_from)
+    if day_to is not None:
+        q = q.filter(cast(Article.pubdate, Date) <= day_to)
 
     for day,art in q:
         if day not in stats:
@@ -129,6 +134,12 @@ class FrontHandler(BaseHandler):
         top_sourcers = calc_top_sourcers(self.session)
 
         today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
+        # daily breakdown for the week
+        today = datetime.datetime.utcnow().date()
+        stats = daily_breakdown(self.session, today-datetime.timedelta(days=7), today)
+        max_arts = max(stats, key=lambda x: x.total).total
+
+
 
         recent_actions = self.session.query(Action).\
             filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
@@ -155,6 +166,8 @@ class FrontHandler(BaseHandler):
             recent_actions = recent_actions,
             groupby = itertools.groupby,
             top_sourcers = top_sourcers,
+            week_stats=stats,
+            week_stats_max_arts=max_arts,
             today_summary = today_summary)
 
 

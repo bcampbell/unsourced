@@ -188,7 +188,7 @@ class daily_chart(tornado.web.UIModule):
             perc = int(float(100*v)/ float(max_arts))
             return "%d%%" % (perc,)
 
-        return self.render_string("modules/daily_chart.html", stats=stats, max_arts=max_arts, w=_width)
+        return self.render_string("modules/daily_chart.html", stats=stats, max_arts=max_arts, w=_width, human_day=util.human_day)
 
 
 

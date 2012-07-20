@@ -979,7 +979,9 @@ a.btn:visited {
 }
 
 /****/
-
+.perc {
+  font-family: "Contrail One";
+}
 .daily-percent>p {
   font-family: "Contrail One";
   color: #000;
@@ -1153,7 +1155,6 @@ a.btn:visited {
  */
 .cht {
   padding: 1em;
-  background: #ccc;
 }
 
 
@@ -1171,12 +1172,14 @@ a.btn:visited {
 }
 
 .cht-label {
+  padding: 0.2em;
   float: left;
-  padding: 0;
+  display: block;
 }
 
 .cht-items {
-  margin-left: 8em; /* room for label */
+  margin-left: 7em; /* room for label */
+  margin-right: 3em; /* room for post-item thing */
   padding: 0;
 }
 
@@ -1193,18 +1196,55 @@ a.btn:visited {
   overflow: hidden;
 
   color: #fff;
+  box-shadow: 0.2em 0.2em 0.2em rgba(0,0,0,0.25);
 }
+
+.cht-item:link {
+  color: #fff;
+}
+
+.cht-item:visited {
+  color: #fff;
+}
+
 
 /* first bar */
 .cht-item-a {
-  background-color: green;
+  background-color: #96E605;
+  background-image: linear-gradient(45deg, #96E605, #ccff22);
+  background-image: -moz-linear-gradient(45deg, #96E605, #ccff22);
+  background-image: -webkit-linear-gradient(45deg, #96E605, #ccff22);
+  background-image: -o-linear-gradient(45deg, #96E605, #ccff22);
+  background-image: -ms-linear-gradient(45deg, #96E605, #ccff22);
+}
+.cht-item-a:hover {
+  background-color: #ccff22;
+  background-image: none;
 }
 
 /* second bar */
 .cht-item-b {
-  background-color: red;
+/*  background-color: #F70417;*/
+    background-color: #c4000e;
+    background-image: linear-gradient(45deg, #c4000e, #ff0012);
+    background-image: -moz-linear-gradient(45deg, #c4000e, #ff0012);
+    background-image: -webkit-linear-gradient(45deg, #c4000e, #ff0012);
+    background-image: -o-linear-gradient(45deg, #c4000e, #ff0012);
+    background-image: -ms-linear-gradient(45deg, #c4000e, #ff0012);
+
 }
 
+.cht-item-b:hover {
+/*  background-color: #ff2244; */
+    background-color: #ff2244;
+    background-image: none;
+}
+
+.cht-post {
+    display: block;
+    float: right;
+    padding: 0.2em;
+}
 
 /************************************************
  * STATES

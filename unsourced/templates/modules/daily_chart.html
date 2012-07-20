@@ -1,11 +1,12 @@
 <div class=cht>
 {% for row in stats %}
 <div class="cht-row">
-  <a  href="{{row.browse()}}" class="cht-label">{{row.day}}</a>
+  <a  href="{{row.browse()}}" class="cht-label"><time class="timestamp" datetime="{{row.day.isoformat()}}">{{human_day(row.day)}}</time></a>
   <div class="cht-items">
 {% if row.sourced>0 %} <a href="{{row.browse_sourced()}}" class="cht-item cht-item-a" style="width: {{w(row.sourced)}};">{{row.sourced}}</a>{% end %}
 {% if row.unsourced>0 %} <a href="{{row.browse_unsourced()}}" class="cht-item cht-item-b" style="width: {{w(row.unsourced)}};">{{row.unsourced}}</a>{% end %}
   </div>
+  <span class="cht-post perc">{{row.percent_complete()}}%</span>
 </div>
 {% end %}
 </div>
