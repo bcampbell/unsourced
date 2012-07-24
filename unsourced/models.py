@@ -170,7 +170,7 @@ class Source(Base):
     created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     actions = relationship("Action", backref="source", cascade="all, delete-orphan")
-    creator = relationship("UserAccount")
+    creator = relationship("UserAccount", lazy="joined")
 
     def __init__(self, **kw):
         for key,value in kw.iteritems():
@@ -260,7 +260,7 @@ class UserAccount(Base):
     twitter_access_token = relationship("TwitterAccessToken", uselist=False, backref="user")
 
     photo_id = Column(Integer, ForeignKey('uploaded_file.id', use_alter=True, name='fk_useraccount_photo_id'), nullable=True)
-    photo = relationship("UploadedFile", primaryjoin="UserAccount.photo_id==UploadedFile.id")
+    photo = relationship("UploadedFile", primaryjoin="UserAccount.photo_id==UploadedFile.id",lazy="joined")
 
     @validates('username')
     def validate_username(self, key, username):

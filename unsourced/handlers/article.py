@@ -122,10 +122,6 @@ class ArticleHandler(BaseHandler):
             researchers,institutions,journals = [],[],[]
 
 
-        all_tags = self.session.query(Tag).all()
-        donetag = self.session.query(Tag).filter(Tag.name=='done').one()
-        helptag = self.session.query(Tag).filter(Tag.name=='help').one()
-
         n_actions=6    # show most recent N actions
         recent_actions = self.session.query(Action).\
             filter(Action.article_id==art.id).\
@@ -155,9 +151,6 @@ class ArticleHandler(BaseHandler):
             add_paper_form=add_paper_form,
             add_pr_form=add_pr_form,
             add_other_form=add_other_form,
-            all_tags = all_tags,
-            TagKind=TagKind,
-            helptag=helptag,
             recent_actions=recent_actions,
             more_actions=more_actions,
         )

@@ -7,7 +7,7 @@ import random
 import tornado.auth
 from sqlalchemy import Date,not_
 from sqlalchemy.sql.expression import cast,func
-from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm import subqueryload,joinedload
 
 from base import BaseHandler
 from unsourced.models import Source,Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
@@ -26,6 +26,7 @@ def calc_top_sourcers(session):
             subquery()
 
     top_sourcers = session.query(UserAccount, src_cnts.c.cnt).\
+        options(joinedload('photo')).\
         join(src_cnts, UserAccount.id==src_cnts.c.creator_id).\
         order_by(src_cnts.c.cnt.desc()).\
         limit(12).\
@@ -35,23 +36,6 @@ def calc_top_sourcers(session):
 
 
 
-class DailySummary(object):
-    """ helper for X% percent complete by day """
-    def __init__(self, session, day):
-        self.day = day
-        self.total = session.query(Article).\
-            filter(cast(Article.pubdate, Date) == day).\
-            count()
-
-        self.sourced = session.query(Article).\
-            filter(cast(Article.pubdate, Date) == day).\
-            filter(Article.needs_sourcing==False).\
-            count()
-
-        if self.total>0:
-            self.percent_sourced = (100*self.sourced) / self.total
-        else:
-            self.percent_sourced = 0
 
 class DailyStats:
     """ helper class for wrangling summary stats for a single day """
@@ -89,7 +73,7 @@ def daily_breakdown(session, day_from=None, day_to=None):
 
     # TODO better query - use groupby
     q = session.query(cast(Article.pubdate,Date), Article).\
-        options(subqueryload(Article.tags))
+        options(joinedload(Article.tags))
 
     if day_from is not None:
         q = q.filter(cast(Article.pubdate, Date) >= day_from)
@@ -129,11 +113,9 @@ class DailyBreakdown(BaseHandler):
 class FrontHandler(BaseHandler):
     def get(self):
 
-        #TODO: top sourcers
-        all_users = self.session.query(UserAccount).all()
+
         top_sourcers = calc_top_sourcers(self.session)
 
-        today_summary = DailySummary(self.session, datetime.datetime.utcnow().date())
         # daily breakdown for the week
         today = datetime.datetime.utcnow().date()
         stats = daily_breakdown(self.session, today-datetime.timedelta(days=7), today)
@@ -142,22 +124,24 @@ class FrontHandler(BaseHandler):
 
 
         recent_actions = self.session.query(Action).\
+            options(joinedload('article')).\
             filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
             order_by(Action.performed.desc()).slice(0,6)
 
         # some random articles
         # 3 needing sourcing...
         random_arts = self.session.query(Article).\
-            options(subqueryload(Article.tags,Article.sources,Article.comments)).\
+            options(joinedload(Article.sources,Article.comments)).\
             filter(Article.needs_sourcing==True).\
             order_by(func.rand()).\
             limit(3).all()
 
         # ...and one sourced
         random_arts += self.session.query(Article).\
-                filter(Article.needs_sourcing==False).\
-                order_by(func.rand()).\
-                limit(1).all()
+            options(joinedload(Article.sources,Article.comments)).\
+            filter(Article.needs_sourcing==False).\
+            order_by(func.rand()).\
+            limit(1).all()
 
         random.shuffle(random_arts)
 
@@ -167,8 +151,7 @@ class FrontHandler(BaseHandler):
             groupby = itertools.groupby,
             top_sourcers = top_sourcers,
             week_stats=stats,
-            week_stats_max_arts=max_arts,
-            today_summary = today_summary)
+            week_stats_max_arts=max_arts)
 
 
 

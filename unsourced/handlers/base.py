@@ -3,6 +3,9 @@ import urllib
 import logging
 import datetime
 
+SQLTAP=False    # cheesy hack for dumping per-request queries
+if SQLTAP:
+    import sqltap
 
 import tornado.web
 
@@ -12,16 +15,24 @@ class BaseHandler(tornado.web.RequestHandler):
     def initialize(self):
         self.dbsession = None
 
+
     def on_finish(self):
         # NOTE: if client closes connection, it's possible on_finish() won't trigger.
         # see https://github.com/facebook/tornado/issues/473
         if self.dbsession is not None:
             self.dbsession.close()
+            if SQLTAP:
+                statistics = sqltap.collect()
+                print len(statistics)," queries"
+                sqltap.report(statistics, "/tmp/report.html")
+
 
     @property
     def session(self):
         if self.dbsession is None:
             self.dbsession = self.application.Session()
+            if SQLTAP:   
+                sqltap.start(self.application.engine)
         return self.dbsession
 
     def get_current_user(self):
