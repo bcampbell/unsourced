@@ -1,4 +1,0 @@
-#!/bin/bash
-export PYTHONPATH=`pwd`:$PYTHONPATH
-cd scrapeomat
-python ./app.py

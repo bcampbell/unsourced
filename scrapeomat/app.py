@@ -60,7 +60,8 @@ def main():
     app = Application()
     app.listen(options.port)
 
-    logging.config.fileConfig("logging.ini")
+    log_conf = os.path.join(os.path.dirname(__file__), "logging.ini")
+    logging.config.fileConfig(log_conf)
     logger = logging.getLogger('art')
 
     logger.info("start.")
