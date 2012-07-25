@@ -1,5 +1,4 @@
 import datetime
-from pprint import pprint
 from collections import defaultdict
 import itertools
 import random
@@ -11,29 +10,32 @@ from sqlalchemy.orm import subqueryload,joinedload
 
 from base import BaseHandler
 from unsourced.models import Source,Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
+from unsourced.cache import cache
 
 
 def calc_top_sourcers(session):
+    """ returns list of (user, src_cnt) tuples """
+    def _calc():
+        day_to = datetime.datetime.utcnow()
+        day_from = day_to - datetime.timedelta(days=30)
 
-    day_to = datetime.datetime.utcnow()
-    day_from = day_to - datetime.timedelta(days=30)
 
+        src_cnts = session.query(Source.creator_id, func.count('*').label('cnt')).\
+                filter(cast(Source.created, Date) >= day_from).\
+                filter(cast(Source.created, Date) <= day_to).\
+                group_by(Source.creator_id).\
+                subquery()
 
-    src_cnts = session.query(Source.creator_id, func.count('*').label('cnt')).\
-            filter(cast(Source.created, Date) >= day_from).\
-            filter(cast(Source.created, Date) <= day_to).\
-            group_by(Source.creator_id).\
-            subquery()
+        top_sourcers = session.query(UserAccount, src_cnts.c.cnt).\
+            options(joinedload('photo')).\
+            join(src_cnts, UserAccount.id==src_cnts.c.creator_id).\
+            order_by(src_cnts.c.cnt.desc()).\
+            limit(12).\
+            all()
 
-    top_sourcers = session.query(UserAccount, src_cnts.c.cnt).\
-        options(joinedload('photo')).\
-        join(src_cnts, UserAccount.id==src_cnts.c.creator_id).\
-        order_by(src_cnts.c.cnt.desc()).\
-        limit(12).\
-        all()
+        return top_sourcers 
 
-    return top_sourcers 
-
+    return cache.get_or_create('top_sourcers', _calc, expiration_time=60*5)
 
 
 
@@ -69,30 +71,34 @@ class DailyStats:
 
 
 def daily_breakdown(session, day_from=None, day_to=None):
-    stats = {}
 
-    # TODO better query - use groupby
-    q = session.query(cast(Article.pubdate,Date), Article).\
-        options(joinedload(Article.tags))
+    def _calc():
+        stats = {}
 
-    if day_from is not None:
-        q = q.filter(cast(Article.pubdate, Date) >= day_from)
-    if day_to is not None:
-        q = q.filter(cast(Article.pubdate, Date) <= day_to)
+        # TODO: do the work in the database.
+        q = session.query(cast(Article.pubdate,Date), Article)
 
-    for day,art in q:
-        if day not in stats:
-            foo = dict(total=0,done=0,help=0)
-        else:
-            foo = stats[day]
-        foo['total'] += 1
-        if not art.needs_sourcing:
-            foo['done'] += 1
-        stats[day]=foo
+        if day_from is not None:
+            q = q.filter(cast(Article.pubdate, Date) >= day_from)
+        if day_to is not None:
+            q = q.filter(cast(Article.pubdate, Date) <= day_to)
 
-    stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0], reverse=True )
+        for day,art in q:
+            if day not in stats:
+                foo = dict(total=0,done=0,help=0)
+            else:
+                foo = stats[day]
+            foo['total'] += 1
+            if not art.needs_sourcing:
+                foo['done'] += 1
+            stats[day]=foo
 
-    return [DailyStats(x[0], x[1]['total'], x[1]['done']) for x in stats]
+        stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0], reverse=True )
+
+        return [DailyStats(x[0], x[1]['total'], x[1]['done']) for x in stats]
+
+    k = "daily_breakdown_from_%s_to_%s" % (day_from, day_to)
+    return cache.get_or_create(k, _calc, 60*1)
 
 
 
@@ -113,7 +119,6 @@ class DailyBreakdown(BaseHandler):
 class FrontHandler(BaseHandler):
     def get(self):
 
-
         top_sourcers = calc_top_sourcers(self.session)
 
         # daily breakdown for the week
@@ -122,29 +127,47 @@ class FrontHandler(BaseHandler):
         max_arts = max(stats, key=lambda x: x.total).total
 
 
+        def _get_recent_actions():
+            recent_actions = self.session.query(Action).\
+                options(joinedload('article')).\
+                filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
+                order_by(Action.performed.desc()).slice(0,6).all()
+            return recent_actions
 
-        recent_actions = self.session.query(Action).\
-            options(joinedload('article')).\
-            filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
-            order_by(Action.performed.desc()).slice(0,6)
+        recent_actions = cache.get_or_create("recent_actions", _get_recent_actions, 10)
 
-        # some random articles
-        # 3 needing sourcing...
-        random_arts = self.session.query(Article).\
-            options(joinedload(Article.sources,Article.comments)).\
-            filter(Article.needs_sourcing==True).\
-            order_by(func.rand()).\
-            limit(3).all()
 
-        # ...and one sourced
-        random_arts += self.session.query(Article).\
-            options(joinedload(Article.sources,Article.comments)).\
-            filter(Article.needs_sourcing==False).\
-            order_by(func.rand()).\
-            limit(1).all()
 
+        # 4 sample articles (3 unsourced, one sourced as an example)
+        # TODO: should probably bias these toward being >1day old
+        def _recent_arts_unsourced():
+            return self.session.query(Article).\
+                options(joinedload(Article.sources,Article.comments)).\
+                filter(Article.needs_sourcing==True).\
+                order_by(Article.pubdate.desc()).\
+                limit(50).\
+                all()
+
+        def _recent_arts_sourced():
+            return self.session.query(Article).\
+                options(joinedload(Article.sources,Article.comments)).\
+                filter(Article.needs_sourcing==False).\
+                order_by(Article.pubdate.desc()).\
+                limit(50).\
+                all()
+
+        sourced_arts = cache.get_or_create("recent_arts_sourced",_recent_arts_sourced, 60*17)
+        unsourced_arts = cache.get_or_create("recent_arts_unsourced",_recent_arts_unsourced, 60*15)
+        random_arts = random.sample(unsourced_arts, 3)
+        random_arts += random.sample(sourced_arts, 1)
         random.shuffle(random_arts)
 
+        # note: because of caching, a lot of the sqlalchemy objects will be
+        # session-less (detached), so the template will fail if any further
+        # database queries are triggered.
+        # we could merge cached objects back into the session, but
+        # that's silly - we should be avoiding fine-grained on-the-fly
+        # additional queries anyway.
         self.render('front.html',
             random_arts = random_arts,
             recent_actions = recent_actions,
@@ -152,9 +175,6 @@ class FrontHandler(BaseHandler):
             top_sourcers = top_sourcers,
             week_stats=stats,
             week_stats_max_arts=max_arts)
-
-
-
 
 
 
