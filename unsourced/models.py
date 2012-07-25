@@ -47,7 +47,7 @@ class Action(Base):
     comment_id = Column(Integer, ForeignKey('comment.id'))
     value = Column(Integer, nullable=False, default=0)  # for votes
 
-    user = relationship("UserAccount", backref="actions", uselist=False )
+    user = relationship("UserAccount", backref="actions", uselist=False)
     comment = relationship("Comment")   #, uselist=False )
 
     def __init__(self, what, user, **kw):

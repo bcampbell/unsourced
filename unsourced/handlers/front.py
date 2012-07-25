@@ -129,7 +129,7 @@ class FrontHandler(BaseHandler):
 
         def _get_recent_actions():
             recent_actions = self.session.query(Action).\
-                options(joinedload('article')).\
+                options(joinedload('article'),joinedload('user'),joinedload('source'),joinedload('comment')).\
                 filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
                 order_by(Action.performed.desc()).slice(0,6).all()
             return recent_actions
@@ -142,7 +142,7 @@ class FrontHandler(BaseHandler):
         # TODO: should probably bias these toward being >1day old
         def _recent_arts_unsourced():
             return self.session.query(Article).\
-                options(joinedload(Article.sources,Article.comments)).\
+                options(joinedload('sources'),joinedload('comments')).\
                 filter(Article.needs_sourcing==True).\
                 order_by(Article.pubdate.desc()).\
                 limit(50).\
@@ -150,7 +150,7 @@ class FrontHandler(BaseHandler):
 
         def _recent_arts_sourced():
             return self.session.query(Article).\
-                options(joinedload(Article.sources,Article.comments)).\
+                options(joinedload('sources'),joinedload('comments')).\
                 filter(Article.needs_sourcing==False).\
                 order_by(Article.pubdate.desc()).\
                 limit(50).\

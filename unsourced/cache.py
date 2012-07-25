@@ -3,17 +3,23 @@ from config import settings
 
 from dogpile.cache import make_region
 
-cache = make_region().configure(
-    'dogpile.cache.memory',
-    expiration_time = 3600,
-)
+# using dogpile.cache as a frontend to memcached.
+# handles the dogpile problem nicely.
 
-# having problems with dbm backend (compaints about unicode keys)
+
 #cache = make_region().configure(
-#    'dogpile.cache.dbm',
+#    'dogpile.cache.memory',
 #    expiration_time = 3600,
-#    arguments = {
-#        "filename":"/tmp/sourcy-cache.dbm"
-#    }
 #)
+
+# memcached backend
+cache = make_region().configure(
+    'dogpile.cache.pylibmc',
+    expiration_time = 3600,
+    arguments = {
+        'url':["127.0.0.1"],
+        'binary':True,
+        'behaviors':{"tcp_nodelay": True, "ketama":True}
+    }
+)
 

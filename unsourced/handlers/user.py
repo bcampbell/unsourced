@@ -455,16 +455,20 @@ class ThumbHandler(BaseHandler):
         self.set_header("Content-Type", content_type)
         self.write(raw_data)
 
-    @cache.cache_on_arguments()
     def thumbnail(self, filename, w, h):
-        original = Image.open(os.path.join(settings.uploads_path,filename))
-        thumb = original.convert()   # convert() rather than copy() - copy leaves palette intact, which makes for crumby thumbs
-        thumb.thumbnail((w,h), Image.ANTIALIAS)
 
-        buf= StringIO.StringIO()
-        thumb.save(buf, format='PNG')
-        return 'image/png',buf.getvalue()
+        k = "%s_%s_%s" %(filename,w,h)
 
+        def _calc():
+            original = Image.open(os.path.join(settings.uploads_path,filename))
+            thumb = original.convert()   # convert() rather than copy() - copy leaves palette intact, which makes for crumby thumbs
+            thumb.thumbnail((w,h), Image.ANTIALIAS)
+
+            buf= StringIO.StringIO()
+            thumb.save(buf, format='PNG')
+            return 'image/png',buf.getvalue()
+
+        return cache.get_or_create(k,_calc)
 
 
 

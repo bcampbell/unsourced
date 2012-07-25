@@ -3,7 +3,7 @@ set up python virtualenv and various packages:
 $ sudo easy_install virtualenv
 $ virtualenv --no-site-packages /srv/sourcy/sourcy-env
 $ . /srv/sourcy/env/bin/activate
-$ pip install tornado lxml WTForms SQLAlchemy python-dateutil rdflib rdfextras MySQL-python py-bcrypt alembic PIL
+$ pip install tornado lxml WTForms SQLAlchemy python-dateutil rdflib rdfextras MySQL-python py-bcrypt alembic PIL pylibmc
 
 
 NOTE about installing PIL (on ubuntu 11.10/64bit):
