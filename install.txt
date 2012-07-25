@@ -1,3 +1,6 @@
+PREREQUISITES
+-------------
+
 set up python virtualenv and various packages:
 
 $ sudo easy_install virtualenv
@@ -34,4 +37,17 @@ $ git clone git@github.com:bcampbell/decruft.git
 
 (scrapeomat requires decruft and metareadability
 symlink decruft and metareadability into scrapeomat)
+
+
+CONFIGURATION
+-------------
+
+copy and configure:
+ unsourced/config.py.EXAMPLE
+ unsourced/alembic.ini.EXAMPLE
+
+TODO:
+nginx config
+supervisor config
+
 
