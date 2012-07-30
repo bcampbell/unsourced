@@ -74,8 +74,10 @@ def daily_breakdown(session, day_from=None, day_to=None):
 
     def _calc():
         stats = {}
-        for day in util.daterange(day_from,day_to):
-            stats[day] = dict(total=0,done=0,help=0)
+        if day_from is not None and day_to is not None:
+            # fill in gaps
+            for day in util.daterange(day_from,day_to):
+                stats[day] = dict(total=0,done=0,help=0)
 
         # TODO: do the work in the database.
         q = session.query(cast(Article.pubdate,Date), Article)
@@ -85,8 +87,9 @@ def daily_breakdown(session, day_from=None, day_to=None):
         if day_to is not None:
             q = q.filter(cast(Article.pubdate, Date) <= day_to)
 
-
         for day,art in q:
+            if day not in stats:
+                stats[day] = dict(total=0,done=0,help=0)
             stats[day]['total'] += 1
             if not art.needs_sourcing:
                 stats[day]['done'] += 1
