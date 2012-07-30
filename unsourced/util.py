@@ -126,5 +126,11 @@ def human_day(d):
 
 
 
+def daterange(first_date, last_date):
+    """ iterate over days. note, range is inclusive """
+    for n in range(int((last_date - first_date).days)+1):
+        yield first_date + datetime.timedelta(n)
+
+
 
 

@@ -11,7 +11,7 @@ from sqlalchemy.orm import subqueryload,joinedload
 from base import BaseHandler
 from unsourced.models import Source,Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
 from unsourced.cache import cache
-
+import util
 
 def calc_top_sourcers(session):
     """ returns list of (user, src_cnt) tuples """
@@ -74,6 +74,8 @@ def daily_breakdown(session, day_from=None, day_to=None):
 
     def _calc():
         stats = {}
+        for day in util.daterange(day_from,day_to):
+            stats[day] = dict(total=0,done=0,help=0)
 
         # TODO: do the work in the database.
         q = session.query(cast(Article.pubdate,Date), Article)
@@ -83,15 +85,11 @@ def daily_breakdown(session, day_from=None, day_to=None):
         if day_to is not None:
             q = q.filter(cast(Article.pubdate, Date) <= day_to)
 
+
         for day,art in q:
-            if day not in stats:
-                foo = dict(total=0,done=0,help=0)
-            else:
-                foo = stats[day]
-            foo['total'] += 1
+            stats[day]['total'] += 1
             if not art.needs_sourcing:
-                foo['done'] += 1
-            stats[day]=foo
+                stats[day]['done'] += 1
 
         stats = sorted([(day,row) for day,row in stats.iteritems()], key=lambda x: x[0], reverse=True )
 
@@ -123,7 +121,7 @@ class FrontHandler(BaseHandler):
 
         # daily breakdown for the week
         today = datetime.datetime.utcnow().date()
-        stats = daily_breakdown(self.session, today-datetime.timedelta(days=7), today)
+        stats = daily_breakdown(self.session, today-datetime.timedelta(days=6), today)
         max_arts = max(stats, key=lambda x: x.total).total
 
 
