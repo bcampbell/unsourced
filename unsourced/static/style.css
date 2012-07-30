@@ -236,10 +236,54 @@ ul.l-4col {
 .site-logo h1 {
     margin: 0 0;
     padding: 0;
+    display: inline-block;
 }
 
 .site-logo img { display: block; }
 
+/****/
+.site-tagline {
+    display: inline-block;
+    width: 12em;
+    margin: 0.5em 0 1em 1em;
+    padding: 1em 0;
+    vertical-align: top;
+    line-height: 120%;
+    position: relative;
+}
+
+.site-tagline a {
+    font-family: 'Contrail One';
+    font-size: 120%;
+}
+
+.site-tagline a:hover + .site-tagline-popup {
+    display: block;
+}
+
+.site-tagline-popup {
+    position: absolute;
+    top: 1.2em;
+    left: 100%;
+    background-color: #ed117d;
+    width: 16em;
+    display: none;
+    padding: 0.5em;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.site-tagline-popup:after {
+   content: "";
+   display: block;
+   position: absolute;
+   left: -16px;
+   top: 1em;
+   width: 0;
+   height: 0;
+   border: 8px solid;
+   border-color: transparent #ed117d transparent transparent;
+}
 
 /****/
 .mst-logo {
