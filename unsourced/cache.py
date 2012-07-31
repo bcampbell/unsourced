@@ -14,12 +14,10 @@ from dogpile.cache import make_region
 
 # memcached backend
 cache = make_region().configure(
-    'dogpile.cache.pylibmc',
+    'dogpile.cache.memcached',
     expiration_time = 3600,
     arguments = {
-        'url':["127.0.0.1"],
-        'binary':True,
-        'behaviors':{"tcp_nodelay": True, "ketama":True}
+        'url':"127.0.0.1:11211",
     }
 )
 
