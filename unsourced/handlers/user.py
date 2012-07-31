@@ -9,7 +9,7 @@ import tornado.auth
 import tornado.web
 from tornado import httpclient
 from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, FileField, validators
-from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm import joinedload
 
 
 from base import BaseHandler
@@ -39,7 +39,7 @@ class UserHandler(BaseHandler):
             subquery()
 
         mentions = self.session.query(Action).\
-            options(subqueryload(Action.comment,Action.article,Action.user)).\
+            options(joinedload('comment'),joinedload('article'),joinedload('user')).\
             filter(Action.what=='comment').\
             filter(Action.comment_id.in_(subq)).\
             order_by(Action.performed.desc()).\
