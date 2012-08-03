@@ -357,6 +357,12 @@ ul.l-4col {
 /*****/
 .site-footer {
     margin: 1em 0;
+    position: relative;
+}
+
+.site-copyright {
+    position: absolute;
+    right: 0;
 }
 
 
@@ -365,6 +371,7 @@ ul.l-4col {
     display: block;
     margin: 0;
     padding: 0;
+    position: relative;
 }
 
 .topnav ul {
@@ -406,7 +413,14 @@ ul.l-4col {
 }
 
 
-
+.site-links {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-style: bold;
+    font-size: 110%;
+    text-align: right;
+}
 
 
 /****
