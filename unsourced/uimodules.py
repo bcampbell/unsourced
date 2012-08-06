@@ -76,8 +76,24 @@ class source(tornado.web.UIModule):
             if prev_vote is None or prev_vote.value<0:
                 can_upvote = True
 
+        title=src.title
+        if not title:
+            if src.kind==SourceKind.PR:
+                title = "Press release (%s)" % (util.domain(src.url),)
+            if src.kind==SourceKind.OTHER:
+                title = "Other link (%s)" % (util.domain(src.url),)
+
         return self.render_string("modules/source.html",
-            src=src,
+            id=src.id,
+            title=title,
+            kind=src.kind,
+            url=src.url,
+            publication=src.publication,
+            pubdate=src.pubdate,
+            doi=src.doi,
+            creator=src.creator,
+            score=src.score,
+
             can_upvote=can_upvote,
             can_downvote=can_downvote,
             container=container,

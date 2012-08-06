@@ -1,41 +1,41 @@
 {% comment output a source link %}
 
-<{{container}} id="src-{{src.id}}" class="src src-{{src.kind}}">
+<{{container}} id="src-{{id}}" class="src src-{{kind}}">
 <div class="src-info">
-{% if src.title %}
-<a href="{{src.url}}">{{src.title}}</a>
+{% if title %}
+<a href="{{url}}">{{title}}</a>
 {% else %}
-<a href="{{src.url}}">{{src.url}}</a>
+<a href="{{url}}">{{url}}</a>
 {% end %}
 
-{% if src.publication %}
-{% if src.pubdate %}
-<span class="publication">{{src.publication}}</span>, {%module fmt_date(src.pubdate,'pubdate')%}
+{% if publication %}
+{% if pubdate %}
+<span class="publication">{{publication}}</span>, {%module fmt_date(pubdate,'pubdate')%}
 {% else %}
-<span class="publication">{{src.publication}}</span>
+<span class="publication">{{publication}}</span>
 {% end %}
 {% end %}
-{% if src.doi %}
-<span class="doi">doi:<a href="http://dx.doi.org/{{src.doi}}">{{src.doi}}</a></span>
+{% if doi %}
+<span class="doi">doi:<a href="http://dx.doi.org/{{doi}}">{{doi}}</a></span>
 {% end %}
 </div>
 
 <div class="moderation">
-{% if current_user and src.creator==current_user %}
-{% module postbutton("/source/%d/delete" %(src.id,), "remove") %}
+{% if current_user and creator==current_user %}
+{% module postbutton("/source/%d/delete" %(id,), "remove") %}
 {% end %}
 <!--
-{{src.score}} points
+{{score}} points
 {% if current_user %}
   <span class="vote">
-    <form action="/source/{{src.id}}/upvote" method="POST">{% raw xsrf_form_html() %}<input class="upvote btn" type="submit" value="&#9650;" {% if not can_upvote %}disabled{% end %}/></form>
-    <form action="/source/{{src.id}}/downvote" method="POST">{% raw xsrf_form_html() %}<input class="downvote btn" type="submit" value="&#9660;" {% if not can_downvote %}disabled{% end %}/></form>
+    <form action="/source/{{id}}/upvote" method="POST">{% raw xsrf_form_html() %}<input class="upvote btn" type="submit" value="&#9650;" {% if not can_upvote %}disabled{% end %}/></form>
+    <form action="/source/{{id}}/downvote" method="POST">{% raw xsrf_form_html() %}<input class="downvote btn" type="submit" value="&#9660;" {% if not can_downvote %}disabled{% end %}/></form>
   </span>
 {% end %}
 -->
 
-{% if src.creator %}
-  <span class="creator"><a href="/user/{{src.creator.id}}">{% raw src.creator.photo_img('s') %}</a> Added by <a href="/user/{{src.creator.id}}">{{src.creator.username}}</a></span>
+{% if creator %}
+  <span class="creator"><a href="/user/{{creator.id}}">{% raw creator.photo_img('s') %}</a> Added by <a href="/user/{{creator.id}}">{{creator.username}}</a></span>
 
 {% end %}
 
