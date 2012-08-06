@@ -7,7 +7,7 @@ import random
 import tornado.auth
 from sqlalchemy import Date,not_
 from sqlalchemy.sql.expression import cast,func
-from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm import joinedload
 
 from base import BaseHandler
 from unsourced.models import Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags,comment_user_map
@@ -54,7 +54,7 @@ class DashboardHandler(BaseHandler):
             filter(comment_user_map.c.useraccount_id==self.current_user.id).\
             subquery()
         recent_mentions = self.session.query(Action).\
-            options(subqueryload(Action.comment,Action.article,Action.user)).\
+            options(joinedload('article'),joinedload('user'),joinedload('comment')).\
             filter(Action.what=='comment').\
             filter(Action.comment_id.in_(subq)).\
             order_by(Action.performed.desc()).\
