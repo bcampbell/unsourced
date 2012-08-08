@@ -135,7 +135,7 @@ class action(tornado.web.UIModule):
             elif act.what == 'src_remove':
                 desc = u"removed a source from %s" % (artlink,)
             elif act.what =='art_add':
-                desc = u'submitted'
+                desc = u'submitted this article'
             elif act.what =='comment':
                 desc = u'<blockquote>%s</blockquote>' % (act.comment.format(),)
             elif act.what =='tag_add':
@@ -163,7 +163,7 @@ class action(tornado.web.UIModule):
             elif act.what == 'src_remove':
                 desc = u"removed a source from %s" % (artlink,)
             elif act.what =='art_add':
-                desc = u'submitted article: %s' % (artlink,)
+                desc = u'submitted article %s' % (artlink,)
             elif act.what =='comment':
                 desc = u'<blockquote>%s</blockquote> on %s' % (act.comment.format(), artlink)
             elif act.what =='tag_add':
