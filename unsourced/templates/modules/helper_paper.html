@@ -5,7 +5,7 @@
 {% if journals %}
     <ul>
     {% for r in journals %}
-      <li><span class="hilite journal">{{r[0]}}</span> (<a href="{{r[1]}}">homepage</a>)</li>
+      <li><span class="hilite journal"><a href="{{r[1]}}">{{r[0]}}</a></span></li>
     {% end %}
     </ul>
 {% else %}
