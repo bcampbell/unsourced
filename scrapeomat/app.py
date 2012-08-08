@@ -15,6 +15,10 @@
 #  3 paywalled site
 #  4 parse error
 #
+# TODO: errors should be divided up into:
+#    bad url - 404, invalid/badly formed url
+#    can't process - paywall, parser failed etc
+#
 # article
 #   only present if status is 0 (OK)
 #   fields with article data.
