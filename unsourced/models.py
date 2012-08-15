@@ -11,7 +11,7 @@ import base64
 
 from tornado.options import define, options
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Table, Column, Integer, String, DateTime, Date, Boolean, ForeignKey
+from sqlalchemy import Table, Column, Integer, String, DateTime, Date, Boolean, ForeignKey, Enum
 from sqlalchemy.orm import relationship, backref, validates, sessionmaker
 from sqlalchemy.sql import func
 from sqlalchemy import create_engine
@@ -45,16 +45,18 @@ class Action(Base):
     lookup_id = Column(Integer, ForeignKey('lookup.id'))
     tag_id = Column(Integer, ForeignKey('tag.id'))
     comment_id = Column(Integer, ForeignKey('comment.id'))
+    label_id = Column(Integer, ForeignKey('label.id'))
     value = Column(Integer, nullable=False, default=0)  # for votes
 
     user = relationship("UserAccount", backref="actions", uselist=False)
     comment = relationship("Comment")   #, uselist=False )
+    label = relationship("Label", backref="action")
 
     def __init__(self, what, user, **kw):
         self.what=what
         self.user=user
         for key,value in kw.iteritems():
-            assert key in ('article','lookup','tag','source','value','comment')
+            assert key in ('article','lookup','tag','source','value','comment','label')
             setattr(self,key,value)
 
     def __repr__(self):
@@ -116,6 +118,7 @@ class Article(Base):
     sources = relationship("Source", backref="article", cascade="all, delete-orphan", lazy='joined')
     urls = relationship("ArticleURL", backref="article", cascade="all, delete-orphan")
     comments = relationship("Comment", backref="article", cascade="all, delete-orphan", order_by="Comment.post_time", lazy='joined')
+    labels = relationship("ArticleLabel", backref="article", cascade="all, delete-orphan", lazy='joined')
 
     actions = relationship("Action", backref="article", cascade="all, delete-orphan")
 
@@ -264,7 +267,6 @@ class UserAccount(Base):
 
     @validates('username')
     def validate_username(self, key, username):
-        print "BING!"
         assert self.USERNAME_PAT.match(username) is not None
         return username
 
@@ -415,6 +417,63 @@ class Comment(Base):
         return txt
 
 
+
+class Label(Base):
+    """ label definition """
+    __tablename__ = 'label'
+
+    id = Column(String(16), primary_key=True)
+    prettyname = Column(String(32), nullable=False)
+    description = Column(String(512), nullable=False)
+    icon = Column(String(32),nullable=False)
+
+    def icon_url(self,size):
+        paths = { 's':'/static/tag_small/',
+            'm':'/static/tag_med/',
+            'l':'/static/tag_big/' }
+        return paths[size] + self.icon
+
+
+class ArticleLabel(Base):
+    """ Warning labels assigned to articles"""
+    __tablename__ = 'article_label'
+
+    id = Column(Integer, primary_key=True)
+    label_id = Column(String(16), ForeignKey('label.id'),primary_key=True)
+    article_id = Column(Integer, ForeignKey('article.id'),primary_key=True)
+
+    label = relationship("Label")
+
+    # extra data about this application of a label
+    creator_id = Column(Integer, ForeignKey('useraccount.id'), nullable=False)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+    creator = relationship("UserAccount")
+
+    def __init__(self, **kw):
+        for key,value in kw.iteritems():
+            assert(key in ('creator','created'))
+            setattr(self,key,value)
+
+    def __repr__(self):
+        return "<Label(%s,%s,%s,%s,%s)>" % (self.id, self.label.id, self.article_id, self.creator_id, self.created)
+
+
+    @property
+    def prettyname(self):
+        return self.label.prettyname
+
+    @property
+    def description(self):
+        return self.label.description
+
+    def icon_url(self,size):
+        return self.label.icon_url(size)
+
+
+
+
+
+
 def sanitise_filename(filename):
     filename = os.path.basename(filename)
     filename = filename.lower()
@@ -491,7 +550,8 @@ class UploadedFile(Base):
         # bookkeeping
         # TODO: actually delete the file!
 
-        print "NOW DELETE ", target.filename
+        #print "NOW DELETE ", target.filename
+        pass
 
 # hook in some bookkeeping to delete uploaded files/thumbs after removal from database
 event.listen(UploadedFile, 'after_delete', UploadedFile.on_delete)

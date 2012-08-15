@@ -4,7 +4,7 @@ import datetime
 
 import tornado.web
 
-from models import Source,SourceKind,Article,Action
+from models import Source,SourceKind,Article,Action,Label
 import util
 
 
@@ -133,7 +133,7 @@ class action(tornado.web.UIModule):
             if act.what == 'src_add':
                 desc = u"added %s" % (src_kinds[act.source.kind],)
             elif act.what == 'src_remove':
-                desc = u"removed a source from %s" % (artlink,)
+                desc = u"removed %s" % (src_kinds[act.source.kind],)
             elif act.what =='art_add':
                 desc = u'submitted this article'
             elif act.what =='comment':
@@ -156,6 +156,10 @@ class action(tornado.web.UIModule):
                 desc = u'asked for help'
             elif act.what =='helpreq_close':
                 desc = u'closed a help request'
+            elif act.what =='label_add':
+                desc = u"Added a '%s' label" % (act.label.prettyname,)
+            elif act.what =='label_remove':
+                desc = u"Removed a '%s' label" % (act.label.prettyname,)
 
         else:
             if act.what == 'src_add':
@@ -184,6 +188,10 @@ class action(tornado.web.UIModule):
                 desc = u'asked for help on article %s' % (artlink,)
             elif act.what =='helpreq_close':
                 desc = u'closed a help request on article %s' % (artlink,)
+            elif act.what =='label_add':
+                desc = u"added a '%s' label to %s" % (act.label.prettyname, artlink)
+            elif act.what =='label_remove':
+                desc = u"removed a '%s' label to %s" % (act.label.prettyname, artlink)
 
         return self.render_string("modules/action.html",
             act=act,
@@ -481,4 +489,22 @@ class helper_other(tornado.web.UIModule):
             journals=journals,
             researchers=researchers)
 
+
+class label_widget(tornado.web.UIModule):
+    """ show help on tracking down other links """
+    def render(self, art):
+
+        all = set(self.handler.session.query(Label).all())
+        got = set([l.label for l in art.labels])
+
+        available = all.difference(got)
+
+        return self.render_string('modules/label_widget.html', art=art, available=available)
+
+
+
+class label(tornado.web.UIModule):
+    """ render an ArticleLabel """
+    def render(self, artlabel):
+        return self.render_string('modules/label.html', artlabel=artlabel)
 

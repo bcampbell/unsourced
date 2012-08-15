@@ -1304,6 +1304,54 @@ a.btn:visited {
     padding: 0.2em;
 }
 
+
+/****
+ * warning label with folded corner
+ */
+
+.label {
+  padding: 0.5em;
+  background-color: #fff;
+  border: 1px solid #444;
+  position: relative;
+  color: #000;
+}
+
+.label:before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  border-width: 0 1em 1em 0;
+  border-style:solid;
+  border-color: #888 #fff;
+}
+
+.label-icon {
+  float: left;
+  clear: right;
+}
+
+.label-bod {
+  margin-left: 40px;
+}
+.label-head {
+  font-size: 120%;
+  font-weight: bold;
+}
+
+.label-widget input[type='radio'] {
+ display: none;
+}
+.label-widget input[type='radio']:checked + label {
+    display: block;
+    background-color: grey;
+}
+
+.label-widget  label {
+    outline: 1px solid green;
+}
+
 /************************************************
  * STATES
  */
@@ -1384,5 +1432,6 @@ ul.sourcers img {
 .graph>div {
     background-color: green;
 }
+
 
 

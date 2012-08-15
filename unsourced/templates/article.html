@@ -94,7 +94,6 @@ pubsub.source_added.add(function(new_src) {
 
 <div class="l-col33">
 <div class="sidebar dot-frill">
-
   <div class="tool sources">
     <header>
     <h2>Sources</h2>
@@ -175,6 +174,14 @@ pubsub.source_added.add(function(new_src) {
 
 
 
+<div class="tool">
+<header><h2>Warning Labels</h2></header>
+<div class="bod">
+{% for l in art.labels %}{% module label(l) %}{% end %}
+
+{% module label_widget(art) %}
+</div>
+</div>
 
 
 

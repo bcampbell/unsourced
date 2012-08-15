@@ -22,10 +22,10 @@ from sqlalchemy.orm import sessionmaker
 import uimodules
 import db
 import config
-
-from handlers import base,user,article,addarticle,front,sources,tagging,comments,browse,tokens,dashboard,api
-
+from handlers import base,user,article,addarticle,front,sources,tagging,comments,browse,tokens,dashboard,api,labels
+from models import Label
 import analyser
+
 
 
 
@@ -43,6 +43,7 @@ class Application(tornado.web.Application):
         handlers.extend(tokens.handlers)
         handlers.extend(dashboard.handlers)
         handlers.extend(api.handlers)
+        handlers.extend(labels.handlers)
 
         handlers.append((r".*", base.MissingHandler))
 
@@ -72,9 +73,37 @@ class Application(tornado.web.Application):
             pool_recycle=3600)
         self.Session = sessionmaker(bind=self.engine)
 
+        self.init_labels()
+
         session = self.Session()
         self.institution_finder = analyser.Lookerupper(session,'institution')
         self.journal_finder = analyser.Lookerupper(session,'journal')
+
+
+    def init_labels(self):
+        """ set up labels in the DB (if not already there) """
+
+        label_defs = {
+            'dodgy_pr': dict( prettyname="Dodgy PR",
+                description="Based on Dodgy research or poll, probably commissioned by onepoll or some shit outfit like that",
+                icon="warn_poll.png"),
+
+            'churn': dict(prettyname='Churnalism',
+                description="This article is basically just a press release, copied and pasted",
+                icon="warn_churn.png"),
+        }
+
+        session = self.Session()
+
+        for id,inf in label_defs.iteritems():
+            if session.query(Label).get(id) is not None:
+                continue        # got it already
+            label = Label(id=id, prettyname=inf['prettyname'], description=inf['description'], icon=inf['icon'])
+            session.add(label)
+            logging.warn("label '%s' missing from db - now installed", id)
+        session.commit()
+
+
 
 
 tornado.options.define("port", default="8888", help="port number")

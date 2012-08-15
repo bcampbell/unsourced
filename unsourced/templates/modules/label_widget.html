@@ -1,0 +1,13 @@
+{% if len(available)>0 %}
+<div>
+<form class="label-widget" action="{{art.art_url()}}/addlabel" method="POST">
+{% raw xsrf_form_html() %}
+{% for l in available %}
+<div><input type="radio" name="label" value="{{l.id}}" id="label_{{l.id}}" />
+<label for="label_{{l.id}}"><img src="{{l.icon_url('m')}}">{{l.prettyname}}</label></div>
+{% end %}
+
+<input type="submit" value="Add" />
+</form>
+</div>
+{% end %}

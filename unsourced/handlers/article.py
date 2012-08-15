@@ -125,7 +125,7 @@ class ArticleHandler(BaseHandler):
         n_actions=6    # show most recent N actions
         recent_actions = self.session.query(Action).\
             filter(Action.article_id==art.id).\
-            filter(Action.what.in_(('src_add','src_remove','art_add','tag_add','tag_remove','mark_sourced','mark_unsourced','helpreq_open','helpreq_close','comment'))).\
+            filter(Action.what.in_(('src_add','src_remove','art_add','tag_add','tag_remove','mark_sourced','mark_unsourced','helpreq_open','helpreq_close','comment','label_add','label_remove'))).\
             order_by(Action.performed.desc()).\
             slice(0,n_actions+1).\
             all()

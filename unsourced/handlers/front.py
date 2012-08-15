@@ -130,8 +130,8 @@ class FrontHandler(BaseHandler):
 
         def _get_recent_actions():
             recent_actions = self.session.query(Action).\
-                options(joinedload('article'),joinedload('user'),joinedload('source'),joinedload('comment')).\
-                filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
+                options(joinedload('article'),joinedload('user'),joinedload('source'),joinedload('comment'),joinedload('label')).\
+                filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close','label_add','label_remove'))).\
                 order_by(Action.performed.desc()).slice(0,6).all()
             return recent_actions
 

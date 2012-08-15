@@ -1,0 +1,10 @@
+<div class="label">
+<img class="label-icon" src="{{artlabel.icon_url('m')}}"/><div class="label-bod"><div class="label-head">WARNING</div>{{artlabel.description}}</div>
+
+{% if current_user and artlabel.creator==current_user %}
+{% module postbutton("/art/%d/removelabel/%s" %(artlabel.article.id,artlabel.label.id), "remove") %}
+{% end %}
+{% if artlabel.creator %}
+  <span class="creator"><a href="/user/{{artlabel.creator.id}}">{% raw artlabel.creator.photo_img('s') %}</a> Added by <a href="/user/{{artlabel.creator.id}}">{{artlabel.creator.username}}</a></span>
+{% end %}
+</div>
