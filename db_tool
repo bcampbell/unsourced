@@ -6,15 +6,11 @@ from optparse import OptionParser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from tornado.options import define, options
-
 from pprint import pprint
-from sourcy.models import Base, Tag, TagKind
-from sourcy.util import parse_config_file
-
+from unsourced.config import settings
+from unsourced.models import Base
 
 def main():
-    parse_config_file("sourcy.conf")
 
 #    parser = OptionParser()
 #    (opts, args) = parser.parse_args()
@@ -22,10 +18,10 @@ def main():
 #        parser.error("requires 2 args: <kind> <infile>")
 
     eng_url = "mysql+mysqldb://%(user)s:%(password)s@%(host)s/%(db)s?charset=utf8" % {
-        'user': options.mysql_user,
-        'password': options.mysql_password,
-        'host': options.mysql_host,
-        'db': options.mysql_database
+        'user': settings.mysql_user,
+        'password': settings.mysql_password,
+        'host': settings.mysql_host,
+        'db': settings.mysql_database
     }
     engine = create_engine(eng_url, echo=True)
 
@@ -35,61 +31,6 @@ def main():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    tag_defs = (
-#        {
-#        'name': 'warn_wikipedia',
-#        'description': 'This article contains unsourced, unverified information from Wikipedia.',
-#        'kind': TagKind.WARNING,
-#        'icon': 'warn_wikipedia',
-#        },
-#        {
-#        'name': 'warn_anon',
-#        'description': 'This article is based on an unverified, anonymous tipoff.',
-#        'kind': TagKind.WARNING,
-#        'icon': 'warn_anon',
-#        },
-#        {
-#        'name': 'warn_soft',
-#        'description': 'To ensure future interviews with subject, important questions were not asked.',
-#        'kind': TagKind.WARNING,
-#        'icon': 'warn_soft',
-#        },
-        {
-        'name': 'warn_churn',
-        'description': 'Beware: churnalism',
-        'kind': TagKind.WARNING,
-        'icon': 'warn_churn',
-        },
-        {
-        'name': 'warn_poll',
-        'description': 'Beware: article based on dodgy poll or survey',
-        'kind': TagKind.WARNING,
-        'icon': 'warn_poll',
-        },
-#        {
-#        'name': 'science',
-#        'description':  'Science',
-#        'kind': TagKind.GENERAL,
-#        'icon': 'science',
-#        },
-        {
-        'name': 'done',
-        'description': 'Hooray! A well sourced article',
-        'kind': TagKind.ADMIN,
-        'icon': 'tick',
-        },
-        {
-        'name': 'help',
-        'description': 'Help requested',
-        'kind': TagKind.ADMIN,
-        'icon': 'help',
-        }
-    )
-
-    for tag_def in tag_defs:
-        t = Tag(**tag_def)
-        session.add(t)
-    session.commit()
 
 if __name__ == "__main__":
     main()

@@ -69,6 +69,7 @@ pubsub.source_added.add(function(new_src) {
 
   <div class="art-text">
     <h2>{{art.headline}}</h2>
+{% for l in art.labels %}{% module label(l.label,l) %}{% end %}
 {% if scrape_err %}
     <p>Sorry, but there was a problem fetching the article text: {{scrape_err}}</p>
     <p>if you'd like, you can paste the text in here manually:</p>
@@ -177,8 +178,6 @@ pubsub.source_added.add(function(new_src) {
 <div class="tool">
 <header><h2>Warning Labels</h2></header>
 <div class="bod">
-{% for l in art.labels %}{% module label(l) %}{% end %}
-
 {% module label_widget(art) %}
 </div>
 </div>

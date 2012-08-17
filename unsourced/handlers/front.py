@@ -159,8 +159,11 @@ class FrontHandler(BaseHandler):
 
         sourced_arts = cache.get_or_create("recent_arts_sourced",_recent_arts_sourced, 60*17)
         unsourced_arts = cache.get_or_create("recent_arts_unsourced",_recent_arts_unsourced, 60*15)
-        random_arts = random.sample(unsourced_arts, 3)
-        random_arts += random.sample(sourced_arts, 1)
+        random_arts = []
+        if len(unsourced_arts)>0:
+            random_arts += random.sample(unsourced_arts, 3)
+        if len(sourced_arts)>0:
+            random_arts += random.sample(sourced_arts, 1)
         random.shuffle(random_arts)
 
         # note: because of caching, a lot of the sqlalchemy objects will be

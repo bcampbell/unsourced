@@ -897,7 +897,9 @@ ul.l-4col {
 }
 
 
-/*****/
+/*****
+ *
+ */
 .moderation {
     margin-top: 0.5em;
     vertical-align: top;
@@ -1306,25 +1308,18 @@ a.btn:visited {
 
 
 /****
- * warning label with folded corner
+ * warning label 
  */
 
 .label {
+  margin: 1em 0;
   padding: 0.5em;
-  background-color: #fff;
-  border: 1px solid #444;
+  display: block;
   position: relative;
   color: #000;
-}
-
-.label:before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  border-width: 0 1em 1em 0;
-  border-style:solid;
-  border-color: #888 #fff;
+  background-color: #fbd415;
+  border-radius: 0.5em;
+  border: 0.2em solid #F8BB08; 
 }
 
 .label-icon {
@@ -1340,16 +1335,22 @@ a.btn:visited {
   font-weight: bold;
 }
 
-.label-widget input[type='radio'] {
- display: none;
-}
-.label-widget input[type='radio']:checked + label {
-    display: block;
-    background-color: grey;
+
+/****
+ * label widget - pick label to apply to article
+ */
+
+.label-widget input:checked + label>.label {
+    border-color: #000;
 }
 
-.label-widget  label {
-    outline: 1px solid green;
+.label-widget input[type="radio"] {
+    display: none;
+}
+
+.label-widget input + label>.label:hover {
+    background-color: #FCE792;
+/*    border-color: #FCDA7E; */
 }
 
 /************************************************

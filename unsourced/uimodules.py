@@ -3,7 +3,7 @@ from pprint import pprint
 import datetime
 
 import tornado.web
-
+from sqlalchemy import not_
 from models import Source,SourceKind,Article,Action,Label
 import util
 
@@ -494,17 +494,21 @@ class label_widget(tornado.web.UIModule):
     """ show help on tracking down other links """
     def render(self, art):
 
-        all = set(self.handler.session.query(Label).all())
-        got = set([l.label for l in art.labels])
-
-        available = all.difference(got)
+        assigned = [l.label.id for l in art.labels]
+        available = self.handler.session.query(Label).\
+            filter(not_(Label.id.in_(assigned))).\
+            all()
 
         return self.render_string('modules/label_widget.html', art=art, available=available)
 
 
 
 class label(tornado.web.UIModule):
-    """ render an ArticleLabel """
-    def render(self, artlabel):
-        return self.render_string('modules/label.html', artlabel=artlabel)
+    """ render a Label
+
+    label: Label object (ie label definition)
+    usage: ArticleLabel (an actual usage of a Label upon an Article) or None
+    """
+    def render(self, label, usage=None, size='l'):
+        return self.render_string('modules/label.html', label=label, usage=usage, size=size)
 

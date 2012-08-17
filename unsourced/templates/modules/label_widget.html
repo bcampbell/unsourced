@@ -4,7 +4,9 @@
 {% raw xsrf_form_html() %}
 {% for l in available %}
 <div><input type="radio" name="label" value="{{l.id}}" id="label_{{l.id}}" />
-<label for="label_{{l.id}}"><img src="{{l.icon_url('m')}}">{{l.prettyname}}</label></div>
+<label for="label_{{l.id}}">
+{% module label(l,None,'m') %}
+</label></div>
 {% end %}
 
 <input type="submit" value="Add" />
