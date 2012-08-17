@@ -1319,7 +1319,7 @@ a.btn:visited {
   color: #000;
   background-color: #fbd415;
   border-radius: 0.5em;
-  border: 0.2em solid #F8BB08; 
+  border: 0.4em solid #F8BB08; 
 }
 
 .label-icon {
@@ -1337,18 +1337,19 @@ a.btn:visited {
 
 
 /****
- * label widget - pick label to apply to article
+ * label picker - pick label to apply to article
  */
 
-.label-widget input:checked + label>.label {
+.label-picker input:checked + label>.label {
     border-color: #000;
+    box-shadow: 0 0 0.2em 0 #fff;
 }
 
-.label-widget input[type="radio"] {
+.label-picker input[type="radio"] {
     display: none;
 }
 
-.label-widget input + label>.label:hover {
+.label-picker input + label>.label:hover {
     background-color: #FCE792;
 /*    border-color: #FCDA7E; */
 }

@@ -490,7 +490,7 @@ class helper_other(tornado.web.UIModule):
             researchers=researchers)
 
 
-class label_widget(tornado.web.UIModule):
+class label_picker(tornado.web.UIModule):
     """ show help on tracking down other links """
     def render(self, art):
 
@@ -499,7 +499,7 @@ class label_widget(tornado.web.UIModule):
             filter(not_(Label.id.in_(assigned))).\
             all()
 
-        return self.render_string('modules/label_widget.html', art=art, available=available)
+        return self.render_string('modules/label_picker.html', art=art, available=available)
 
 
 

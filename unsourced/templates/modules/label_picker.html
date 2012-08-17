@@ -1,0 +1,26 @@
+{% if len(available)>0 %}
+<div>
+Is this article misleading, dishonest or toxic?
+{% if current_user %}
+  <a class="btn vis-toggler" href="#add-label-pane">Apply a warning label</a>
+  <div class="add-source" id="add-label-pane">
+    <h3>Apply warning label</h3>
+    <p>Pick the label you'd like to apply...</p>
+    <form class="label-picker" action="{{art.art_url()}}/addlabel" method="POST">
+      {% raw xsrf_form_html() %}
+      {% for l in available %}
+      <div><input type="radio" name="label" value="{{l.id}}" id="label_{{l.id}}" />
+      <label for="label_{{l.id}}">
+        {% module label(l,None,'m') %}
+      </label></div>
+      {% end %}
+
+      <input class="btn" type="submit" value="Apply label" /> or <a class="cancel">cancel</a>
+    </form>
+  </div>
+{% else %}
+  <a class="btn" href="{{ handler.get_login_url() }}">Apply a warning label</a>
+{% end %}
+</div>
+{% end %}
+

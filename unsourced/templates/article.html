@@ -115,7 +115,7 @@ pubsub.source_added.add(function(new_src) {
 
 
 
-    <p>
+  <div>
     Add a source...<br/>
 {% if current_user %}
     <a class="btn vis-toggler" href="#add-paper-pane">Paper</a>
@@ -146,8 +146,8 @@ pubsub.source_added.add(function(new_src) {
     <a class="btn" href="{{ handler.get_login_url() }}">Paper</a>
     <a class="btn" href="{{ handler.get_login_url() }}">Press release</a>
     <a class="btn" href="{{ handler.get_login_url() }}">Other</a>
-    </p>
 {% end %}
+  </div>
 
   {% if len(art.help_reqs)>0 %}
   <div class=""><img src="/static/tag_med/help.png" />{% module user(art.help_reqs[0].user, True) %} asked for help on this article<br/>
@@ -170,19 +170,11 @@ pubsub.source_added.add(function(new_src) {
   </div>
   {% end %}
 
+  {% module label_picker(art) %}
+
+
     </div>  <!-- end .bod -->
   </div>
-
-
-
-<div class="tool">
-<header><h2>Warning Labels</h2></header>
-<div class="bod">
-{% module label_widget(art) %}
-</div>
-</div>
-
-
 
 
 
