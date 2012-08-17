@@ -85,7 +85,7 @@ class Application(tornado.web.Application):
 
         label_defs = {
             'dodgy_pr': dict( prettyname="Dodgy PR",
-                description="Based on Dodgy research or poll, probably commissioned by onepoll or some shit outfit like that",
+                description="This article is based on a dodgy 'survey', 'poll' or 'research'",
                 icon="warn_poll.png"),
 
             'churn': dict(prettyname='Churnalism',
@@ -96,11 +96,18 @@ class Application(tornado.web.Application):
         session = self.Session()
 
         for id,inf in label_defs.iteritems():
-            if session.query(Label).get(id) is not None:
-                continue        # got it already
-            label = Label(id=id, prettyname=inf['prettyname'], description=inf['description'], icon=inf['icon'])
-            session.add(label)
-            logging.warn("label '%s' missing from db - now installed", id)
+            label = session.query(Label).get(id)
+            if label is None:
+                label = Label(id=id, prettyname=inf['prettyname'], description=inf['description'], icon=inf['icon'])
+                session.add(label)
+                logging.warn("label '%s' missing from db - now installed", id)
+            else:
+                if label.description != inf['description'] or label.prettyname != inf['prettyname'] or label.icon != inf['icon']:
+                    label.prettyname = inf['prettyname']
+                    label.description = inf['description']
+                    label.icon = inf['icon']
+                    logging.warn("Update definition for label '%s'" % (label.id,))
+
         session.commit()
 
 
