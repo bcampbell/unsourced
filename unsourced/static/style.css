@@ -360,9 +360,14 @@ ul.l-4col {
     position: relative;
 }
 
-.site-copyright {
+.site-licence {
     position: absolute;
     right: 0;
+}
+
+.site-copyright {
+    position: absolute;
+    right: 100px;
 }
 
 
