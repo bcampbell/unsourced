@@ -102,6 +102,15 @@ fieldset {
     margin: 0.5em 0;
 }
 
+
+/****
+ * single-line form
+ */
+.oneliner-form input {
+    display: inline-block;
+}
+
+
 /**********************************************************************
  * GENERIC LAYOUT
  */
@@ -1035,7 +1044,6 @@ a.btn:visited {
 /****/
 
 .top-sourcers {
-    margin-top: 1em;
 }
 
 .top-sourcers>div {
@@ -1078,7 +1086,6 @@ a.btn:visited {
 
 .gubbins {
     position: relative;
-    margin-top: 1em;
 }
 
 .gubbins:after {
@@ -1089,7 +1096,7 @@ a.btn:visited {
     background-image: url('/static/dot-pattern.png');
     top: -2em;
     right: -4em;
-    bottom: -1.5em;
+    bottom: -0.5em;
     left: -0.9em;
     z-index: -1;
 }
@@ -1104,6 +1111,7 @@ a.btn:visited {
   background: #fff;
   padding: 1em;
 /*  margin: 0.5em 0; */
+  margin: 1em 0;
 }
 
 

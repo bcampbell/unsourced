@@ -116,6 +116,8 @@ class AddArticleHandler(BaseHandler):
                 if bad_url:
                     # start from scratch
                     form = SubmitArticleForm(TornadoMultiDict(self))
+                    form.prev_url.data = form.url.data
+                    form.step.data = "submit"
                     form.validate()
                     form.url.errors.append("Can't access this URL")
                     self.render("addarticle.html", form=form, message='', step=step)
@@ -123,6 +125,8 @@ class AddArticleHandler(BaseHandler):
 
                 message = "Sorry, we couldn't read the details for the article. Please enter them manually."
                 form = EnterArticleForm(TornadoMultiDict(self))
+                form.prev_url.data = form.url.data
+                form.step.data = "confirm"
                 self.render("addarticle.html", form=form, message=message, step='confirm')
                 return
 
