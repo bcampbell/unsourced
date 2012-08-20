@@ -27,7 +27,7 @@ $('input#username').bind("propertychange keyup input paste", function (event) {
       <div class="l-center">{% raw user.photo_img('l') %}</div>
       {% module formfield(form.photo) %}
  <br/>
-    <input class="btn" type="submit" value="Update details"/>
+    <input class="btn btn-major" type="submit" value="Update details"/>
     or <a href="/user/{{current_user.id}}">cancel</a>
 </div>
 </form>

@@ -11,9 +11,9 @@
 {% raw xsrf_form_html() %}
 {% module form(form) %}
 {% if step=='confirm' %}
-<input type="submit" value="Confirm"/>
+<input class="btn btn-major" type="submit" value="Confirm"/>
 {% else %}
-<input type="submit" value="Add article"/>
+<input class="btn btn-major" type="submit" value="Add article"/>
 {% end %}
 </form>
 
