@@ -442,7 +442,7 @@ class ArticleLabel(Base):
     label_id = Column(String(16), ForeignKey('label.id'),primary_key=True)
     article_id = Column(Integer, ForeignKey('article.id'),primary_key=True)
 
-    label = relationship("Label")
+    label = relationship("Label",lazy='joined')
 
     # extra data about this application of a label
     creator_id = Column(Integer, ForeignKey('useraccount.id'), nullable=False)

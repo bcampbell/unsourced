@@ -6,6 +6,7 @@
   {% end %}
   <img class="favicon" src="{{art.publisher_favicon_url()}}"/>
   <a href="/art/{{art.id}}" title="{%module domain(art.permalink)%}">{{art.headline}}</a>
+  {% for l in art.labels %}<img src="{{l.icon_url('s')}}" alt="{{l.prettyname}}" />{% end %}
   {% if art.comments %}
   <span class="comment-cnt">{{len(art.comments)}}</span>
   {% end %}
