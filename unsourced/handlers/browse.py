@@ -130,6 +130,7 @@ class FiltersForm(Form):
 
     help = BooleanField("Help requested")
     discussed = BooleanField("Discussed")
+    labeled = BooleanField("Warning labels")
 
 
 
@@ -155,6 +156,8 @@ class FiltersForm(Form):
             mod_parts.append("help requests")
         if self.discussed.data:
             mod_parts.append("comments")
+        if self.labeled.data:
+            mod_parts.append("warning labels")
         mods = ' and '.join(mod_parts)
         if mods:
             mods = " with " + mods
@@ -235,6 +238,9 @@ class BrowseHandler(BaseHandler):
 
         if filters_form.discussed.data:
             arts = arts.filter(Article.comments.any())
+
+        if filters_form.labeled.data:
+            arts = arts.filter(Article.labels.any())
 
         if filters_form.sourced.data=='unsourced':
             arts = arts.filter(Article.needs_sourcing==True)

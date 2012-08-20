@@ -26,12 +26,11 @@
 
 <fieldset>
 <legend>Narrow by...</legend>
+{% for field in (filters.help, filters.discussed, filters.labeled) %}
 <div>
-{% raw filters.help %}{% raw filters.help.label%}
+{% raw field %}{% raw field.label%}
 </div>
-<div>
-{% raw filters.discussed %}{% raw filters.discussed.label%}
-</div>
+{% end %}
 </fieldset>
 
 
