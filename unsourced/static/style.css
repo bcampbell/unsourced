@@ -483,12 +483,26 @@ ul.l-4col {
 
 /****/
 .random-arts {
-    padding: 1em 2em 3em 2em;
+    padding: 1em 52px 3em 2em;
 /*    position:relative;
     z-index: 1;
 */
+    position: relative;
 }
 
+.random-arts-shuffle {
+    position: absolute;
+    display: block;
+    right: 8px;
+    top: 50%;
+    bottom: 0;
+    width: 32px;
+    margin-top: -16px;
+}
+
+.random-arts-shuffle a {
+    display: block;
+}
 
 /****
  * annoyingly unsemantic yellow bg frill
