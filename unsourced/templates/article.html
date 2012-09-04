@@ -155,7 +155,7 @@ pubsub.source_added.add(function(new_src) {
   </div>
   {% end %}
 
-  {% if art.needs_sourcing and len(art.help_reqs)==0 %}
+  {% if len(art.help_reqs)==0 %}
   <div class="">
     Having trouble tracking down sources for this article?<br/>
     {% module postbutton("/art/%d/open-helpreq"%(art.id,), "Ask for help") %}
