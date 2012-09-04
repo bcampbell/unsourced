@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+#
+# cheesy little script to dump out a list of all the newspaper domain names
+
+import urllib
+import datetime
+from urlparse import urlparse
+from optparse import OptionParser
+import json
+
+from unsourced.models import Article,ArticleURL,Tag
+from unsourced import db
+
+
+def main():
+    parser = OptionParser()
+    parser.add_option("-j", action="store_true", dest="json", help="output list as json")
+
+    (opts, args) = parser.parse_args()
+
+    session = db.create_session()
+
+    hosts = set()
+    q = session.query(Article.permalink)
+    for row in q:
+        url = row.permalink
+        o = urlparse(url)
+        hosts.add(o.hostname)
+
+    if opts.json:
+        s = json.dumps(list(hosts), indent=2)
+        print '\n'.join([l.rstrip() for l in s.splitlines()])
+    else:
+        for h in hosts:
+            print h
+
+
+
+if __name__ == "__main__":
+    main()
+
