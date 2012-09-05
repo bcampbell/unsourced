@@ -493,7 +493,7 @@ ul.l-4col {
 .random-arts-shuffle {
     position: absolute;
     display: block;
-    right: 8px;
+    right: 12px;
     top: 50%;
     bottom: 0;
     width: 32px;
@@ -501,8 +501,19 @@ ul.l-4col {
 }
 
 .random-arts-shuffle a {
-    display: block;
+  display: block;
 }
+
+.random-arts-shuffle a img {
+  margin: 1px;
+  padding: 4px;
+}
+
+.random-arts-shuffle a:hover img {
+  border-radius: 8px;
+  background-color: #FCE792;
+}
+
 
 /****
  * annoyingly unsemantic yellow bg frill
