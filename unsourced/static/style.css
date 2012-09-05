@@ -1368,8 +1368,9 @@ a.btn:visited {
  */
 
 .label-picker input:checked + label>.label {
-    border-color: #000;
-    box-shadow: 0 0 0.2em 0 #fff;
+    background-color: #FCE792;
+    box-shadow: 0 0 4px 4px #000;
+    border-color: #FCDA7E;
 }
 
 .label-picker input[type="radio"] {
@@ -1378,7 +1379,7 @@ a.btn:visited {
 
 .label-picker input + label>.label:hover {
     background-color: #FCE792;
-/*    border-color: #FCDA7E; */
+    border-color: #FCDA7E;
 }
 
 /************************************************
