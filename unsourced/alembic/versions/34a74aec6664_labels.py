@@ -34,7 +34,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['label_id'], ['label.id'], ),
     sa.PrimaryKeyConstraint('id', 'label_id', 'article_id')
     )
-    op.add_column(u'action', sa.Column('label_id', sa.Integer(), nullable=True))
+    op.add_column(u'action', sa.Column('label_id', sa.String(length=16), nullable=True))
     ### end Alembic commands ###
 
 
