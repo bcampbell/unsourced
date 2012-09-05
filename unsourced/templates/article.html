@@ -150,7 +150,7 @@ pubsub.source_added.add(function(new_src) {
   </div>
 
   {% if len(art.help_reqs)>0 %}
-  <div class=""><img src="/static/tag_med/help.png" />{% module user(art.help_reqs[0].user, True) %} asked for help on this article<br/>
+  <div class=""><img src="/static/help-m.png" />{% module user(art.help_reqs[0].user, True) %} asked for help on this article<br/>
     {% module postbutton("/art/%d/close-helpreq"%(art.id,), "Close help request") %}
   </div>
   {% end %}

@@ -85,11 +85,11 @@ class Application(tornado.web.Application):
 
         label_defs = {
             'dodgy_pr': dict( prettyname="Dodgy PR",
-                description="This article is based on a dodgy 'survey', 'poll' or 'research'",
-                icon="warn_poll.png"),
+                description="Statistics, survey results and/or 'research' in this article was sponsored by a PR company.",
+                icon="warn_pr.png"),
 
             'churn': dict(prettyname='Churnalism',
-                description="This article is basically just a press release, copied and pasted",
+                description="This article is basically just a press release, copied and pasted.",
                 icon="warn_churn.png"),
         }
 

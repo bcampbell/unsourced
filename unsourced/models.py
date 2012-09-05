@@ -229,13 +229,13 @@ class Tag(Base):
         return "<Tag(%s)>" % (self.name,)
 
     def small_icon(self):
-        return "/static/tag_small/%s.png" % (self.icon)
+        return "/static/label-s/%s.png" % (self.icon)
 
     def med_icon(self):
-        return "/static/tag_med/%s.png" % (self.icon)
+        return "/static/label-m/%s.png" % (self.icon)
 
     def big_icon(self):
-        return "/static/tag_big/%s.png" % (self.icon)
+        return "/static/label-l/%s.png" % (self.icon)
 
 
 
@@ -428,9 +428,9 @@ class Label(Base):
     icon = Column(String(32),nullable=False)
 
     def icon_url(self,size):
-        paths = { 's':'/static/tag_small/',
-            'm':'/static/tag_med/',
-            'l':'/static/tag_big/' }
+        paths = { 's':'/static/label-s/',
+            'm':'/static/label-m/',
+            'l':'/static/label-l/' }
         return paths[size] + self.icon
 
 
