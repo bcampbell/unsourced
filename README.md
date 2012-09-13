@@ -41,7 +41,7 @@ $ git clone git@github.com:bcampbell/decruft.git
 
 TODO: pack up metareadability and decruft into pip-installable form.
 
-For now, just symlink 'em into `unsourced/scrapomat`:
+For now, just symlink 'em into `unsourced/scrapeomat`:
 
 ```bash
 $ ln -s metareadability/metareadability unsourced/scrapeomat/metareadability
