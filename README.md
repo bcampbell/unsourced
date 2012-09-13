@@ -24,7 +24,7 @@ Install the [fuzzydate](https://github.com/bcampbell/fuzzydate) Python package:
 
 ```bash
 $ pip install git+https://github.com/bcampbell/fuzzydate.git
-``
+```
 
 TODO: supply pip requirements file
 
