@@ -13,29 +13,37 @@ from unsourced.models import Source,Article,Action,Lookup,Tag,TagKind,UserAccoun
 from unsourced.cache import cache
 import util
 
-def calc_top_sourcers(session):
+def calc_top_sourcers(session, ndays=7, cache_expiration_time=60*5):
     """ returns list of (user, src_cnt) tuples """
     def _calc():
-        day_to = datetime.datetime.utcnow()
-        day_from = day_to - datetime.timedelta(days=30)
 
+        src_cnts = session.query(Source.creator_id, func.count('*').label('cnt'))
 
-        src_cnts = session.query(Source.creator_id, func.count('*').label('cnt')).\
+        if ndays is not None:
+            day_to = datetime.datetime.utcnow()
+            day_from = day_to - datetime.timedelta(days=ndays)
+            src_cnts = src_cnts.\
                 filter(cast(Source.created, Date) >= day_from).\
-                filter(cast(Source.created, Date) <= day_to).\
-                group_by(Source.creator_id).\
-                subquery()
+                filter(cast(Source.created, Date) <= day_to)
+
+        src_cnts = src_cnts.\
+            group_by(Source.creator_id).\
+            subquery()
 
         top_sourcers = session.query(UserAccount, src_cnts.c.cnt).\
             options(joinedload('photo')).\
             join(src_cnts, UserAccount.id==src_cnts.c.creator_id).\
             order_by(src_cnts.c.cnt.desc()).\
-            limit(12).\
+            limit(6).\
             all()
 
         return top_sourcers 
 
-    return cache.get_or_create('top_sourcers', _calc, expiration_time=60*5)
+    if ndays is None:
+        cachename = 'top_sourcers_alltime'
+    else:
+        cachename = 'top_sourcers_%d_days' % (ndays) 
+    return cache.get_or_create(cachename, _calc, expiration_time=cache_expiration_time)
 
 
 
@@ -120,7 +128,8 @@ class DailyBreakdown(BaseHandler):
 class FrontHandler(BaseHandler):
     def get(self):
 
-        top_sourcers = calc_top_sourcers(self.session)
+        top_sourcers_7days = calc_top_sourcers(self.session, ndays=7, cache_expiration_time=60*5)
+        top_sourcers_alltime = calc_top_sourcers(self.session, ndays=None, cache_expiration_time=60*60*12)
 
         # daily breakdown for the week
         today = datetime.datetime.utcnow().date()
@@ -176,7 +185,8 @@ class FrontHandler(BaseHandler):
             random_arts = random_arts,
             recent_actions = recent_actions,
             groupby = itertools.groupby,
-            top_sourcers = top_sourcers,
+            top_sourcers_7days = top_sourcers_7days,
+            top_sourcers_alltime = top_sourcers_alltime,
             week_stats=stats,
             week_stats_max_arts=max_arts)
 

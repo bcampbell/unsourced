@@ -75,9 +75,15 @@
     <div class="top-sourcers box">
 
       <h2>Top Sourcers</h2>
-      From the last 30 days<br/><br/>
-      {% for u,cnt in top_sourcers %}
-        <div><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}</a></div>
+      <h3>From the last 7 days</h3>
+      {% for u,cnt in top_sourcers_7days %}
+        <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
+      {% end %}
+      <br/>
+      <br/>
+      <h3>All time</h3>
+      {% for u,cnt in top_sourcers_alltime %}
+        <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
       {% end %}
     </div>
 

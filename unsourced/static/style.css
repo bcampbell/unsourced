@@ -1071,10 +1071,29 @@ a.btn:visited {
 .top-sourcers {
 }
 
-.top-sourcers>div {
+.top-sourcer {
  display: inline-block;
  margin: 0.2em;
+ width: 6em;
+ vertical-align: top;
+ position: relative;
 }
+
+.top-sourcer a {
+}
+
+.top-sourcer img {
+    display:block;
+}
+
+.top-sourcer-cnt {
+    font-size: large;
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 44px;
+}
+
 
 /****/
 .perc {
