@@ -3,6 +3,10 @@
 {% block title %}Unsourced{% end %}
 
 
+{% block extra_js %}
+$('.top-sourcers nav a').tabify();
+{% end %}
+
 {% block main %}
 
 <div class="site-intro">
@@ -75,16 +79,21 @@
     <div class="top-sourcers box">
 
       <h2>Top Sourcers</h2>
-      <h3>From the last 7 days</h3>
+      <nav>
+      <a href="#top-sourcers-7days">Week</a> |
+      <a href="#top-sourcers-alltime">All time</a>
+      </nav>
+      <br/>
+      <div id="top-sourcers-7days">
       {% for u,cnt in top_sourcers_7days %}
         <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
       {% end %}
-      <br/>
-      <br/>
-      <h3>All time</h3>
+      </div>
+      <div id="top-sourcers-alltime">
       {% for u,cnt in top_sourcers_alltime %}
         <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
       {% end %}
+      </div>
     </div>
 
     <div class="add-article box">

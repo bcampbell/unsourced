@@ -43,14 +43,36 @@
 
 
 
+  /* turn a set of links into tabs. href gives content element for each tab */
   $.fn.tabify = function( options ) {  
-
-    // Create some defaults, extending them with any options that were provided
     var settings = $.extend( {
-      'foo'         : 'bar'
+      'activeClass'         : 'is-active'
     }, options);
 
+    var targs = this.map(function() {
+      var targ = $(this).attr('href');
+      return $(targ)[0];
+    });
+    var buttons = $(this);
+
+    var clicked = function(a) {
+       buttons.removeClass(settings.activeClass);
+       $(a).addClass(settings.activeClass);
+
+       $(targs).hide();
+       var targ = $(a).attr('href');
+       $(targ).show();
+    };
+
+    clicked(this[0]);
+
     return this.each(function() {
+      $(this).click(function() {
+        clicked($(this)[0]);
+        return false;
+      });
+    });
+/*
         var tabs = $(this).find('a');
 
         function activate_tab(t) {
@@ -76,7 +98,7 @@
         activate_tab($(tabs.get(0)));
         
     });
-
+*/
   };
 
 

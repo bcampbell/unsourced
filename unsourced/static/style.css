@@ -1453,8 +1453,10 @@ a.btn:visited {
     z-index: 2;
 }
 
-
-
+/* tab button states */
+.is-active {
+    font-weight: bold;
+}
 
 /* UNSORTED CRAP THAT NEEDS REFACTORING */
 
