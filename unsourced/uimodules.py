@@ -324,25 +324,44 @@ class login(tornado.web.UIModule):
     def render(self, form):
         reg_url = '/register'
         forgot_url = '/login/forgot'
+        twitter_login_url = '/login/twitter'
+        google_login_url = '/login/google'
         try:
             next = form.next.data
             if next is not None:
-                reg_url += "?" + urllib.urlencode({'next':next})
+                foo = "?" + urllib.urlencode({'next':next})
+                reg_url += foo
+                twitter_login_url += foo
+                google_login_url += foo
         except AttributeError:
             pass
-        return self.render_string('modules/login.html', form=form, reg_url=reg_url, forgot_url=forgot_url)
+        return self.render_string('modules/login.html',
+            form=form,
+            reg_url=reg_url,
+            forgot_url=forgot_url,
+            twitter_login_url=twitter_login_url,
+            google_login_url=google_login_url)
 
 
 class register(tornado.web.UIModule):
     def render(self, form):
         login_url = '/login'
+        twitter_login_url = '/login/twitter'
+        google_login_url = '/login/google'
         try:
             next = form.next.data
             if next is not None:
-                login_url += "?" + urllib.urlencode({'next':next})
+                foo = "?" + urllib.urlencode({'next':next})
+                login_url += foo
+                twitter_login_url += foo
+                google_login_url += foo
         except AttributeError:
             pass
-        return self.render_string('modules/register.html', form=form, login_url=login_url)
+        return self.render_string('modules/register.html',
+            form=form,
+            login_url=login_url,
+            twitter_login_url=twitter_login_url,
+            google_login_url=google_login_url)
 
 
 

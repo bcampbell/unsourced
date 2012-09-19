@@ -580,7 +580,7 @@ class Token(Base):
 
 
     @staticmethod
-    def create_registration(email, password):
+    def create_registration(email, password, next=None):
         """ create a token which will register a new user when used """
 
         # we don't _ever_ want to store raw passwords
@@ -590,6 +590,8 @@ class Token(Base):
             op='register',
             email=email,
             hashed_password=hashed_password)
+        if next is not None:
+            payload['next'] = next
         tok = Token()
         tok.set_payload_from_dict(payload)
         return tok

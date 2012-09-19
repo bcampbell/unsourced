@@ -1,5 +1,5 @@
 import itertools
-
+import urllib
 import StringIO
 from PIL import Image
 import os
@@ -177,7 +177,7 @@ class LoginHandler(BaseHandler):
         form = LoginForm(TornadoMultiDict(self))
         if next is None:
             del form.next
-        self.render('login.html', form=form)
+        self.render('login.html', form=form, next=next)
 
     def post(self):
 
@@ -186,7 +186,7 @@ class LoginHandler(BaseHandler):
         if next is None:
             del form.next
         if not form.validate():
-            self.render('login.html', form=form)
+            self.render('login.html', form=form, next=next)
             return
 
         # user exists?
@@ -198,7 +198,7 @@ class LoginHandler(BaseHandler):
 
         if user is None:
             form.email.errors.append("Either your email address or password was not recognised. Please try again.")
-            self.render('login.html', form=form)
+            self.render('login.html', form=form, next=next)
             return
 
         # logged in successfully
@@ -220,7 +220,11 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
         if self.get_argument("openid.mode", None):
             self.get_authenticated_user(self.async_callback(self._on_auth))
             return
-        self.authenticate_redirect()
+        next = self.get_argument('next',None)
+        callback_uri = "/login/google"
+        if next is not None:
+            callback_uri += '?' + urllib.urlencode({'next':next})
+        self.authenticate_redirect(callback_uri=callback_uri)
     
     def _on_auth(self, google_user):
         if not google_user:
@@ -234,7 +238,7 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
         username = google_user["email"].split("@")[0].replace(".", "_")
 
         # TODO: the rest of this could be shared between handlers...
-        next = self.get_argument("next", "/")
+        next = self.get_argument("next", None)
         user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
         if user is None:
             # new user
@@ -242,26 +246,19 @@ class GoogleLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
             user = UserAccount(username=username, prettyname=prettyname, email=email, auth_supplier=auth_supplier, auth_uid=auth_uid)
             self.session.add(user)
             self.session.commit()
-            next = '/welcome'
+            if next is not None:
+                next = '/welcome?' + urllib.urlencode({'next':next})
+            else:
+                next = '/welcome'
 
         self.set_secure_cookie("user", unicode(user.id))
+        if next is None:
+            next = '/'
         self.redirect(next)
 
 
-class MyTwitterMixin(tornado.auth.TwitterMixin):
-    """ hacked authenticate_redirect() to pass in callback uri """
 
-    def authenticate_redirect(self, callback_uri=None):
-        """Just like authorize_redirect(), but auto-redirects if authorized.
-
-        This is generally the right interface to use if you are using
-        Twitter for single-sign on.
-        """
-        http = httpclient.AsyncHTTPClient()
-        http.fetch(self._oauth_request_token_url(callback_uri=callback_uri), self.async_callback(
-            self._on_request_token, self._OAUTH_AUTHENTICATE_URL, None))
-
-class TwitterLoginHandler(BaseHandler, MyTwitterMixin):
+class TwitterLoginHandler(BaseHandler, tornado.auth.TwitterMixin):
     @tornado.web.asynchronous
     def get(self):
 
@@ -270,8 +267,11 @@ class TwitterLoginHandler(BaseHandler, MyTwitterMixin):
             return
 
         site = self.request.protocol + "://" + self.request.host
-#        self.authorize_redirect(callback_uri=site+"/login/twitter")
-        self.authenticate_redirect("/login/twitter")
+        next = self.get_argument('next',None)
+        callback_uri = "/login/twitter"
+        if next is not None:
+            callback_uri += '?' + urllib.urlencode({'next':next})
+        self.authenticate_redirect(callback_uri=callback_uri)
 
 
     def _on_auth(self, twit_user):
@@ -286,7 +286,7 @@ class TwitterLoginHandler(BaseHandler, MyTwitterMixin):
         username = twit_user['username']
 
         # TODO: the rest of this could be shared between handlers...
-        next = self.get_argument("next", "/")
+        next = self.get_argument("next", None)
         user = self.session.query(UserAccount).filter_by(auth_supplier=auth_supplier,auth_uid=auth_uid).first()
         if user is None:
             # new user
@@ -294,9 +294,14 @@ class TwitterLoginHandler(BaseHandler, MyTwitterMixin):
             user = UserAccount(username=username, prettyname=prettyname, email=email, auth_supplier=auth_supplier, auth_uid=auth_uid)
             self.session.add(user)
             self.session.commit()
-            next = '/welcome'
+            if next is not None:
+                next = '/welcome?' + urllib.urlencode({'next':next})
+            else:
+                next = '/welcome'
 
         self.set_secure_cookie("user", unicode(user.id))
+        if next is None:
+            next = '/'
         self.redirect(next)
 
 
@@ -388,7 +393,7 @@ class RegisterHandler(BaseHandler):
         form = RegisterForm(TornadoMultiDict(self))
         if next is None:
             del form.next
-        self.render('register.html', form=form)
+        self.render('register.html', form=form, next=next)
 
     def post(self):
         next = self.get_argument("next", None);
@@ -397,7 +402,7 @@ class RegisterHandler(BaseHandler):
             del form.next
 
         if not form.validate():
-            self.render('register.html', form=form)
+            self.render('register.html', form=form, next=next)
             return
 
         # user might already exist - people _do_ forget.
@@ -407,12 +412,13 @@ class RegisterHandler(BaseHandler):
         user = self.session.query(UserAccount).filter(UserAccount.email==form.email.data).first()
         if user is None:
             token = Token.create_registration(
-                form.email.data,
-                form.password.data)
+                email=form.email.data,
+                password=form.password.data,
+                next=next)
             email_template = 'email/confirm_register.txt'
             email_subject = "%s - confirm your account" % settings.site_name
         else:
-            token = Token.create_login(user.id)
+            token = Token.create_login(user_id=user.id, next=next)
             email_template = 'email/forgotten_password.txt'
             email_subject = "%s - forgotten password" % settings.site_name
 
@@ -477,7 +483,8 @@ class WelcomeHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self):
-        self.render('welcome.html')
+        next = self.get_argument('next',None)
+        self.render('welcome.html', next=next)
 
 
 

@@ -8,7 +8,9 @@
 <div class="notice">
 <h2>Welcome, {{current_user.username}}</h2>
 
+{% if next is None %}
 <p>(don't like your user name? You can <a href="/editprofile">change it</a>)</p>
+{% end %}
 
 <p>
 Thanks for joining us in the never-ending fight against unsourced news!
@@ -17,7 +19,12 @@ Thanks for joining us in the never-ending fight against unsourced news!
 Together we shall right wrongs, correct injustices and force the forces of untruth to be more... uh... truthy.
 </p>
 
+{% if next is None %}
 <a class="btn" href="/">Get started!</a>
+{% else %}
+<a class="btn" href="{{next}}">Continue...</a>
+{% end %}
+
 </div>
 
 </div>

@@ -1,4 +1,5 @@
 import datetime
+import urllib
 
 import tornado.web
 
@@ -22,6 +23,11 @@ class TokenHandler(BaseHandler):
         payload = tok.get_payload_as_dict()
         if payload['op'] == 'register':
 
+            landing_url = '/welcome'
+            if 'next' in payload:
+                # let the welcome page know where user is intending to go
+                landing_url += '?' + urllib.urlencode({'next': payload['next']})
+
             email = payload['email']
 
             # user already created?
@@ -29,7 +35,7 @@ class TokenHandler(BaseHandler):
             if user is not None:
                 # yes - just log them in
                 self.set_secure_cookie("user", unicode(user.id))
-                self.redirect('/welcome')
+                self.redirect(landing_url)
                 return
 
 
@@ -50,7 +56,7 @@ class TokenHandler(BaseHandler):
             # log them in
             self.set_secure_cookie("user", unicode(user.id))
 
-            self.redirect('/welcome')
+            self.redirect(landing_url)
             return
         elif payload['op'] == 'login':
             user_id = payload['user_id']
