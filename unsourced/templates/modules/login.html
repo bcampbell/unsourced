@@ -12,9 +12,17 @@
       </div>
 
       <div class="l-col50">
-        <p><a href="{{forgot_url}}">Forgot your details?</a></p>
-        <p>Don't have an account?<br/> <a class="btn" href="{{reg_url}}">Create one</a></p>
-        <p>Or log in using your <a href="{{twitter_login_url}}">Twitter</a> or <a href="{{google_login_url}}">Google</a> account.</p>
+        <div class="login-options">
+          <a href="{{forgot_url}}">Forgot your details?</a>
+          <br/>
+          <br/>
+          Don't have an account?<br/> <a class="btn" href="{{reg_url}}">Create one</a>
+          <br/>
+          <br/>
+          Or log in with:<br/>
+          <span class="twitter-login"><a class="btn" href="{{twitter_login_url}}">Twitter</a></span><br/>
+          <span class="google-login"><a class="btn" href="{{google_login_url}}">Google</a></span>
+        </div>
       </div>
 
     </div>  <!-- end .l-row -->

@@ -974,7 +974,6 @@ ul.l-4col {
     border-radius: 4px;
     background-color: #24aaf2;
     color: #fff;
-    margin: 0.2em 0;
     font-weight: bold;
     padding: 0.15em 1em;
     margin: 0.2em 0; 
@@ -1410,6 +1409,29 @@ a.btn:visited {
 .label-picker input + label>.label:hover {
     background-color: #FCE792;
     border-color: #FCDA7E;
+}
+
+
+
+
+
+/****/
+.google-login {
+    background-image: url(/static/google_icon.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 18px;
+}
+.twitter-login {
+    background-image: url(/static/twitter_icon.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 18px;
+}
+
+/****/
+.login-options {
+    padding: 0 2em;
 }
 
 /************************************************
