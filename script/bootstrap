@@ -150,7 +150,7 @@ else
   write_alembic_config=true
 fi
 
-if $write_unsourced_config || $write_amebic_config
+if $write_unsourced_config || $write_alembic_config
 then
   echo "  + Setting up config..."
   
