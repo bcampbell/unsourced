@@ -7,7 +7,7 @@ script_location = alembic
 # template used to generate migration files
 # file_template = %%(rev)s_%%(slug)s
 
-sqlalchemy.url = driver://user:pass@localhost/dbname
+sqlalchemy.url = mysql://__MYSQL_USER__:__MYSQL_PASSWORD__@__MYSQL_HOST__/__MYSQL_DB__
 
 # Logging configuration
 [loggers]

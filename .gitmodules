@@ -1,0 +1,6 @@
+[submodule "vendor/metareadability"]
+	path = vendor/metareadability
+	url = git://github.com/bcampbell/metareadability.git
+[submodule "vendor/decruft"]
+	path = vendor/decruft
+	url = git://github.com/bcampbell/decruft.git

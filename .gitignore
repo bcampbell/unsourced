@@ -1,9 +1,12 @@
 *.pyc
 *.swp
-decruft
-metareadability
 scrapeomat/.scrapecache
+scrapeomat/metareadability
+scrapeomat/decruft
 sourcy.conf
 sourcy/alembic.ini
 sourcy/config.py
 sourcy/uploads
+unsourced/config.py
+unsourced/alembic.ini
+pyenv

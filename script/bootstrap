@@ -1,0 +1,199 @@
+#!/bin/sh
+
+# Exit from the script if any statement returns non-true
+set -e
+
+cat <<intro
+
+UNSOURCED
+Find the missing sources for news articles
+
+intro
+
+# Test for Git (needed for submodules)
+if test $(which git)
+then
+  echo "  + Git found."
+else
+  echo "==> You need to install Git."
+  echo "    Download from http://git-scm.com/"
+  exit 1
+fi
+
+# Test for MySQL
+if test $(which mysql)
+then
+  echo "  + MySQL found."
+else
+  echo "==> You need to install MySQL."
+  echo "    Download from http://www.mysql.com/"
+  exit 1
+fi
+
+# Test for Memcached
+if test $(which memcached)
+then
+  echo "  + Memcached found."
+else
+  echo "==> You need to install Memcached."
+  echo "    See http://memcached.org/"
+  exit 1
+fi
+
+# Test for Python
+if test $(which python)
+then
+  echo "  + Python found."
+else
+  echo "==> You need to install Python."
+  echo "    Download from http://www.python.org/"
+  exit 1
+fi
+
+# Test for virtualenv
+if test $(which virtualenv)
+then
+  echo "  + virtualenv found."
+else
+  echo "==> You need to install virtualenv. To install it using easy_install, run:"
+  echo "    sudo easy_install virtualenv"
+  exit 1
+fi
+
+cat <<intermission
+==> Before we go any further, there's a few packages you'll need to check
+    yourself. You may already have these installed.
+
+==> libxml2 libxslt
+
+    Using apt, you can install with:
+      sudo apt-get install python-dev libxml2-dev libxslt-dev
+
+    Using yum, you can install with:
+       sudo yum install libxml2 libxml2-devel libxslt libxslt-devel
+     
+==> mysql-python
+    
+    Using apt:
+        sudo apt-get install libmysqlclient-dev
+    
+    Using yum:
+        sudo yum install mysql-devel
+    
+intermission
+
+echo "==> Do you have these installed? (y or n) > \c"
+read carry_on
+
+if [ "$carry_on" == "y" ]
+then
+  echo ""
+  echo "  + Off we go!"
+fi
+
+# virtualenv
+echo "  + Setting up virtualenv:"
+virtualenv --no-site-packages pyenv
+
+# pyenv
+echo "  + Activating pyenv..."
+source pyenv/bin/activate
+
+# Pip
+echo "  + Installing pip packages:"
+pip install tornado lxml WTForms SQLAlchemy \
+    python-dateutil rdflib rdfextras py-bcrypt \
+    alembic PIL python-memcached dogpile.cache \
+    MySQL-python
+
+# Fuzzydate
+echo "  + Installing fuzzydate package:"
+pip install git+https://github.com/bcampbell/fuzzydate.git
+
+# Metareadability and decruft submodules
+echo "  + Initializing submodules:"
+git submodule init
+git submodule update
+
+# Symlinking submodules
+echo "  + Adding symlinks..."
+
+if test -d scrapeomat/metareadability -o -L scrapeomat/metareadability
+then
+  echo "  + scrapeomat/metareadability already exists, skipping."
+else
+  ln -s vendor/metareadability/metareadability scrapeomat/metareadability
+fi
+
+if test -d scrapeomat/decruft -o -L scrapeomat/decruft
+then
+  echo "  + scrapeomat/decruft already exists, skipping."
+else
+  ln -s vendor/decruft/decruft scrapeomat/decruft
+fi
+
+# Configuration
+write_unsourced_config=false
+write_alembic_config=false
+
+if test -f "unsourced/config.py"
+then
+  echo "  + unsourced/config.py found."
+else
+  write_unsourced_config=true
+fi
+
+if test -f "unsourced/alembic.ini"
+then
+  echo "  + unsourced/alembic.ini found."
+else
+  write_alembic_config=true
+fi
+
+if $write_unsourced_config || $write_alembic_config
+then
+  echo "  + Setting up config..."
+  
+  echo "==> MySQL host: \c"
+  read mysql_host
+  
+  echo "==> MySQL user: \c"
+  read mysql_user
+  
+  echo "==> MySQL password: \c"
+  read mysql_password
+  
+  echo "==> MySQL database: \c"
+  read mysql_db
+  
+  if $write_unsourced_config
+  then
+    cat unsourced/config.py.EXAMPLE | sed \
+    -e "s/__MYSQL_HOST__/$mysql_host/" \
+    -e "s/__MYSQL_USER__/$mysql_user/" \
+    -e "s/__MYSQL_PASSWORD__/$mysql_password/" \
+    -e "s/__MYSQL_DB__/$mysql_db/" \
+    > unsourced/config.py
+    
+    echo "  + Saved configuration in unsourced/config.py."
+  fi
+  
+  if $write_alembic_config
+  then
+    cat unsourced/alembic.ini.EXAMPLE | sed \
+    -e "s/__MYSQL_HOST__/$mysql_host/" \
+    -e "s/__MYSQL_USER__/$mysql_user/" \
+    -e "s/__MYSQL_PASSWORD__/$mysql_password/" \
+    -e "s/__MYSQL_DB__/$mysql_db/" \
+    > unsourced/alembic.ini
+    
+    echo "  + Saved configuration in unsourced/alembic.ini."
+  fi
+fi
+
+echo "==> You're good to go!"
+echo ""
+echo "    Activate your pyenv with 'source pyenv/bin/activate'."
+echo "    Run './db_tool' to seed the database."
+echo "    Run 'python unsourced/app.py' to run the server."
+echo ""

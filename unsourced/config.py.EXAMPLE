@@ -17,10 +17,10 @@ settings = Settings(
     # for testing - show confirmation email instead of sending it
     bypass_email=True,
 
-    mysql_host="127.0.0.1:3306",
-    mysql_database="",
-    mysql_user="",
-    mysql_password="",
+    mysql_host="__MYSQL_HOST__",
+    mysql_database="__MYSQL_DB__",
+    mysql_user="__MYSQL_USER__",
+    mysql_password="__MYSQL_PASSWORD__",
 
     cache_dir="/tmp/unsourced-cache",
 
