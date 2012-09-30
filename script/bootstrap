@@ -166,6 +166,9 @@ then
   echo "==> MySQL database: \c"
   read mysql_db
   
+  echo "  + Generating a random cookie secret..."
+  cookie_secret=`head /dev/random | uuencode -m - | sed -n 2p | cut -c1-${1:-32};`
+  
   if $write_unsourced_config
   then
     cat unsourced/config.py.EXAMPLE | sed \
@@ -173,6 +176,7 @@ then
     -e "s/__MYSQL_USER__/$mysql_user/" \
     -e "s/__MYSQL_PASSWORD__/$mysql_password/" \
     -e "s/__MYSQL_DB__/$mysql_db/" \
+    -e "s/__COOKIE_SECRET__/$cookie_secret/" \
     > unsourced/config.py
     
     echo "  + Saved configuration in unsourced/config.py."

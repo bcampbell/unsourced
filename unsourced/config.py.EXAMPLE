@@ -24,7 +24,7 @@ settings = Settings(
 
     cache_dir="/tmp/unsourced-cache",
 
-    cookie_secret="",
+    cookie_secret="__COOKIE_SECRET__",
     debug=True,
     twitter_consumer_key="",
     twitter_consumer_secret="",
