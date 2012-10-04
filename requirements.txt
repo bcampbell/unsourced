@@ -1,0 +1,15 @@
+tornado
+lxml
+WTForms
+SQLAlchemy
+python-dateutil
+rdflib
+rdfextras
+py-bcrypt
+alembic
+PIL
+python-memcached
+dogpile.cache
+MySQL-python
+git+https://github.com/bcampbell/fuzzydate.git
+

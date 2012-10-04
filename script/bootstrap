@@ -82,7 +82,7 @@ cat <<intermission
     
 intermission
 
-echo "==> Do you have these installed? (y or n) > \c"
+echo -n "==> Do you have these installed? (y or n) > "
 read carry_on
 
 if [ "$carry_on" == "y" ]
@@ -101,14 +101,7 @@ source pyenv/bin/activate
 
 # Pip
 echo "  + Installing pip packages:"
-pip install tornado lxml WTForms SQLAlchemy \
-    python-dateutil rdflib rdfextras py-bcrypt \
-    alembic PIL python-memcached dogpile.cache \
-    MySQL-python
-
-# Fuzzydate
-echo "  + Installing fuzzydate package:"
-pip install git+https://github.com/bcampbell/fuzzydate.git
+pip install -r requirements.txt
 
 # Metareadability and decruft submodules
 echo "  + Initializing submodules:"
@@ -154,16 +147,16 @@ if $write_unsourced_config || $write_alembic_config
 then
   echo "  + Setting up config..."
   
-  echo "==> MySQL host: \c"
+  echo -n "==> MySQL host: "
   read mysql_host
   
-  echo "==> MySQL user: \c"
+  echo -n "==> MySQL user: "
   read mysql_user
   
-  echo "==> MySQL password: \c"
+  echo -n "==> MySQL password: "
   read mysql_password
   
-  echo "==> MySQL database: \c"
+  echo -n "==> MySQL database: "
   read mysql_db
   
   echo "  + Generating a random cookie secret..."
