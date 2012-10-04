@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Exit from the script if any statement returns non-true
 set -e
