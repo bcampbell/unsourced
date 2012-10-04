@@ -167,7 +167,7 @@ then
   read mysql_db
   
   echo "  + Generating a random cookie secret..."
-  cookie_secret=`head /dev/random | uuencode -m - | sed -n 2p | cut -c1-${1:-32};`
+  cookie_secret=`head /dev/urandom | uuencode -m - | sed -n 2p | cut -c1-${1:-32};`
   
   if $write_unsourced_config
   then
@@ -201,3 +201,4 @@ echo "    Activate your pyenv with 'source pyenv/bin/activate'."
 echo "    Run './db_tool' to seed the database."
 echo "    Run 'python unsourced/app.py' to run the server."
 echo ""
+
