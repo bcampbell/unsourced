@@ -22,7 +22,7 @@ from sqlalchemy.orm import sessionmaker
 import uimodules
 import db
 import config
-from handlers import base,user,article,addarticle,front,sources,tagging,comments,browse,tokens,dashboard,api,labels
+from handlers import base,user,article,addarticle,front,sources,tagging,comments,browse,tokens,api,labels
 from models import Label
 import analyser
 
@@ -41,7 +41,6 @@ class Application(tornado.web.Application):
         handlers.extend(comments.handlers)
         handlers.extend(browse.handlers)
         handlers.extend(tokens.handlers)
-        handlers.extend(dashboard.handlers)
         handlers.extend(api.handlers)
         handlers.extend(labels.handlers)
 

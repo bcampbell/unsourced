@@ -1,0 +1,109 @@
+{% import util %}
+{% extends "base.html" %}
+{% block title %}Unsourced{% end %}
+
+
+{% block extra_js %}
+$('.top-sourcers nav a').tabify();
+{% end %}
+
+{% block main %}
+
+
+<div class="gubbins">
+<div class="l-row">
+
+  <div class="l-col50">
+    <div class="right-now box">
+      <h2>Right now</h2>
+
+      <ul class="act-list">
+{% for act in recent_actions %}
+        <li class="act act-full">{% module action(act,user_display='s',show_timestamp=False) %}</li>
+{% end %}
+      </ul>
+
+    </div>
+
+    <div class="box">
+      <h2>Recent Comments</h2>
+      <ul class="act-list">
+        {% for act in recent_comments %}
+        <li class="act act-full">{% module action(act,user_display='s') %}</li>
+        {% end %}
+      </ul>
+    </div>
+
+  </div>
+
+
+  <div class="l-col50">
+    <div class="box">
+      <h2>Progress this week...</h2>
+      {% module daily_chart(week_stats, week_stats_max_arts) %}
+    </div>
+
+    <div class="top-sourcers box">
+
+      <h2>Top Sourcers</h2>
+      <nav>
+      <a href="#top-sourcers-7days">Week</a> |
+      <a href="#top-sourcers-alltime">All time</a>
+      </nav>
+      <br/>
+      <div id="top-sourcers-7days">
+      {% for u,cnt in top_sourcers_7days %}
+        <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
+      {% end %}
+      </div>
+      <div id="top-sourcers-alltime">
+      {% for u,cnt in top_sourcers_alltime %}
+        <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
+      {% end %}
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Mentions</h2>
+      <p>Any comments directed at you:</p>
+      {% if recent_mentions %}
+      <ul class="act-list">
+        {% for act in recent_mentions %}
+        <li class="act act-full">{% module action(act,user_display='s') %}</li>
+        {% end %}
+      </ul>
+      {% else %}
+      <p>none</p>
+      {% end %}
+    </div>
+
+    <div class="box">
+      <h2>Recent interesting activity</h2>
+      <p>Activity by others upon articles you've worked on:</p>
+      {% if actions_of_interest %}
+      <ul class="act-list">
+        {% for act in actions_of_interest %}
+        <li class="act act-full">{% module action(act,user_display='s') %}</li>
+        {% end %}
+      </ul>
+      {% else %}
+      <p>none</p>
+      {% end %}
+    </div>
+
+    <div class="box">
+      <h2>Outstanding help requests</h2>
+      <p>Articles which people have asked for help with:</p>
+      {% module art_list(helpreq_arts) %}
+    </div>
+
+  </div>
+
+
+
+
+
+</div> <!-- end .l-row -->
+</div>
+{% end %}
+

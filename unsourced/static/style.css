@@ -471,7 +471,8 @@ ul.l-4col {
 /****/
 .site-intro {
     background-color: #fff;
-    padding: 1em 1em 3em 1em;
+    padding: 5em 1em 5em 1em;
+    font-size: 125%;
 }
 
 
@@ -1005,6 +1006,11 @@ a.btn:visited {
     font-size: 125%;
 }
 
+.btn-verymajor {
+    padding: 0.5em 1em;
+    font-size: 200%;
+}
+
 /*****
  * a wrapper around a button (eg a form, to allow POSTs)
  */
@@ -1167,7 +1173,6 @@ a.btn:visited {
 .site-intro h2 {
     font-family: "Oleo Script";
     font-size: 275%; 
-    margin-left: 1em;
 }
 
 .browse-heading,

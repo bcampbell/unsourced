@@ -9,7 +9,7 @@ from sqlalchemy.sql.expression import cast,func
 from sqlalchemy.orm import subqueryload,joinedload
 
 from base import BaseHandler
-from unsourced.models import Source,Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags
+from unsourced.models import Source,Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags,comment_user_map
 from unsourced.cache import cache
 import util
 
@@ -127,6 +127,10 @@ class DailyBreakdown(BaseHandler):
 
 class FrontHandler(BaseHandler):
     def get(self):
+        if self.current_user is None:
+            self.render('front.html')
+            return
+
 
         top_sourcers_7days = calc_top_sourcers(self.session, ndays=7, cache_expiration_time=60*5)
         top_sourcers_alltime = calc_top_sourcers(self.session, ndays=None, cache_expiration_time=60*60*12)
@@ -175,15 +179,61 @@ class FrontHandler(BaseHandler):
             random_arts += random.sample(sourced_arts, 1)
         random.shuffle(random_arts)
 
+
+        # outstanding help requests
+        helpreq_arts = self.session.query(Article).\
+            filter(Article.help_reqs.any()).\
+            order_by(Article.pubdate.desc()).\
+            limit(10)
+
+        # find actions performed by other people on articles this user has touched
+        arts_of_interest = self.session.query(Action.article_id).\
+            distinct().\
+            filter(Action.article_id != None).\
+            filter(Action.user==self.current_user)
+
+        actions_of_interest = self.session.query(Action).\
+            filter(Action.article_id.in_(arts_of_interest)).\
+            filter(Action.user!=self.current_user).\
+            order_by(Action.performed.desc()).\
+            limit(10)
+
+
+        # comments aimed at this user
+        subq = self.session.query(comment_user_map.c.comment_id).\
+            filter(comment_user_map.c.useraccount_id==self.current_user.id).\
+            subquery()
+        recent_mentions = self.session.query(Action).\
+            options(joinedload('article'),joinedload('user'),joinedload('comment')).\
+            filter(Action.what=='comment').\
+            filter(Action.comment_id.in_(subq)).\
+            order_by(Action.performed.desc()).\
+            slice(0,10).\
+            all()
+
+        # recent comments
+        recent_comments = self.session.query(Action).\
+            options(joinedload('article'),joinedload('user'),joinedload('comment')).\
+            filter(Action.what=='comment').\
+            order_by(Action.performed.desc()).\
+            slice(0,10).\
+            all()
+
+
+
         # note: because of caching, a lot of the sqlalchemy objects will be
         # session-less (detached), so the template will fail if any further
         # database queries are triggered.
         # we could merge cached objects back into the session, but
         # that's silly - we should be avoiding fine-grained on-the-fly
         # additional queries anyway.
-        self.render('front.html',
-            random_arts = random_arts,
+        self.render('front_loggedin.html',
+            #random_arts = random_arts,
+            helpreq_arts = helpreq_arts,
             recent_actions = recent_actions,
+            recent_comments = recent_comments,
+            recent_mentions = recent_mentions,
+            actions_of_interest = actions_of_interest,
             groupby = itertools.groupby,
             top_sourcers_7days = top_sourcers_7days,
             top_sourcers_alltime = top_sourcers_alltime,
@@ -263,56 +313,61 @@ class AddJournalHandler(BaseHandler):
         self.redirect(self.request.path)
 
 
-def top_n(session, day_from, day_to, action_kinds=['src_add',], num_results=5):
-    """ helper for league tables """
-    cnts = session.query(Action.user_id, func.count('*').label('cnt')).\
-            filter(Action.what.in_(action_kinds)).\
-            filter(cast(Action.performed, Date) >= day_from).\
-            filter(cast(Action.performed, Date) <= day_to).\
-            group_by(Action.user_id).\
-            subquery()
 
-    return session.query(UserAccount, cnts.c.cnt).\
-        join(cnts, UserAccount.id==cnts.c.user_id).\
-        order_by(cnts.c.cnt.desc()).\
-        limit(num_results).\
-        all()
+class DashboardHandler(BaseHandler):
 
-
-
-
-class LeagueTablesHandler(BaseHandler):
-
+    @tornado.web.authenticated
     def get(self):
-        today= datetime.date.today()
-    
-        kinds = ('src_add',)
-        top5_sourcers_today = top_n(self.session,today,today,kinds,5)
-        top5_sourcers_7day = top_n(self.session,today-datetime.timedelta(days=7),today,kinds,5)
-        top5_sourcers_30day = top_n(self.session,today-datetime.timedelta(days=30),today,kinds,5)
 
-        kinds = ('tag_add',)
-        top5_taggers_today = top_n(self.session,today,today,kinds,5)
-        top5_taggers_7day = top_n(self.session,today-datetime.timedelta(days=7),today,kinds,5)
-        top5_taggers_30day = top_n(self.session,today-datetime.timedelta(days=30),today,kinds,5)
+        today = datetime.datetime.utcnow().date() - datetime.timedelta(days=1)
 
-        kinds = ('src_vote','tag_vote')
-        top5_voters_today = top_n(self.session,today,today,kinds,5)
-        top5_voters_7day = top_n(self.session,today-datetime.timedelta(days=7),today,kinds,5)
-        top5_voters_30day = top_n(self.session,today-datetime.timedelta(days=30),today,kinds,5)
+        unsourced_arts = self.session.query(Article).\
+            filter(cast(Article.pubdate, Date) >= today).\
+            filter(Article.needs_sourcing == True).\
+            order_by(Article.pubdate.desc()).\
+            all()
 
-        self.render('leaguetables.html',
-            top5_sourcers_today=top5_sourcers_today,
-            top5_sourcers_7day=top5_sourcers_7day,
-            top5_sourcers_30day=top5_sourcers_30day,
-            top5_taggers_today=top5_taggers_today,
-            top5_taggers_7day=top5_taggers_7day,
-            top5_taggers_30day=top5_taggers_30day,
-            top5_voters_today=top5_voters_today,
-            top5_voters_7day=top5_voters_7day,
-            top5_voters_30day=top5_voters_30day,
-            )
+        helpreq_arts = self.session.query(Article).\
+            filter(Article.help_reqs.any()).\
+            order_by(Article.pubdate.desc()).\
+            limit(5)
 
+
+
+        # find actions performed by other people on articles this user has touched
+        arts_of_interest = self.session.query(Action.article_id).\
+            distinct().\
+            filter(Action.article_id != None).\
+            filter(Action.user==self.current_user)
+
+        actions_of_interest = self.session.query(Action).\
+            filter(Action.article_id.in_(arts_of_interest)).\
+            filter(Action.user!=self.current_user).\
+            order_by(Action.performed.desc()).\
+            limit(10)
+
+
+#            filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close'))).\
+#           order_by(Action.performed.desc()).slice(0,6)
+
+        subq = self.session.query(comment_user_map.c.comment_id).\
+            filter(comment_user_map.c.useraccount_id==self.current_user.id).\
+            subquery()
+        recent_mentions = self.session.query(Action).\
+            options(joinedload('article'),joinedload('user'),joinedload('comment')).\
+            filter(Action.what=='cjjjjomment').\
+            filter(Action.comment_id.in_(subq)).\
+            order_by(Action.performed.desc()).\
+            slice(0,10).\
+            all()
+
+
+        self.render('dashboard.html',
+            unsourced_arts = unsourced_arts,
+            helpreq_arts = helpreq_arts,
+            actions_of_interest = actions_of_interest,
+            recent_mentions = recent_mentions)
+        
 
 handlers = [
     (r'/', FrontHandler),
@@ -321,6 +376,7 @@ handlers = [
     (r'/academicpapers', AcademicPapersHandler),
     (r"/addjournal", AddJournalHandler),
     (r"/addinstitution", AddInstitutionHandler),
-    (r"/leaguetables", LeagueTablesHandler),
     (r"/daily", DailyBreakdown),
+    (r'/dashboard', DashboardHandler),
     ]
+
