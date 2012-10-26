@@ -2,6 +2,7 @@ import datetime
 from collections import defaultdict
 import itertools
 import random
+import urllib
 
 import tornado.auth
 from sqlalchemy import Date,not_
@@ -11,6 +12,8 @@ from sqlalchemy.orm import subqueryload,joinedload
 from base import BaseHandler
 from unsourced.models import Source,Article,Action,Lookup,Tag,TagKind,UserAccount,Comment,article_tags,comment_user_map
 from unsourced.cache import cache
+from unsourced.queries import build_action_query
+from unsourced.paginator import SAPaginator
 import util
 
 def calc_top_sourcers(session, ndays=7, cache_expiration_time=60*5):
@@ -131,6 +134,8 @@ class FrontHandler(BaseHandler):
             self.render('front.html')
             return
 
+        page = int(self.get_argument('p',1))
+        view = self.get_argument('view',None)
 
         top_sourcers_7days = calc_top_sourcers(self.session, ndays=7, cache_expiration_time=60*5)
         top_sourcers_alltime = calc_top_sourcers(self.session, ndays=None, cache_expiration_time=60*60*12)
@@ -141,99 +146,31 @@ class FrontHandler(BaseHandler):
         max_arts = max(stats, key=lambda x: x.total).total
 
 
-        def _get_recent_actions():
-            recent_actions = self.session.query(Action).\
-                options(joinedload('article'),joinedload('user'),joinedload('source'),joinedload('comment'),joinedload('label')).\
-                filter(Action.what.in_(('src_add','art_add','mark_sourced','mark_unsourced','helpreq_open','helpreq_close','label_add','label_remove'))).\
-                order_by(Action.performed.desc()).slice(0,6).all()
-            return recent_actions
-
-        recent_actions = cache.get_or_create("recent_actions", _get_recent_actions, 10)
-
-
-
-        # 4 sample articles (3 unsourced, one sourced as an example)
-        # TODO: should probably bias these toward being >1day old
-        def _recent_arts_unsourced():
-            return self.session.query(Article).\
-                options(joinedload('sources'),joinedload('comments')).\
-                filter(Article.needs_sourcing==True).\
-                order_by(Article.pubdate.desc()).\
-                limit(50).\
-                all()
-
-        def _recent_arts_sourced():
-            return self.session.query(Article).\
-                options(joinedload('sources'),joinedload('comments')).\
-                filter(Article.needs_sourcing==False).\
-                order_by(Article.pubdate.desc()).\
-                limit(50).\
-                all()
-
-        sourced_arts = cache.get_or_create("recent_arts_sourced",_recent_arts_sourced, 60*17)
-        unsourced_arts = cache.get_or_create("recent_arts_unsourced",_recent_arts_unsourced, 60*15)
-        random_arts = []
-        if len(unsourced_arts)>0:
-            random_arts += random.sample(unsourced_arts, 3)
-        if len(sourced_arts)>0:
-            random_arts += random.sample(sourced_arts, 1)
-        random.shuffle(random_arts)
-
-
         # outstanding help requests
         helpreq_arts = self.session.query(Article).\
             filter(Article.help_reqs.any()).\
             order_by(Article.pubdate.desc()).\
             limit(10)
 
-        # find actions performed by other people on articles this user has touched
-        arts_of_interest = self.session.query(Action.article_id).\
-            distinct().\
-            filter(Action.article_id != None).\
-            filter(Action.user==self.current_user)
 
-        actions_of_interest = self.session.query(Action).\
-            filter(Action.article_id.in_(arts_of_interest)).\
-            filter(Action.user!=self.current_user).\
-            order_by(Action.performed.desc()).\
-            limit(10)
+        def page_url(page):
+            """ generate url for the given page of this query"""
+            params = {}
+            # preserve all request params, and override page number
+            for k in self.request.arguments:
+                params[k] = self.get_argument(k)
+            params['p'] = page
+            url = "/?" + urllib.urlencode(params)
+            return url
 
-
-        # comments aimed at this user
-        subq = self.session.query(comment_user_map.c.comment_id).\
-            filter(comment_user_map.c.useraccount_id==self.current_user.id).\
-            subquery()
-        recent_mentions = self.session.query(Action).\
-            options(joinedload('article'),joinedload('user'),joinedload('comment')).\
-            filter(Action.what=='comment').\
-            filter(Action.comment_id.in_(subq)).\
-            order_by(Action.performed.desc()).\
-            slice(0,10).\
-            all()
-
-        # recent comments
-        recent_comments = self.session.query(Action).\
-            options(joinedload('article'),joinedload('user'),joinedload('comment')).\
-            filter(Action.what=='comment').\
-            order_by(Action.performed.desc()).\
-            slice(0,10).\
-            all()
+        actions = build_action_query(self.session,view,current_user=self.current_user)
+        paged_actions = SAPaginator(actions, page, page_url, per_page=100)
 
 
-
-        # note: because of caching, a lot of the sqlalchemy objects will be
-        # session-less (detached), so the template will fail if any further
-        # database queries are triggered.
-        # we could merge cached objects back into the session, but
-        # that's silly - we should be avoiding fine-grained on-the-fly
-        # additional queries anyway.
         self.render('front_loggedin.html',
-            #random_arts = random_arts,
+            filters = {},
             helpreq_arts = helpreq_arts,
-            recent_actions = recent_actions,
-            recent_comments = recent_comments,
-            recent_mentions = recent_mentions,
-            actions_of_interest = actions_of_interest,
+            paged_actions = paged_actions,
             groupby = itertools.groupby,
             top_sourcers_7days = top_sourcers_7days,
             top_sourcers_alltime = top_sourcers_alltime,

@@ -13,31 +13,17 @@ $('.top-sourcers nav a').tabify();
 <div class="gubbins">
 <div class="l-row">
 
-  <div class="l-col50">
-    <div class="right-now box">
-      <h2>Right now</h2>
-
-      <ul class="act-list">
-{% for act in recent_actions %}
-        <li class="act act-full">{% module action(act,user_display='s',show_timestamp=False) %}</li>
-{% end %}
-      </ul>
-
+  <div class="l-col66">
+    <div id="results" class="box">
+    <div>
+    Show: <a href="/">all activity</a> | <a href="/?view=interesting">interesting</a> (activity about articles you've worked on) | <a href="/?view=comments">comments</a> | <a href="/?view=mentions">mentions</a> (of you)
     </div>
-
-    <div class="box">
-      <h2>Recent Comments</h2>
-      <ul class="act-list">
-        {% for act in recent_comments %}
-        <li class="act act-full">{% module action(act,user_display='s') %}</li>
-        {% end %}
-      </ul>
+      {% module actionbrowser(filters, paged_actions) %}
     </div>
-
   </div>
 
 
-  <div class="l-col50">
+  <div class="l-col33">
     <div class="box">
       <h2>Progress this week...</h2>
       {% module daily_chart(week_stats, week_stats_max_arts) %}
@@ -61,34 +47,6 @@ $('.top-sourcers nav a').tabify();
         <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
       {% end %}
       </div>
-    </div>
-
-    <div class="box">
-      <h2>Mentions</h2>
-      <p>Any comments directed at you:</p>
-      {% if recent_mentions %}
-      <ul class="act-list">
-        {% for act in recent_mentions %}
-        <li class="act act-full">{% module action(act,user_display='s') %}</li>
-        {% end %}
-      </ul>
-      {% else %}
-      <p>none</p>
-      {% end %}
-    </div>
-
-    <div class="box">
-      <h2>Recent interesting activity</h2>
-      <p>Activity by others upon articles you've worked on:</p>
-      {% if actions_of_interest %}
-      <ul class="act-list">
-        {% for act in actions_of_interest %}
-        <li class="act act-full">{% module action(act,user_display='s') %}</li>
-        {% end %}
-      </ul>
-      {% else %}
-      <p>none</p>
-      {% end %}
     </div>
 
     <div class="box">
