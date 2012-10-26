@@ -1504,8 +1504,8 @@ ul.sourcers img {
     vertical-align:top;
 }
 
-
-.art-group {
+/* should be more general */
+.art-group, .act-group {
     display: block;
     margin: 1em 0 0.5em 0;
 }
