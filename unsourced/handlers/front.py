@@ -135,7 +135,7 @@ class FrontHandler(BaseHandler):
             return
 
         page = int(self.get_argument('p',1))
-        view = self.get_argument('view',None)
+        view = self.get_argument('view','comments')
 
         top_sourcers_7days = calc_top_sourcers(self.session, ndays=7, cache_expiration_time=60*5)
         top_sourcers_alltime = calc_top_sourcers(self.session, ndays=None, cache_expiration_time=60*60*12)
@@ -147,10 +147,9 @@ class FrontHandler(BaseHandler):
 
 
         # outstanding help requests
-        helpreq_arts = self.session.query(Article).\
+        helpreq_cnt = self.session.query(Article).\
             filter(Article.help_reqs.any()).\
-            order_by(Article.pubdate.desc()).\
-            limit(10)
+            order_by(Article.pubdate.desc()).count()
 
 
         def page_url(page):
@@ -163,14 +162,20 @@ class FrontHandler(BaseHandler):
             url = "/?" + urllib.urlencode(params)
             return url
 
+        interesting_cnt = build_action_query(self.session,'interesting',current_user=self.current_user).count()
+        mentions_cnt = build_action_query(self.session,'mentions',current_user=self.current_user).count()
+
         actions = build_action_query(self.session,view,current_user=self.current_user)
         paged_actions = SAPaginator(actions, page, page_url, per_page=100)
 
 
         self.render('front_loggedin.html',
-            filters = {},
-            helpreq_arts = helpreq_arts,
+            filters = dict(),
+            view=view,
+            helpreq_cnt = helpreq_cnt,
             paged_actions = paged_actions,
+            interesting_cnt = interesting_cnt,
+            mentions_cnt = mentions_cnt,
             groupby = itertools.groupby,
             top_sourcers_7days = top_sourcers_7days,
             top_sourcers_alltime = top_sourcers_alltime,

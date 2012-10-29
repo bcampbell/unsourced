@@ -1,6 +1,5 @@
 {% from itertools import groupby %}
 {% from datetime import datetime %}
-<h2 class="browse-heading">Activity ({{paged_results.total_items}})</h2>
 
 {% if paged_results.total_items == 0 %}
 <p>None matching</p>
@@ -14,7 +13,7 @@
 <time class="act-group" datetime="{{day.isoformat()}}">{{day.strftime("%A, %d %B %Y")}}</time>
 <ul class="act-list">
 {%   for act in daysworth %}
-  <li class="act">
+  <li class="act{% if act.refers_to(current_user) %} mentions{% end %}">
   {% module action(act,user_display='s') %}
   </li>
 {%   end%}

@@ -1523,4 +1523,66 @@ ul.sourcers img {
 }
 
 
+.mentions {
+    background-color: #fbd415; /* rgb(251,212,21); */
+    padding: 0.25em 0;
+}
+
+.stat-list {
+  font-family: "Contrail One";
+ font-size: 125%;
+}
+
+ul.stat-list {
+    list-style: none;
+}
+ul.stat-list li {
+    list-style: none;
+}
+
+.stat-item {
+    font-size: 200%;
+}
+
+/*****/
+.tabnav {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid black;
+}
+
+.tabnav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.tabnav ul li {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    border: 1px solid black;
+}
+.tabnav ul li.seltab {
+    border-bottom: 1px solid #fff;
+}
+
+.tabnav ul a {
+    padding: 0.2em 0.5em 0.5em 0.5em;
+    margin: 0;
+    display: block;
+    font-size: larger;
+/*    font-family: 'Contrail One'; */
+}
+
+.tabnav ul a:visited {
+}
+
+.tabnav ul a:hover {
+    text-decoration: none;
+}
+
 

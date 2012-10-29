@@ -63,6 +63,15 @@ class Action(Base):
         return "<Action(%s, %s, %s)>" % (self.what,self.performed, self.user)
 
 
+
+    def refers_to(self, user):
+        if user is None or self.comment is None:
+            return False
+        if user in self.comment.mentioned_users:
+            return True
+        return False
+            
+
 class HelpReq(Base):
     """ a help request on an article """
     __tablename__ = 'help_req'

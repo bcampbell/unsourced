@@ -14,16 +14,28 @@ $('.top-sourcers nav a').tabify();
 <div class="l-row">
 
   <div class="l-col66">
+
     <div id="results" class="box">
-    <div>
-    Show: <a href="/">all activity</a> | <a href="/?view=interesting">interesting</a> (activity about articles you've worked on) | <a href="/?view=comments">comments</a> | <a href="/?view=mentions">mentions</a> (of you)
-    </div>
+      <nav class="tabnav">
+      <ul>
+        <li {% if view=='comments' %}class="seltab"{% end %}><a href="/?view=comments">talk</a></li>
+        <li {% if view=='interesting' %}class="seltab"{% end %}><a href="/?view=interesting">activity on articles you've worked on</a></li>
+        <li {% if view=='all' %}class="seltab"{% end %}><a href="/?view=all">all activity</a></li>
+      </ul>
+      </nav>
       {% module actionbrowser(filters, paged_actions) %}
     </div>
   </div>
 
 
   <div class="l-col33">
+    <div class="box">
+      <ul class="stat-list">
+        <li><a href="/browse?date=all&sourced=all&help=y"><span class="stat-item">{{helpreq_cnt}}</span> help requests open</a></li>
+        <li><a href="/?view=mentions"><span class="stat-item">{{mentions_cnt}}</span> comments addressed to you</a></li>
+      </ul>
+    </div>
+
     <div class="box">
       <h2>Progress this week...</h2>
       {% module daily_chart(week_stats, week_stats_max_arts) %}
@@ -47,12 +59,6 @@ $('.top-sourcers nav a').tabify();
         <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
       {% end %}
       </div>
-    </div>
-
-    <div class="box">
-      <h2>Outstanding help requests</h2>
-      <p>Articles which people have asked for help with:</p>
-      {% module art_list(helpreq_arts) %}
     </div>
 
   </div>
