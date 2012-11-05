@@ -91,6 +91,16 @@ class Application(tornado.web.Application):
             'churn': dict(prettyname='Churnalism',
                 description="This article is basically just a press release, copied and pasted.",
                 icon="warn_churn.png"),
+
+            'bad_headline': dict(prettyname='Misleading headline',
+                description="Massively misleading headline",
+                icon="warn_badheadline.png"),
+            'bogus_data': dict(prettyname='Bogus research',
+                description="Claims in this article are based on bogus research",
+                icon="warn_generic.png"),
+            'misrep': dict(prettyname='Misrepresented research',
+                description="This article misrepresents the research/statistics on which it claims to be based",
+                icon="warn_twisteddata.png"),
         }
 
         session = self.Session()

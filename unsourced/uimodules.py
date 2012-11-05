@@ -514,8 +514,10 @@ class label_picker(tornado.web.UIModule):
     def render(self, art):
 
         assigned = [l.label.id for l in art.labels]
+        # dodgy_pr is deprecated
         available = self.handler.session.query(Label).\
             filter(not_(Label.id.in_(assigned))).\
+            filter(Label.id != 'dodgy_pr').\
             all()
 
         return self.render_string('modules/label_picker.html', art=art, available=available)
