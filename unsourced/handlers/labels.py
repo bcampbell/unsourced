@@ -53,8 +53,9 @@ class RemoveLabelHandler(BaseHandler):
         if artlabel is None:
             raise tornado.web.HTTPError(404, "Label not found")
 
-        if artlabel.creator != self.current_user:
-            raise tornado.web.HTTPError(403)
+        # let anyone zap a label
+        #if artlabel.creator != self.current_user:
+        #    raise tornado.web.HTTPError(403)
 
         art = artlabel.article
         label = artlabel.label

@@ -3,7 +3,7 @@
 
 {% if usage is not None %}
   <div class="moderation">
-  {% if current_user and usage.creator==current_user %}
+  {% if current_user %}
     {% module postbutton("/art/%d/removelabel/%s" %(usage.article.id,usage.label.id), "remove") %}
   {% end %}
   {% if usage.creator %}
