@@ -125,6 +125,9 @@ class DailyBreakdown(BaseHandler):
         self.render('daily.html', stats=stats, max_arts=max_arts)
 
 
+class ExtensionHandler(BaseHandler):
+    def get(self):
+        self.render('front.html')
 
 
 
@@ -320,5 +323,6 @@ handlers = [
     (r"/addinstitution", AddInstitutionHandler),
     (r"/daily", DailyBreakdown),
     (r'/dashboard', DashboardHandler),
+    (r'/extension', ExtensionHandler),
     ]
 

@@ -1268,7 +1268,6 @@ a.btn:visited {
 .screenshot {
     margin: 1em;
     border: 1px solid #ccc;
-    box-shadow: 4px 4px 4px rgba(0,0,0,0.5);
 }
 
 /*****

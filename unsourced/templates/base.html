@@ -54,9 +54,12 @@ By reading the source material you can decide if the journalist has come to the 
 
   <nav class="topnav">
     <ul>
-        <li><a href="http://unsourced.posterous.com/browser-extension-for-chrome">Browser extension</a></li>
+        <li><a href="/">Home</a></li>
         <li><a href="/browse">Explore</a></li>
         <li><a href="/daily">View by day</a></li>
+{% if current_user is not None %}
+        <li><a href="/extension">Browser extension</a></li>
+{% end %}
     </ul>
     <div class="site-links">
       <div>Follow us on Twitter: <a href="https://twitter.com/UnsourcedOrg">@UnsourcedOrg</a></div>
