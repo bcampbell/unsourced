@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100"
+   height="100"
+   id="svg3788"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="twisteddata.svg"
+   inkscape:export-filename="/home/ben/proj/unsourced/unsourced/static/label-s/warn_twisteddata.png"
+   inkscape:export-xdpi="14.4"
+   inkscape:export-ydpi="14.4">
+  <defs
+     id="defs3790" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="56.612915"
+     inkscape:cy="32.59872"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     inkscape:window-width="956"
+     inkscape:window-height="1161"
+     inkscape:window-x="2326"
+     inkscape:window-y="18"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3793">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(0,52)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 9.8571429,16.599423 0,52.972006 c 0,0 19.5004521,-1.369621 30.0691361,0 10.568684,1.369621 23.29966,6.552857 29.647979,11.970307 6.348319,5.41745 6.174361,9.047959 6.56599,10.480331"
+       id="path3809"
+       inkscape:connector-curvature="0"
+       transform="translate(0,-52)"
+       sodipodi:nodetypes="cczzc"
+       inkscape:export-filename="/home/ben/proj/unsourced/unsourced/static/label-s/warn_twisteddata.png"
+       inkscape:export-xdpi="19.219999"
+       inkscape:export-ydpi="19.219999" />
+    <rect
+       style="fill:#000000;fill-opacity:1"
+       id="rect3813"
+       width="12.929953"
+       height="17.980715"
+       x="15.354319"
+       y="-0.083259583"
+       ry="0" />
+    <path
+       style="fill:#000000;fill-opacity:1"
+       d="m 30.102547,-12.962705 c 4.904399,-1.432813 8.474885,-2.365777 14.201837,-3.667659 -1.495654,4.249944 -1.008403,26.2513064 -1.069855,34.325789 l -12.929952,0 c -0.165894,-6.818992 0.295734,-24.2752745 -0.20203,-30.65813 z"
+       id="rect3817"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#000000;fill-opacity:1"
+       d="m 47.117884,-25.083339 c 11.624424,-4.161106 17.819491,-5.317759 23.794824,-6.314649 C 60.732182,-15.786977 56.668714,8.3496703 58.210039,22.114842 L 45.456863,17.695425 c 0.195748,-9.0960847 -0.484045,-35.144666 1.661021,-42.778764 z"
+       id="rect3819"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#000000;fill-opacity:1"
+       d="m 85.61616,-35.161941 c 3.53396,10.153614 5.622293,15.13762 11.470963,22.695118 -13.862886,2.5337543 -26.419379,23.035024 -26.755252,41.198165 -4.344104,-3.77253 -6.052003,-0.423965 -10.364392,-5.388257 -3.486926,-9.356743 6.280269,-52.207204 25.648681,-58.505026 z"
+       id="rect3821"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+  </g>
+</svg>
