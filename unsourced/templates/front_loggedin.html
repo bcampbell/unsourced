@@ -18,9 +18,9 @@ $('.top-sourcers nav a').tabify();
     <div id="results" class="box">
       <nav class="tabnav">
       <ul>
+        <li {% if view=='recent' %}class="seltab"{% end %}><a href="/?view=recent">recent activity</a></li>
         <li {% if view=='comments' %}class="seltab"{% end %}><a href="/?view=comments">talk</a></li>
         <li {% if view=='interesting' %}class="seltab"{% end %}><a href="/?view=interesting">activity on articles you've worked on</a></li>
-        <li {% if view=='all' %}class="seltab"{% end %}><a href="/?view=all">all activity</a></li>
       </ul>
       </nav>
       {% module actionbrowser(filters, paged_actions) %}

@@ -138,7 +138,7 @@ class FrontHandler(BaseHandler):
             return
 
         page = int(self.get_argument('p',1))
-        view = self.get_argument('view','comments')
+        view = self.get_argument('view','recent')
 
         top_sourcers_7days = calc_top_sourcers(self.session, ndays=7, cache_expiration_time=60*5)
         top_sourcers_alltime = calc_top_sourcers(self.session, ndays=None, cache_expiration_time=60*60*12)
