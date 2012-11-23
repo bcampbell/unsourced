@@ -10,112 +10,31 @@ $('.top-sourcers nav a').tabify();
 {% block main %}
 
 <div class="site-intro">
-  <h2>Add missing sources to news articles</h2>
-
-  <div class="random-arts yellow-frill">
-    <div class="l-row">
-{% for art in random_arts %}
-      <div class="l-col25">
-        <div class="art-box">
-          <div class="body">
-            <img class="favicon" src="{{art.publisher_favicon_url()}}" alt="{%module domain(art.permalink)%}"  title="{%module domain(art.permalink)%}" />
-            <a href="/art/{{art.id}}">{{art.headline}}</a>
-            <time class="timestamp" datetime="{{art.pubdate.isoformat()}}">{{locale.format_date(art.pubdate, shorter=True)}}</time>
-          </div>
-          {% if art.needs_sourcing %}
-          <div class="l-center">
-          <a class="btn findsrc" href="/art/{{art.id}}">Find source</a>
-          </div>
-          {% else %}
-          <div class="sourced">Sourced</div>
-          {% end %}
-
-          {% if len(art.sources)>0 and not art.needs_sourcing %}
-          <ul class="sourcers">
-            {% for user in set([s.creator for s in art.sources]) %}
-            <li>
-                <a class="user" href="{{user.profile_url()}}">{% raw user.photo_img('m') %}</a>
-            By <a class="user" href="{{user.profile_url()}}">{{user.username}}</a>
-            </li>
-            {% end %}
-          </ul>
-          {% end %}
-        </div>
-      </div>
-{% end %}
+  <h2 class="l-center">See sources and warning labels as you read the news...</h2>
+  <div class="l-row">
+    <div class="l-center">
+      <p>Unsourced.org uses a custom browser extension to show you missing sources and warning labels as you read the news.</p>
     </div>
-    <div class="random-arts-shuffle">
-      <a title="more articles..." href="/"><img src="static/refresh_icon.png" alt="shuffle" /></a>
+  </div> <!-- end .l-row -->
+  <div class="l-row">
+    <div class="l-center l-col50">
+      <img src="/static/firefox_logo.png" /><br/>
+      <a class="btn btn-major" href="/static/unsourced.xpi">Install extension for Firefox</a>
     </div>
-  </div> <!-- end .random-arts -->
-</div> <!-- end .site-intro -->
-
-<div class="gubbins">
-<div class="l-row">
-
-  <div class="l-col66">
-    <div class="right-now box">
-      <h2>Right now</h2>
-
-      <ul class="act-list">
-{% for act in recent_actions %}
-        <li class="act act-full">{% module action(act,user_display='m',show_timestamp=False) %}</li>
-{% end %}
-      </ul>
-
-      <a class="btn btn-major" href="/register">Sign up and start finding sources</a>
+    <div class="l-center l-col50">
+      <img src="/static/chrome_logo.png" /><br/>
+      <a class="btn btn-major" href="https://chrome.google.com/webstore/detail/dckcbcjonlojinjlemjhllddndemmbop">Install extension for Chrome</a><br/>
+      (or read <a href="http://unsourced.posterous.com/browser-extension-for-chrome">more about it</a>)
     </div>
-
-
-  </div>
-
-
-  <div class="l-col33">
-    <div class="box">
-      <h2>Progress this week...</h2>
-      {% module daily_chart(week_stats, week_stats_max_arts) %}
-    </div>
-
-    <div class="top-sourcers box">
-
-      <h2>Top Sourcers</h2>
-      <nav>
-      <a href="#top-sourcers-7days">Week</a> |
-      <a href="#top-sourcers-alltime">All time</a>
-      </nav>
+  </div> <!-- end .l-row -->
       <br/>
-      <div id="top-sourcers-7days">
-      {% for u,cnt in top_sourcers_7days %}
-        <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
-      {% end %}
-      </div>
-      <div id="top-sourcers-alltime">
-      {% for u,cnt in top_sourcers_alltime %}
-        <div class="top-sourcer"><a href="{{u.profile_url()}}" title="{{u.username}}">{% raw u.photo_img('m') %}{{u.username}}</a><span class="top-sourcer-cnt">{{cnt}}</span></div>
-      {% end %}
-      </div>
+      <br/>
+  <div class="l-row">
+    <div class="l-center">
+      <img class="l-center screenshot" src="/static/warninglabels_closeup.png" />
+      <img class="l-center screenshot" src="/static/popup_closeup.png" />
     </div>
-
-    <div class="add-article box">
-      <h2>Add an article</h2>
-      <p>
-      Found a news article that requires sourcing?
-      {% if current_user %}
-      Enter its URL here:
-      <form class="oneliner-form" action="/addarticle" method="POST">
-      {% raw xsrf_form_html() %}
-      <input type="input" name="url"/>
-      <input class="btn" type="submit" value="Add"/>
-      </form>
-      {% else %}
-      <a href="/addarticle" class="btn btn-major">Add article</a>
-      {% end %}
-      </p>
-    </div>
-
-  </div>
-
-</div> <!-- end .l-row -->
+  </div> <!-- end .l-row -->
 </div>
 {% end %}
 

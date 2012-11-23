@@ -471,7 +471,8 @@ ul.l-4col {
 /****/
 .site-intro {
     background-color: #fff;
-    padding: 1em 1em 3em 1em;
+    padding: 5em 1em 5em 1em;
+    font-size: 125%;
 }
 
 
@@ -1005,6 +1006,11 @@ a.btn:visited {
     font-size: 125%;
 }
 
+.btn-verymajor {
+    padding: 0.5em 1em;
+    font-size: 200%;
+}
+
 /*****
  * a wrapper around a button (eg a form, to allow POSTs)
  */
@@ -1167,7 +1173,6 @@ a.btn:visited {
 .site-intro h2 {
     font-family: "Oleo Script";
     font-size: 275%; 
-    margin-left: 1em;
 }
 
 .browse-heading,
@@ -1263,7 +1268,6 @@ a.btn:visited {
 .screenshot {
     margin: 1em;
     border: 1px solid #ccc;
-    box-shadow: 4px 4px 4px rgba(0,0,0,0.5);
 }
 
 /*****
@@ -1499,8 +1503,8 @@ ul.sourcers img {
     vertical-align:top;
 }
 
-
-.art-group {
+/* should be more general */
+.art-group, .act-group {
     display: block;
     margin: 1em 0 0.5em 0;
 }
@@ -1517,5 +1521,67 @@ ul.sourcers img {
     background-color: green;
 }
 
+
+.mentions {
+    background-color: #fbd415; /* rgb(251,212,21); */
+    padding: 0.25em 0;
+}
+
+.stat-list {
+  font-family: "Contrail One";
+ font-size: 125%;
+}
+
+ul.stat-list {
+    list-style: none;
+}
+ul.stat-list li {
+    list-style: none;
+}
+
+.stat-item {
+    font-size: 200%;
+}
+
+/*****/
+.tabnav {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid black;
+}
+
+.tabnav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.tabnav ul li {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    border: 1px solid black;
+}
+.tabnav ul li.seltab {
+    border-bottom: 1px solid #fff;
+}
+
+.tabnav ul a {
+    padding: 0.2em 0.5em 0.5em 0.5em;
+    margin: 0;
+    display: block;
+    font-size: larger;
+/*    font-family: 'Contrail One'; */
+}
+
+.tabnav ul a:visited {
+}
+
+.tabnav ul a:hover {
+    text-decoration: none;
+}
 
 

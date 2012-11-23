@@ -44,7 +44,7 @@ Hello <a href="/user/{{current_user.id}}">{{current_user.username}}</a> |
   <div class="site-logo">
     <h1><a href="/"><img src="/static/logo.png" width="208" height="59" alt="Unsourced" /></a> </h1>
   </div>
-  <div class="site-tagline">Find the missing sources for news articles <a href="/about#why">Why?</a>
+  <div class="site-tagline">See the missing sources for news articles <a href="/about#why">Why?</a>
     <div class="site-tagline-popup">
 By reading the source material you can decide if the journalist has come to the right conclusion.
     </div>
@@ -54,11 +54,11 @@ By reading the source material you can decide if the journalist has come to the 
 
   <nav class="topnav">
     <ul>
-        <li><a href="http://unsourced.posterous.com/browser-extension-for-chrome">Browser extension</a></li>
+        <li><a href="/">Home</a></li>
         <li><a href="/browse">Explore</a></li>
         <li><a href="/daily">View by day</a></li>
 {% if current_user is not None %}
-        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/extension">Browser extension</a></li>
 {% end %}
     </ul>
     <div class="site-links">
@@ -77,7 +77,7 @@ By reading the source material you can decide if the journalist has come to the 
   <div class="inner">
     <a href="/about">about</a>&nbsp;|&nbsp;
     <a href="http://unsourced.posterous.com">blog</a>&nbsp;|&nbsp;
-    <a href="http://unsourced.posterous.com/browser-extension-for-chrome">browser plugin</a>&nbsp;|&nbsp;
+    <a href="/extension">browser extension</a>&nbsp;|&nbsp;
     Twitter: <a href="https://twitter.com/UnsourcedOrg">@UnsourcedOrg</a>&nbsp;|&nbsp;
     <a href="https://github.com/bcampbell/unsourced/">source code</a> (github.com)&nbsp;&nbsp;
     <span class="site-copyright">

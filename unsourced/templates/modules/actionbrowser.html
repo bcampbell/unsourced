@@ -1,0 +1,28 @@
+{% from itertools import groupby %}
+{% from datetime import datetime %}
+
+{% if paged_results.total_items == 0 %}
+<p>None matching</p>
+{% else %}
+
+{% if paged_results.total_pages > 1 %}
+{% module paginator(paged_results) %}
+{% end %}
+
+{% for day, daysworth in groupby(paged_results.items, lambda x: x.performed.date()) %}
+<time class="act-group" datetime="{{day.isoformat()}}">{{day.strftime("%A, %d %B %Y")}}</time>
+<ul class="act-list">
+{%   for act in daysworth %}
+  <li class="act{% if act.refers_to(current_user) %} mentions{% end %}">
+  {% module action(act,user_display='s') %}
+  </li>
+{%   end%}
+</ul>
+{%end%}
+
+{% if paged_results.total_pages > 1 %}
+{% module paginator(paged_results) %}
+{% end %}
+
+{% end %}
+
