@@ -10,6 +10,7 @@ To bootstrap your setup, just run:
 
     script/bootstrap
 
+
 Notes
 -----
 
@@ -33,4 +34,49 @@ On Amazon EC2 Linux AMI:
 ```bash
 $ sudo yum install libjpeg libjpeg-devel
 ```
+
+
+Alternate setup (debian/ubuntu):
+-------------------------------
+
+```bash
+$ sudo apt-get install python-virtualenv
+$ sudo apt-get install libpng-dev libgif-dev libjpeg-dev libmysqlclient-dev
+
+(assumes you've got mysql etc already installed)
+
+$ mkdir unsourced.org
+$ cd unsourced.org
+$ git clone https://github.com/bcampbell/unsourced
+$ virtualenv --no-site-packages pyenv
+$ . pyenv/bin/activate
+$ pip install --upgrade distribute
+$ pip install -r unsourced/requirements.txt
+
+$ git clone https://github.com/bcampbell/decruft.git
+$ git clone https://github.com/bcampbell/metareadability.git
+$ ln -s $PWD/decruft/decruft unsourced/scrapeomat/
+$ ln -s $PWD/metareadability/metareadability unsourced/scrapeomat/
+
+$ mkdir uploads
+```
+
+then:
+
+make sure uploads dir is writable by server
+mysqladmin create
+customise config.py and alembic.ini
+
+```bash
+ python unsourced/app.py
+ python unsourced/scrapomat.py
+```
+
+Production site runs behind Nginx, and uses supervisord to manage processes.
+See sample config files in config/
+
+The Debian Squeeze packages for nginx are a bit stale. Nginx.org has more
+recent packages available.
+
+
 

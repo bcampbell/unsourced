@@ -1,0 +1,54 @@
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=microcache:5m max_size=20m;
+
+
+server {
+    server_name www.unsourced.org;
+    rewrite ^(.*) http://unsourced.org$1 permanent;
+}
+
+upstream tornado_servers {
+    server 127.0.0.1:8000;
+    server 127.0.0.1:8001;
+#   server 127.0.0.1:8002;
+#   server 127.0.0.1:8003;
+#   server 127.0.0.1:8004;
+#   server 127.0.0.1:8005;
+#   server 127.0.0.1:8006;
+#   server 127.0.0.1:8007;
+}
+
+
+server {
+    listen 80;
+    server_name unsourced.org;
+
+    # sendfile can cause problems when running under virtual machines
+    sendfile off;
+
+    location / {
+        proxy_pass_header Server;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Scheme $scheme;
+        proxy_pass http://tornado_servers;
+    }
+
+
+    location ^~ /static/ {
+        root /srv/unsourced.org/unsourced/unsourced;
+    }
+
+    proxy_cache microcache;
+
+    proxy_cache_key $scheme$host$request_method$request_uri;
+
+    proxy_cache_valid 200 2s;
+
+    # Serve from cache if currently refreshing
+    proxy_cache_use_stale updating;
+
+    # logged-in users bypass the cache
+    proxy_cache_bypass $cookie_user;
+}
+
