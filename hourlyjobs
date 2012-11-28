@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+. /srv/unsourced.org/pyenv/bin/activate
+cd /srv/unsourced.org/unsourced/
+./import_articles -n2
+
