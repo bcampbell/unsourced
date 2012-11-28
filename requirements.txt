@@ -1,5 +1,6 @@
 tornado
 lxml
+cssselect
 WTForms
 SQLAlchemy
 python-dateutil
@@ -11,5 +12,5 @@ PIL
 python-memcached
 dogpile.cache
 MySQL-python
-git+https://github.com/bcampbell/fuzzydate.git
+-e git+https://github.com/bcampbell/fuzzydate.git#egg=FuzzyDate
 
