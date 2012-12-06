@@ -410,11 +410,14 @@ class Comment(Base):
 
 
     def format(self):
-        """ mark up links to mentioned users in the comment """
+        """ mark up link and users in comments """
         user_map = dict((u.id,u) for u in self.mentioned_users)
 
-        userpat = re.compile('@(\d+)', re.I)
-        def mkup(m):
+        user_pat = re.compile('@(\d+)', re.I)
+        # John Gruber's url regex - a couple of unicode chars dropped
+        url_pat = re.compile(r"""(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?]))""", re.I)
+
+        def mkup_user(m):
             uid = int(m.group(1))
             u = user_map.get(uid,None)
             if u is not None:
@@ -422,7 +425,17 @@ class Comment(Base):
             else:
                 return m.group(0)
 
-        txt = userpat.sub(mkup, self.content)
+        def mkup_url(m):
+            url = m.group(0)
+            tidied_url = url
+            if re.compile("^http[s]?://").search(url) is None:
+                tidied_url = "http://" + url
+            return '<a href="%s">%s</a>' % (tidied_url, url)
+
+        txt = self.content
+        txt = user_pat.sub(mkup_user, txt)
+
+        txt = url_pat.sub(mkup_url, txt)
         return txt
 
 
