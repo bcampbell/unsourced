@@ -444,6 +444,8 @@ ul.l-4col {
 .main {
     overflow: visible;
     position: relative;
+
+    max-width: 940px;
 }
 
 .main:after {
@@ -468,18 +470,53 @@ ul.l-4col {
     padding-bottom: 4em;
 }
 
+
 /****/
 .site-intro {
     background-color: #fff;
-    padding: 5em 1em 5em 1em;
+    padding: 1em 1em 1em 1em;
     font-size: 125%;
+
+    overflow: visible;
+    position: relative;
+}
+
+.site-intro:after {
+    content: "";  
+    display: block;  
+    position: absolute;  
+    top: 6em;  
+    bottom: -1.5em;
+    left: -0.7em;  
+    right: -4em;  
+    background-image: url('/static/dot-pattern.png');
+    z-index: -1;
 }
 
 
-.site-intro h2 {
+
+/****/
+.site-pitchline {
     font-family: "Oleo Script";
-    font-size: 275%; 
-    margin-left: 1em;
+    font-size: 200%;
+}
+
+/****/
+.site-call-to-action {
+    padding: 2em 0;
+    /* skewy grey patch */
+    display: block;
+
+    background-color: rgba(0,0,0,0.05);
+    box-shadow: -2em 0 rgba(0,0,0, 0.05);
+/*    z-index: -1; */
+}
+
+
+/****/
+.site-install-extensions {
+    width: 50%;
+    margin: 2em auto 2em auto;
 }
 
 /****/
@@ -540,6 +577,7 @@ ul.l-4col {
     box-shadow: -1em 0 rgba(225,190,0, 0.95);
     z-index: -1;
 }
+
 
 
 /****/
@@ -1169,12 +1207,7 @@ a.btn:visited {
     margin-left: 1em;
 }
 
-
-.site-intro h2 {
-    font-family: "Oleo Script";
-    font-size: 275%; 
-}
-
+/****/
 .browse-heading,
 .username-heading {
     font-family: "Oleo Script";

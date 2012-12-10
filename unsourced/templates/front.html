@@ -3,38 +3,53 @@
 {% block title %}Unsourced{% end %}
 
 
-{% block extra_js %}
-$('.top-sourcers nav a').tabify();
-{% end %}
 
 {% block main %}
 
 <div class="site-intro">
-  <h2 class="l-center">See sources and warning labels as you read the news...</h2>
+  <h2 class="l-center site-pitchline">See sources and warning labels as you read the news...</h2>
   <div class="l-row">
     <div class="l-center">
-      <p>Unsourced.org uses a custom browser extension to show you missing sources and warning labels as you read the news.</p>
+      a custom browser extension to show you missing sources and warning labels as you read the news.
     </div>
   </div> <!-- end .l-row -->
-  <div class="l-row">
-    <div class="l-center l-col50">
-      <img src="/static/firefox_logo.png" /><br/>
-      <a class="btn btn-major" href="/static/unsourced.xpi">Install extension for Firefox</a>
-    </div>
-    <div class="l-center l-col50">
-      <img src="/static/chrome_logo.png" /><br/>
-      <a class="btn btn-major" href="https://chrome.google.com/webstore/detail/dckcbcjonlojinjlemjhllddndemmbop">Install extension for Chrome</a><br/>
-      (or read <a href="http://unsourced.posterous.com/browser-extension-for-chrome">more about it</a>)
-    </div>
-  </div> <!-- end .l-row -->
-      <br/>
-      <br/>
   <div class="l-row">
     <div class="l-center">
       <img class="l-center screenshot" src="/static/warninglabels_closeup.png" />
       <img class="l-center screenshot" src="/static/popup_closeup.png" />
     </div>
   </div> <!-- end .l-row -->
+
+  <div class="site-call-to-action">
+  <div class="l-row">
+    <div class="l-center l-col33">
+      <img style="padding-top: 4px; padding-bottom: 5px;" src="/static/sourced.png" />
+      <h2>Add a source</h2>
+      Add missing sources to articles
+    </div>
+    <div class="l-center l-col33">
+      <img src="/static/warning.png" />
+      <h2>Add a warning</h2>
+      Label toxic material accordingly
+    </div>
+    <div class="l-center l-col33">
+      <img src="/static/discuss.png" />
+      <h2>Discuss</h2>
+      Discuss the latest journalistic atrocities
+    </div>
+  </div> <!-- end .l-row -->
+  </div>
+
+  <div class="site-install-extensions">
+  <div class="l-row">
+    <div class="l-col50 l-center">
+      <a class="btn btn-major" href="/static/unsourced.xpi">+ Add to Firefox</a>
+    </div>
+    <div class="l-col50 l-center">
+      <a class="btn btn-major" href="https://chrome.google.com/webstore/detail/dckcbcjonlojinjlemjhllddndemmbop">+ Add to Chrome</a>
+    </div>
+  </div> <!-- end .l-row -->
+  </div>
 </div>
 {% end %}
 
