@@ -621,7 +621,7 @@ ul.l-4col {
 
 .art {
     display: block;
-    margin: 0 0 0.4em 40px;
+    margin: 0 0 0.4em 48px;
     position: relative;
 }
 
@@ -629,15 +629,17 @@ ul.l-4col {
 .art .favicon
 {
     position: absolute;
-    left: -20px;
+    left: -28px;
 }
 
-.art .icon-sourced,
-.art .icon-help {
+.art .icon-sourced {
     position: absolute;
-    left: -40px;
+    left: -48px;
 }
 
+.art .icon {
+    vertical-align:middle;
+}
 
 /* box version of .art */
 
@@ -1540,6 +1542,15 @@ ul.sourcers img {
 .art-group, .act-group {
     display: block;
     margin: 1em 0 0.5em 0;
+}
+
+.art-group {
+    font-family: 'Contrail One';
+    font-style: normal;
+    font-weight: normal;
+    margin: 1.5em 0 0.8em 0;
+    color: #000;
+    font-size: 1.2em;
 }
 
 .daterange {

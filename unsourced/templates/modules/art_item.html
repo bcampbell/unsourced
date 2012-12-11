@@ -1,12 +1,11 @@
 <li class="art">
-  {% if len(art.help_reqs)>0 %}
-  <img class="icon icon-help" width="16" height="16" src="/static/help-s.png" alt="help requested" />
-  {% elif not art.needs_sourcing %}
+  {% if not art.needs_sourcing %}
   <img class="icon icon-sourced" width="16" height="16" src="/static/icon-sourced.png" alt="sourced" />
   {% end %}
-  <img class="favicon" src="{{art.publisher_favicon_url()}}"/>
+  <img class="icon favicon" src="{{art.publisher_favicon_url()}}" />
+  {% if len(art.help_reqs)>0 %} <img class="icon icon-help" src="/static/icon-s/help.png" alt="help requested" />{% end %}
+  {% if len(art.labels)>0 %}<img class="icon icon-warning" src="/static/icon-s/warning.png" alt="warning label" />{% end %}
   <a href="/art/{{art.id}}" title="{%module domain(art.permalink)%}">{{art.headline}}</a>
-  {% for l in art.labels %}<img src="{{l.icon_url('s')}}" alt="{{l.prettyname}}" />{% end %}
   {% if art.comments %}
   <span class="comment-cnt">{{len(art.comments)}}</span>
   {% end %}
