@@ -52,8 +52,9 @@ By reading the source material you can decide if the journalist has come to the 
 
   <a class="mst-logo" href="/"><img src="/static/mst_logo.png" width="70" height="50" alt="Media Standards Trust" /></a>
 
-  <nav class="topnav">
-    <ul>
+  <nav class="site-nav">
+    {% block topnav %}
+    <ul class="topnav">
         <li><a href="/">Home</a></li>
         <li><a href="/browse">Explore</a></li>
         <li><a href="/daily">View by day</a></li>
@@ -61,6 +62,8 @@ By reading the source material you can decide if the journalist has come to the 
         <li><a href="/extension">Browser extension</a></li>
 {% end %}
     </ul>
+    {% end %}
+    {% block secnav %}{% end %}
     <div class="site-links">
       <div>Follow us on Twitter: <a href="https://twitter.com/UnsourcedOrg">@UnsourcedOrg</a></div>
       <div>Read our <a href="http://unsourced.posterous.com">Blog</a></div>

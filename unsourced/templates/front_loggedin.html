@@ -7,22 +7,38 @@
 $('.top-sourcers nav a').tabify();
 {% end %}
 
+{% comment KLUDGE! need a better way to add classes to selected nav item %}
+{% block topnav %}
+    <ul class="topnav">
+        <li class="sel"><a href="/">Home</a></li>
+        <li><a href="/browse">Explore</a></li>
+        <li><a href="/daily">View by day</a></li>
+{% if current_user is not None %}
+        <li><a href="/extension">Browser extension</a></li>
+{% end %}
+    </ul>
+{% end %}
+{% block secnav %}
+      <ul class="secnav">
+        <li {% if view=='recent' %}class="sel"{% end %}><a href="/?view=recent">Recent activity</a></li>
+        <li {% if view=='comments' %}class="sel"{% end %}><a href="/?view=comments">Talk</a></li>
+        <li {% if view=='interesting' %}class="sel"{% end %}><a href="/?view=interesting">Activity on articles you've worked on</a></li>
+      </ul>
+{% end %}
+
 {% block main %}
 
-
-<div class="gubbins">
 <div class="l-row">
 
   <div class="l-col66">
 
     <div id="results" class="box">
-      <nav class="tabnav">
-      <ul>
-        <li {% if view=='recent' %}class="seltab"{% end %}><a href="/?view=recent">recent activity</a></li>
-        <li {% if view=='comments' %}class="seltab"{% end %}><a href="/?view=comments">talk</a></li>
-        <li {% if view=='interesting' %}class="seltab"{% end %}><a href="/?view=interesting">activity on articles you've worked on</a></li>
-      </ul>
-      </nav>
+    <h2 class="fancy-heading">
+    {% if view=='recent' %}Recent activity
+    {% elif view=='comments' %}Talk
+    {% elif view=='interesting' %}Activity on articles you've worked on
+    {%end%}
+    </h2>
       {% module actionbrowser(filters, paged_actions) %}
     </div>
   </div>
@@ -68,6 +84,5 @@ $('.top-sourcers nav a').tabify();
 
 
 </div> <!-- end .l-row -->
-</div>
 {% end %}
 

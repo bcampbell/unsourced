@@ -381,26 +381,26 @@ ul.l-4col {
 
 
 /*****/
-.topnav {
+.site-nav {
     display: block;
     margin: 0;
     padding: 0;
     position: relative;
 }
 
-.topnav ul {
+.topnav {
     padding: 0;
     margin: 0;
     list-style: none;
 }
 
-.topnav ul li {
+.topnav li {
     display: inline-block;
     margin: 0;
     padding: 0;
 }
 
-.topnav ul a {
+.topnav a {
     padding: 0.2em 0.5em 0.5em 0.5em;
     margin: 0;
     display: block;
@@ -409,23 +409,52 @@ ul.l-4col {
     color: #fff;
     background-color: #cc2a2d;
     min-width: 7em;
-    box-shadow: 0.2em 0.1em rgba(255,255,255,0.75);
 }
 
-.topnav ul a:visited {
+.topnav .sel a {
+    background-color: #ed2024;
+    padding-bottom: 0.8em;
+}
+
+.topnav a:visited {
     color: #fff;
 }
 
-.topnav ul a:hover {
+.topnav a:hover {
     color: #fff;
-    -moz-transform: rotate(-1.5deg) scale(1.05);
-    -webkit-transform: rotate(-1.5deg) scale(1.05);
     background-color: #ed2024;
     text-decoration: none;
-    z-index: 1;
     box-shadow: none;
 }
 
+
+.secnav {
+    margin: 0;
+    list-style: none;
+    padding: 0.5em 0;
+    background-color: #ed2024;
+    color: #000;
+}
+
+.secnav li {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+
+.secnav li + li:before {
+    content: " / ";
+    padding: 0 0.5em;
+}
+
+.secnav a {
+    padding: 0.2em 0.5em;
+    margin: 0;
+    color: #000;
+}
+
+.secnav .sel a { color: #fff; }
 
 .site-links {
     position: absolute;
@@ -1210,6 +1239,7 @@ a.btn:visited {
 }
 
 /****/
+.fancy-heading,
 .browse-heading,
 .username-heading {
     font-family: "Oleo Script";
@@ -1538,13 +1568,10 @@ ul.sourcers img {
     vertical-align:top;
 }
 
-/* should be more general */
+
+/* should be more general? */
 .art-group, .act-group {
     display: block;
-    margin: 1em 0 0.5em 0;
-}
-
-.art-group {
     font-family: 'Contrail One';
     font-style: normal;
     font-weight: normal;
@@ -1609,7 +1636,7 @@ ul.stat-list li {
     padding: 0;
     border: 1px solid black;
 }
-.tabnav ul li.seltab {
+.tabnav ul li.sel {
     border-bottom: 1px solid #fff;
 }
 
