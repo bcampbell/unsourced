@@ -992,9 +992,9 @@ ul.l-4col {
   background-color: #f2f2f2;
 }
 
-.src-paper { background: url(/static/icon-paper.png) no-repeat 0px 8px; }
-.src-pr    { background: url(/static/icon-pr.png) no-repeat 0px 8px; }
-.src-other { background: url(/static/icon-other.png) no-repeat 0px 8px; }
+.src-paper { background: url(/static/icon/paper.png) no-repeat 0px 8px; }
+.src-pr    { background: url(/static/icon/pr.png) no-repeat 0px 8px; }
+.src-other { background: url(/static/icon/other.png) no-repeat 0px 8px; }
 
 
 /****/
