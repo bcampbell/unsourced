@@ -10,10 +10,10 @@
       <a class="btn btn-major l-right" href="/editprofile">Edit your details</a>
       {% end %}
       <h2 class="username-heading">{{user.username}}</h2>
-      <div class="box yellow-frill">
+      <div class="box"> 
 
 
-        <h2>Recent activity</h2>
+        <h2 class="">Recent activity</h2>
 
         <ul class="act-list">
         {% for act in actions %}
@@ -21,7 +21,7 @@
         {% end %}
         </ul>
 
-        <h2>Recent mentions</h2>
+        <h2 class="">Recent mentions</h2>
 
         <ul class="act-list">
         {% for act in mentions %}

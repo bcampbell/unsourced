@@ -853,10 +853,11 @@ ul.l-4col {
 .act-mark-unsourced { background-image: url(/static/icon/minus.png), url(/static/icon/sourced.png); }
 .act-helpreq-open { background-image: url(/static/icon/plus.png), url(/static/icon/help.png); }
 .act-helpreq-close { background-image: url(/static/icon/minus.png), url(/static/icon/help.png); }
+.act-art-add { background-image: url(/static/icon/plus.png); }
 
 .act-comment { min-height: 40px; }
 .act-comment blockquote { padding: 0; margin: 0;}
-.act-comment .attribution { position: absolute; left: 0px; top: 0.3em; }
+.act-comment .attribution { position: absolute; left: 16px; top: 0.3em; }
 .act-comment .timestamp { display: inline; }
 
 .mentions {
