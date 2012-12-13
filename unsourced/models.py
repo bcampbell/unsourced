@@ -192,6 +192,12 @@ class Source(Base):
     def __repr__(self):
         return "<Source(%s)>" % (self.url,)
 
+    def kind_desc(self):
+        src_kinds = {
+            SourceKind.PAPER: u'a paper',
+            SourceKind.PR: u'a press release',
+            SourceKind.OTHER: u'a link' }
+        return src_kinds[self.kind]
 
 class Lookup(Base):
     __tablename__ = 'lookup'

@@ -775,7 +775,20 @@ ul.l-4col {
  */
 .act {
   text-align: top;
-  margin: 0.5em 0;
+  margin: 0;
+  position: relative;
+  padding: 0.3em 0 0.3em 40px;
+  font-size: 90%;
+
+  border-top: 1px dotted #808080;
+}
+
+.act:last-child {
+  border-bottom: 1px dotted #808080;
+}
+
+.act:nth-child(odd) {
+  background-color: #f2f2f2;
 }
 
 .act:after {
@@ -785,10 +798,12 @@ ul.l-4col {
 }
 
 .act .timestamp {
-    float: right;
-    font-size: 80%;
+    display: block;
+    font-size: 90%;
 }
 
+/* 
+ SPEECH BUBBLE
 .act blockquote {
   display: inline-block;
   margin: 0 0 0 6px;
@@ -798,32 +813,6 @@ ul.l-4col {
   position: relative;
     background-color: #fff;
 }
-
-/*
-.act blockquote:before {
-  content: "";
-  display: block;
-  position: absolute;
-  left: -12px;
-  top: 4px;
-  width: 0;
-  height: 0;
-  border: 6px solid;
-  border-color: transparent #444 transparent transparent;
-}
-
-.act blockquote:after {
-  content: "";
-  display: block;
-  position: absolute;
-  left: -11px;
-  top: 4px;
-  width: 0;
-  height: 0;
-  border: 6px solid;
-  border-color: transparent #fff transparent transparent;
-}
-*/
 
 .act blockquote:before {
   content: "";
@@ -848,6 +837,34 @@ ul.l-4col {
   border: 6px solid;
   border-color: #fff transparent transparent transparent;
 }
+*/
+
+/* set up icons */
+.act {
+    background-repeat: no-repeat, no-repeat;
+    background-position: 0px 0.3em, 20px 0.3em;
+}
+
+.act-label-add { background-image: url(/static/icon/plus.png), url(/static/icon/warning.png); }
+.act-label-remove { background-image: url(/static/icon/minus.png), url(/static/icon/warning.png); }
+.act-src-add { background-image: url(/static/icon/plus.png), url(/static/icon/sourced.png); }
+.act-src-remove { background-image: url(/static/icon/minus.png), url(/static/icon/sourced.png); }
+.act-mark-sourced { background-image: url(/static/icon/plus.png), url(/static/icon/sourced.png); }
+.act-mark-unsourced { background-image: url(/static/icon/minus.png), url(/static/icon/sourced.png); }
+.act-helpreq-open { background-image: url(/static/icon/plus.png), url(/static/icon/help.png); }
+.act-helpreq-close { background-image: url(/static/icon/minus.png), url(/static/icon/help.png); }
+
+.act-comment { min-height: 40px; }
+.act-comment blockquote { padding: 0; margin: 0;}
+.act-comment .attribution { position: absolute; left: 0px; top: 0.3em; }
+.act-comment .timestamp { display: inline; }
+
+.mentions {
+    background-color: #fbd415; /* rgb(251,212,21); */
+/*    padding: 0.25em 0; */
+}
+
+
 
 /****/
 /* TODO: KILL -> too vague */
@@ -1592,11 +1609,6 @@ ul.sourcers img {
     background-color: green;
 }
 
-
-.mentions {
-    background-color: #fbd415; /* rgb(251,212,21); */
-    padding: 0.25em 0;
-}
 
 .stat-list {
   font-family: "Contrail One";

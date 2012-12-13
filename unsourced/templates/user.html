@@ -17,7 +17,7 @@
 
         <ul class="act-list">
         {% for act in actions %}
-          <li class="act">{% module action(act, user_display=None) %}</li>
+          {% module action(act, user_display=None) %}
         {% end %}
         </ul>
 
@@ -25,7 +25,7 @@
 
         <ul class="act-list">
         {% for act in mentions %}
-          <li class="act">{% module action(act, user_display='s') %}</li>
+          {% module action(act, user_display='s') %}
         {% end %}
         </ul>
       </div>

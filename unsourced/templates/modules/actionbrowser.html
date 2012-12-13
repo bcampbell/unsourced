@@ -8,11 +8,9 @@
 {% for day, daysworth in groupby(paged_results.items, lambda x: x.performed.date()) %}
 <time class="act-group" datetime="{{day.isoformat()}}">{{day.strftime("%A, %d %B %Y")}}</time>
 <ul class="act-list">
-{%   for act in daysworth %}
-  <li class="act{% if act.refers_to(current_user) %} mentions{% end %}">
+{% for act in daysworth %}
   {% module action(act,user_display='s',show_timestamp=False) %}
-  </li>
-{%   end%}
+{% end%}
 </ul>
 {%end%}
 

@@ -1,0 +1,10 @@
+<li class="act act-{{act.what.replace('_','-')}}{% if act.refers_to(current_user) %} mentions{% end %}">
+{% block act %}
+{% if user_display is not None %}<a class="user" href="{{act.user.profile_url()}}">{{act.user.username}}</a>{% end %}
+{% block desc %}{{act.what}}{% end %}
+
+<br/>
+{% if show_article %}on <a href="{{act.article.art_url()}}">{{act.article.headline}}</a>{% end %}
+{% if show_timestamp %}<span class="timestamp">{% module fmt_datetime(act.performed) %}</span>{% end %}
+{% end %}
+</li>

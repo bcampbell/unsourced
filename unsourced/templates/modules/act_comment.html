@@ -1,0 +1,8 @@
+{% extends "act.html" %}
+{% block act %}
+<a class="attribution user" href="{{act.user.profile_url()}}">{% raw act.user.photo_img('s') %}</a>
+<a class="user" href="{{act.user.profile_url()}}">{{act.user.username}}</a>
+{% if show_timestamp %}<span class="timestamp">{% module fmt_datetime(act.performed) %}</span>{% end %}
+<blockquote>"{% raw act.comment.format() %}"</blockquote>
+{% if show_article %}on <a href="{{act.article.art_url()}}">{{act.article.headline}}</a>{% end %}
+{% end %}

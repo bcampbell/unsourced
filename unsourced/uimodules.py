@@ -8,11 +8,6 @@ from models import Source,SourceKind,Article,Action,Label
 import util
 
 
-source_presentation = {
-    SourceKind.PAPER: {'icon':'paper_icon.png', 'desc':'Academic paper'},
-    SourceKind.PR: {'icon':'recycle_icon.png', 'desc':'Press release'},
-    SourceKind.OTHER: {'icon':'chain_icon.png', 'desc':'Other link'},
-    }
 
 
 class formfield(tornado.web.UIModule):
@@ -96,9 +91,7 @@ class source(tornado.web.UIModule):
 
             can_upvote=can_upvote,
             can_downvote=can_downvote,
-            container=container,
-            kind_desc=source_presentation[src.kind]['desc'],
-            kind_icon='/static/' + source_presentation[src.kind]['icon'])
+            container=container)
 
 
 class art_list(tornado.web.UIModule):
@@ -114,6 +107,30 @@ class art_item(tornado.web.UIModule):
 
 
 class action(tornado.web.UIModule):
+    """ describe an action """
+    def render(self, act, show_article=True, user_display='m', show_timestamp=True ):
+
+
+        tmpl = "modules/act_%s.html" % (act.what)
+
+        art = act.article
+        if art:
+            artlink = u'<a href="%s">%s</a>' % (art.art_url(), art.headline)
+
+        src_kinds = {
+            SourceKind.PAPER: u'a paper',
+            SourceKind.PR: u'a press release',
+            SourceKind.OTHER: u'a link' }
+
+        return self.render_string(tmpl,
+            act=act,
+            show_article=show_article,
+            show_timestamp=show_timestamp,
+            user_display=user_display
+        )
+
+
+class old_action(tornado.web.UIModule):
     """ describe an action """
     def render(self, act, show_article=True, show_full_source=True, user_display='m', show_timestamp=True ):
 
@@ -216,14 +233,6 @@ class daily_chart(tornado.web.UIModule):
 
 
 
-
-
-class source_icon(tornado.web.UIModule):
-    """ iconic representation of a source """
-    def render(self,src):
-        kind_icon = '/static/' + source_presentation[src.kind]['icon']
-        kind_desc = source_presentation[src.kind]['desc']
-        return """<img src="%s" title="%s"/>""" % (kind_icon,kind_desc)
 
 
 class league_table(tornado.web.UIModule):

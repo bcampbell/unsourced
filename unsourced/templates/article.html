@@ -185,7 +185,7 @@ pubsub.source_added.add(function(new_src) {
   <div class="bod">
     <ul class="act-list">
 {% for act in recent_actions %}
-      <li class="act">{% module action(act, show_article=False, user_display='s') %}</li>
+      {% module action(act, show_article=False, show_timestamp=True) %}
 {% end %}
     </ul>
 {% if more_actions %}
