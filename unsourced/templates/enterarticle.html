@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Enter article details{% end %}
+{% block main %}
+<div class="l-mid75">
+<div class="box">
+<h2>Enter article details</h2>
+{% if notice %}
+<div class="l-center notice">{{notice}}</div>
+{% end %}
+{% if current_user is None %}
+<div class="l-center">
+<a class="btn btn-major" href="/login?next={{login_next_url}}">Enter the details manually</a>
+</div>
+{% else %}
+<form action="/enterarticle" method="POST">
+{% raw xsrf_form_html() %}
+{% module form(form) %}
+<input class="btn btn-major" type="submit" value="Submit"/>
+</form>
+{% end %}
+
+</div>
+</div>
+{% end %}
+

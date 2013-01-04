@@ -4,19 +4,16 @@
 <div class="l-mid75">
 <div class="box">
 <h2>Add Article</h2>
-{% if message %}
-<p class="notice">{{message}}</p>
+{% if notice %}
+<p class="notice">{{notice}}</p>
 {% end %}
+{% if form is not None %}
 <form action="/addarticle" method="POST">
 {% raw xsrf_form_html() %}
 {% module form(form) %}
-{% if step=='confirm' %}
-<input class="btn btn-major" type="submit" value="Confirm"/>
-{% else %}
 <input class="btn btn-major" type="submit" value="Add article"/>
-{% end %}
 </form>
-
+{% end %}
 </div>
 </div>
 {% end %}

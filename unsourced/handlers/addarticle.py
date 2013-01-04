@@ -19,127 +19,148 @@ class SubmitArticleForm(Form):
     url = TextField(u'Url of article', [validators.required(),validators.URL()], filters=[fix_url])
 
 
+
 class EnterArticleForm(Form):
+    """ form for manually entering the details of an article """
     url = TextField(u'Url of article', [validators.required(),validators.URL()], filters=[fix_url])
-    prev_url = HiddenField(u'', [validators.required(),validators.URL()])
     title = TextField(u'Title', [validators.required()])
     pubdate = DateField(u'Date of publication', [validators.required(),] ,description='yyyy-mm-dd' )
-    step = HiddenField(u'',default="confirm")
+
+
+
+
+class Status:
+    """ status codes returned by scrapomat """
+    SUCCESS = 0
+    NET_ERROR = 1
+    BAD_REQ = 2
+    PAYWALLED = 3
+    PARSE_ERROR = 4
+
 
 
 class AddArticleHandler(BaseHandler):
-
-    @tornado.web.authenticated
-    def get(self):
-        form = SubmitArticleForm(TornadoMultiDict(self))
-        self.render("addarticle.html", form=form, message='',step="submit")
-
-    @tornado.web.authenticated
     @tornado.web.asynchronous
     @tornado.gen.engine
-    def post(self):
-        # flow of this handler is a little... muddy. There are three steps:
-        # 1) user submits URL
-        # 2) show user automatically-scraped details (title, pubdate)
-        #    user can fix 'em, then clicks to confirm
-        # 3) we store article in database and jump to it
+    def get(self):
+        url = self.get_argument('url',None)
+        if url is None:
+            # blank url - prompt for one
+            form = SubmitArticleForm()
+            self.render("addarticle.html", form=form, notice='')
+            return
 
-        step = self.get_argument('step','submit')
+        # basic validation
+        form = SubmitArticleForm(TornadoMultiDict(self))
+        if not form.validate():
+            self.render("addarticle.html", form=form, notice='')
+            return
 
-        if step=='confirm':
-            form = EnterArticleForm(TornadoMultiDict(self))
-            if not form.validate():
-                self.render("addarticle.html", form=form, message='', step=step)
-                return
+        # already in database?
+        art_url = self.session.query(ArticleURL).filter_by(url=url).first()
+        if art_url is not None:
+            # yep - jump to it and we're done.
+            self.redirect("/art/%d" % (art_url.article.id,))
+            return
 
-            if form.url.data == form.prev_url.data:
-                # done - add the article to the db
+        # nope. try scraping it.
+        params = {'url': url}
+        scrape_url = 'http://localhost:8889/scrape?' + urllib.urlencode(params)
+        http = tornado.httpclient.AsyncHTTPClient()
 
-                url = form.url.data
-                title = form.title.data
-                pubdate = form.pubdate.data
+        response = yield tornado.gen.Task(http.fetch, scrape_url)
 
-                # TODO: should collect alternative URLs
-                # (scrapomat caches, so would be quick enough to just rescrape)
-                # and we need to make sure we set permalink to the canonical url,
-                # rather than what user initially entered
-                url_objs = [ArticleURL(url=url),]
-                art = Article(title,url, pubdate, url_objs)
-                action = Action('art_add', self.current_user, article=art)
-                self.session.add(art)
-                self.session.add(action)
-                self.session.commit()
-
-                # all done. phew.
-                self.redirect("/art/%d" % (art.id,))
-                return
+        scraped_art = None
+        enter_form = EnterArticleForm(url=url)
+        err_msg = None
+        if response.error:
+            # scrapomat down :-(
+            err_msg = "Sorry, there was a problem. Please try again later."
+        else:
+            results = json.loads(response.body)
+            if results['status'] == Status.SUCCESS:
+                scraped_art = results['article']
+                scraped_art['pubdate'] = datetime.datetime.fromtimestamp(scraped_art['pubdate'])
+                # use entry form to validate everything's there
+                enter_form.url.data = url
+                enter_form.title.data = scraped_art['headline']
+                enter_form.pubdate.data = scraped_art['pubdate']
+                if not enter_form.validate():
+                    scraped_art = None
+                    err_msg = u"Sorry, we weren't able to automatically read all the details"
             else:
-                # url has changed - treat as a new submit
-                step = 'submit'
+                error_messages = {
+                    Status.PAYWALLED: u"Sorry, that article seems to be behind a paywall.",
+                    Status.PARSE_ERROR: u"Sorry, we couldn't read the article",
+                    Status.BAD_REQ: u"Sorry, that URL doesn't look like an article",
+                    Status.NET_ERROR: u"Sorry, we couldn't read that article - is the URL correct?",
+                }
+                err_msg = error_messages.get(results['status'],"Unknown error")
 
 
-        if step =='submit':
-            # a raw url has been submitted - validate it
-            form = SubmitArticleForm(TornadoMultiDict(self))
-            if not form.validate():
-                self.render("addarticle.html", form=form, message='', step=step)
-                return
+        if scraped_art is None:
+            # uhoh... we weren't able to scrape it. If user wants article, they'll have to log
+            # in and enter the details themselves...
 
-            url = form.url.data
-            # already in database?
-            art_url = self.session.query(ArticleURL).filter_by(url=url).first()
-            if art_url is not None:
-                # yep - jump to it and we're done.
-                self.redirect("/art/%d" % (art_url.article.id,))
-                return
-
-            # need to scrape the article metadata to add it to database
-            # TODO: don't need to scrape article text here...
-            params = {'url': url}
-            scrape_url = 'http://localhost:8889/scrape?' + urllib.urlencode(params)
-            http = tornado.httpclient.AsyncHTTPClient()
-
-            response = yield tornado.gen.Task(http.fetch, scrape_url)
-
-            worked = True
-            bad_url = False
-            if response.error:
-                worked = False
-            else:
-                results = json.loads(response.body)
-                if results['status']!=0:
-                    worked = False
-                    if results['status'] in (1,2):   # net error, bad url
-                        bad_url = True
-
-            if not worked:
-                if bad_url:
-                    # start from scratch
-                    form = SubmitArticleForm(TornadoMultiDict(self))
-                    form.prev_url.data = form.url.data
-                    form.step.data = "submit"
-                    form.validate()
-                    form.url.errors.append("Can't access this URL")
-                    self.render("addarticle.html", form=form, message='', step=step)
-                    return
-
-                message = "Sorry, we couldn't read the details for the article. Please enter them manually."
-                form = EnterArticleForm(TornadoMultiDict(self))
-                form.prev_url.data = form.url.data
-                form.step.data = "confirm"
-                self.render("addarticle.html", form=form, message=message, step='confirm')
-                return
-
-            # fill out the details, get user to check 'em
-            scraped_art = results['article']
-
-            scraped_art['pubdate'] = datetime.datetime.fromtimestamp(scraped_art['pubdate'])
-            form = EnterArticleForm(prev_url=url, url=url, title=scraped_art['headline'], pubdate=scraped_art['pubdate'] )
-            message = "Have we got these details right? If not, please fix them before going on!"
-            self.render("addarticle.html", form=form, message=message, step='confirm')
+            login_next_url = None
+            if self.current_user is None:
+                params = {'url': url}
+                login_next_url = '/enterarticle?' + urllib.urlencode(params)
+            self.render("enterarticle.html", form=enter_form, notice=err_msg, login_next_url=login_next_url)
             return
 
 
+        # if we've got this far, we now have all the details needed to load the article into the DB. Yay!
+        url_objs = [ArticleURL(url=u) for u in scraped_art['urls']]
+        art = Article(scraped_art['headline'],scraped_art['permalink'], scraped_art['pubdate'], url_objs)
+        action = Action('art_add', self.current_user, article=art)
+        self.session.add(art)
+        self.session.add(action)
+        self.session.commit()
+
+        # all done
+        self.redirect("/art/%d" % (art.id,))
+        return
+
+    def post(self):
+        self.get()
+
+
+
+
+
+
+class EnterArticleHandler(BaseHandler):
+    """ allow user to manually enter article details (url, headline, date)
+
+    Requires user to be logged in.
+    """
+    @tornado.web.authenticated
+    def get(self):
+        form = EnterArticleForm(TornadoMultiDict(self))
+        self.render("enterarticle.html", form=form, notice=None)
+
+    @tornado.web.authenticated
+    def post(self):
+        form = EnterArticleForm(TornadoMultiDict(self))
+        if not form.validate():
+            self.render("enterarticle.html", form=form, notice=None)
+            return
+
+        # done - add the article to the db
+        url = form.url.data
+        title = form.title.data
+        pubdate = form.pubdate.data
+
+        url_objs = [ArticleURL(url=url),]
+        art = Article(title,url, pubdate, url_objs)
+        action = Action('art_add', self.current_user, article=art)
+        self.session.add(art)
+        self.session.add(action)
+        self.session.commit()
+
+        # all done. phew.
+        self.redirect("/art/%d" % (art.id,))
 
 
 
@@ -147,5 +168,6 @@ class AddArticleHandler(BaseHandler):
 
 handlers = [
     (r"/addarticle", AddArticleHandler),
+    (r"/enterarticle", EnterArticleHandler),
 ]
 
