@@ -49,6 +49,20 @@ class BaseHandler(tornado.web.RequestHandler):
 
         return user
 
+    def get_anon_user(self):
+        """ get or create an anonymous (non-logged-in) user """
+        anon_user = self.session.query(UserAccount).filter_by(anonymous=True).first()
+        if anon_user is None:
+            # no anon user - create one (this should probably be in app startup,
+            # but likely we'll start supporting on-the-fly anon users tied to IP
+            # address or something... so may as well all be in here.
+            username = UserAccount.calc_unique_username(self.session, u'anon')
+
+            anon_user = UserAccount(username=username,
+                prettyname=u"Anonymous",
+                anonymous=True)
+        return anon_user
+
     def is_xhr(self):
         """check if request AJAX"""
         return self.request.headers.get('X-requested-with', '').lower() == 'xmlhttprequest'

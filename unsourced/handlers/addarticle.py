@@ -113,7 +113,10 @@ class AddArticleHandler(BaseHandler):
         # if we've got this far, we now have all the details needed to load the article into the DB. Yay!
         url_objs = [ArticleURL(url=u) for u in scraped_art['urls']]
         art = Article(scraped_art['headline'],scraped_art['permalink'], scraped_art['pubdate'], url_objs)
-        action = Action('art_add', self.current_user, article=art)
+        user = self.current_user
+        if user is None:
+            user = self.get_anon_user()
+        action = Action('art_add', user, article=art)
         self.session.add(art)
         self.session.add(action)
         self.session.commit()

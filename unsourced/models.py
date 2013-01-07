@@ -260,7 +260,7 @@ class UserAccount(Base):
     USERNAME_PAT = re.compile('^[A-Za-z0-9_]+$')
 
     id = Column(Integer, primary_key=True)
-    email = Column(String(256), nullable=False, index=True)
+    email = Column(String(256), nullable=False, index=True, default=u'')
     username = Column(String(64), nullable=False, unique=True, index=True)
     prettyname = Column(String(256), nullable=False, default=u'')
     hashed_password = Column(String(128), nullable=True)
@@ -279,6 +279,7 @@ class UserAccount(Base):
 
     photo_id = Column(Integer, ForeignKey('uploaded_file.id', use_alter=True, name='fk_useraccount_photo_id'), nullable=True)
     photo = relationship("UploadedFile", primaryjoin="UserAccount.photo_id==UploadedFile.id",lazy="joined")
+    anonymous = Column(Boolean, nullable=False, default=False)
 
     @validates('username')
     def validate_username(self, key, username):
