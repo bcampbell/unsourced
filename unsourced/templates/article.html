@@ -155,7 +155,7 @@ pubsub.source_added.add(function(new_src) {
   </div>
   {% end %}
 
-  {% if len(art.help_reqs)==0 %}
+  {% if art.needs_sourcing and len(art.help_reqs)==0 %}
   <div class="">
     Having trouble tracking down sources for this article?<br/>
     {% module postbutton("/art/%d/open-helpreq"%(art.id,), "Ask for help") %}
@@ -163,11 +163,23 @@ pubsub.source_added.add(function(new_src) {
   {% end %}
 
 
-  {% if art.needs_sourcing and len(art.sources)==0 %}
+  {% if art.needs_sourcing  %}
   <div>
+    {% if len(art.sources)==0 %}
     Think this article doesn't need any sources?<br/>
+    {% else %}
+    Think this article has all it's sources?<br/>
+    {% end %}
     {% module postbutton("/art/%d/mark-sourced"%(art.id,), "Mark it sourced") %}
   </div>
+  {% end %}
+
+  {% if not art.needs_sourcing %}
+  <div>
+    Think this article is still missing some sources?<br/>
+    {% module postbutton("/art/%d/mark-unsourced"%(art.id,), "Mark it unsourced") %}
+  </div>
+
   {% end %}
 
   {% module label_picker(art) %}
