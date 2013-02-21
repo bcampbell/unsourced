@@ -23,8 +23,6 @@
 
 
 <header class="site-header">
- <div class="l-row">
-  <div class="l-col75">
   <div class="login-status">
 {% if current_user is None %}
     <a href="/register">join</a> | <a href="{{ handler.get_login_url() }}">log in</a>
@@ -33,13 +31,6 @@ Hello <a href="/user/{{current_user.id}}">{{current_user.username}}</a> |
 <a href="/logout">log out</a>
 {% end %}
   </div>
-  </div>
-  <div class="l-col25">
-  <div class="site-search">
-  &nbsp;
-  </div>
-  </div>
- </div> <!-- end .l-row -->
 
   <div class="site-logo">
     <h1><a href="/"><img src="/static/logo.png" width="208" height="59" alt="Unsourced" /></a> </h1>
@@ -57,10 +48,10 @@ By reading the source material you can decide if the journalist has come to the 
     <ul class="topnav">
         <li><a href="/">Home</a></li>
         <li><a href="/browse">Explore</a></li>
-        <li><a href="/daily">View by day</a></li>
 {% if current_user is not None %}
         <li><a href="/extension">Browser extension</a></li>
 {% end %}
+        <li><a href="/blog">Blog</a></li>
     </ul>
     {% end %}
     {% block secnav %}{% end %}
@@ -79,7 +70,6 @@ By reading the source material you can decide if the journalist has come to the 
 <footer class="site-footer">
   <div class="inner">
     <a href="/about">about</a>&nbsp;|&nbsp;
-    <a href="http://unsourced.posterous.com">blog</a>&nbsp;|&nbsp;
     <a href="/extension">browser extension</a>&nbsp;|&nbsp;
     Twitter: <a href="https://twitter.com/UnsourcedOrg">@UnsourcedOrg</a>&nbsp;|&nbsp;
     <a href="https://github.com/bcampbell/unsourced/">source code</a> (github.com)&nbsp;&nbsp;
