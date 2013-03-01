@@ -1534,6 +1534,12 @@ a.btn:visited {
     line-height: 1.5;
 }
 
+.entry-content blockquote {
+    font-style: italic;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+}
+
 .blog-archive-list {
     list-style: none;
     padding: 0;
