@@ -271,7 +271,13 @@ class BrowseHandler(BaseHandler):
             html = module.render(filters=filters_form,paged_results=paged_results) 
             self.finish({'status':'ok', 'results_html': html})
         else:
-            self.render("browse.html",filters=filters_form,paged_results=paged_results)
+            if self.get_argument('fmt','') == 'markdown':
+                # type should be text/x-markdown really, but more convenient
+                # for cut&paste if treated as plain text
+                self.set_header("Content-Type","text/plain; charset=UTF-8")
+                self.render("browse_export.markdown",filters=filters_form,paged_results=paged_results)
+            else:
+                self.render("browse.html",filters=filters_form,paged_results=paged_results)
 
 
 handlers = [
