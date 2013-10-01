@@ -3,7 +3,7 @@ import urllib
 import tornado.web
 
 from base import BaseHandler
-from unsourced.models import Article,ArticleURL
+from unsourced.models import Article,ArticleURL,Label
 from unsourced import util
 from unsourced import config
 
@@ -69,6 +69,31 @@ class LookupHandler(BaseHandler):
 
 
 
+class LabelHandler(BaseHandler):
+    """ api to get a list of available warning labels
+
+    returns label details as json
+    """
+
+    def get(self):
+
+        # dodgy_pr is deprecated
+        available = self.session.query(Label).\
+            filter(Label.id != 'dodgy_pr').\
+            all()
+
+        labels = []
+        for l in available:
+            labels.append( dict(
+               id = l.id,
+               prettyname = l.prettyname,
+               description = l.description,
+               icon_url = config.settings.root_url + l.icon_url('m') 
+            ) )
+        self.finish({'status':'success','labels':labels});
+
+
 handlers = [
     (r'/api/lookup', LookupHandler),
+    (r'/api/labels', LabelHandler),
     ]
