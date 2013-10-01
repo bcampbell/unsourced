@@ -1,7 +1,7 @@
 import urlparse
 import re
 
-from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, validators
+from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, DateField, validators
 
 from util import TornadoMultiDict,fix_url
 from models import SourceKind
@@ -52,4 +52,19 @@ class AddPRForm(Form):
 
 class AddOtherForm(Form):
     url = TextField(u'Url', [validators.required(),validators.URL()], filters=[fix_url])
+
+
+
+
+
+class SubmitArticleForm(Form):
+    url = TextField(u'Url of article', [validators.required(),validators.URL()], filters=[fix_url])
+
+
+class EnterArticleForm(Form):
+    """ form for manually entering the details of an article """
+    url = TextField(u'Url of article', [validators.required(),validators.URL()], filters=[fix_url])
+    title = TextField(u'Title', [validators.required()])
+    pubdate = DateField(u'Date of publication', [validators.required(),] ,description='yyyy-mm-dd' )
+
 
