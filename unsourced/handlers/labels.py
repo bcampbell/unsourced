@@ -1,13 +1,13 @@
+import urllib
 
 import tornado.auth
 from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, FileField, validators
 
 from base import BaseHandler
-from unsourced.models import Article,ArticleLabel,Label,Action
+from unsourced.models import Article,ArticleURL,ArticleLabel,Label,Action
 from unsourced.util import TornadoMultiDict
-
-
-
+from unsourced.forms import EnterArticleForm
+from unsourced import config,scrape
 
 
 class AddLabelHandler(BaseHandler):
@@ -65,9 +65,78 @@ class RemoveLabelHandler(BaseHandler):
         self.session.commit()
         self.redirect("/art/%s" % (art.id,))
 
+
+class AddLabelByURLHandler(BaseHandler):
+
+    @tornado.web.authenticated
+    @tornado.web.asynchronous
+    @tornado.gen.engine
+    def get(self):
+        label_id = self.get_argument('label')
+        url = self.get_argument('url')
+        #reason = self.get_argument('reason')
+
+        label = self.session.query(Label).get(label_id)
+        if label is None:
+            raise tornado.web.HTTPError(400) 
+
+        # article already in db?
+        art = self.session.query(Article).join(ArticleURL).\
+                filter(ArticleURL.url==url).first()
+
+        if art is None:
+            # nope. try scraping it.
+            params = {'url': url}
+            scrape_url = config.settings.scrapeomat + '/scrape?' + urllib.urlencode(params)
+            http = tornado.httpclient.AsyncHTTPClient()
+
+            response = yield tornado.gen.Task(http.fetch, scrape_url)
+
+            try:
+                art = scrape.process_scraped(url,response);
+            except Exception as err:
+                # uhoh... we weren't able to scrape it. If user wants article, they'll have to log
+                # in and enter the details themselves...
+                # BUG: the label details will be lost going through the manual entry process...
+
+                login_next_url = None
+                enter_form = EnterArticleForm(url=url)
+                if self.current_user is None:
+                    params = {'url': url}
+                    login_next_url = '/enterarticle?' + urllib.urlencode(params)
+                notice = unicode(err)
+                notice += " Please enter the details manually (or try again later)."
+                self.render("enterarticle.html", form=enter_form, notice=notice, login_next_url=login_next_url)
+                return
+
+            # ok, add the new article to the db (with an action)
+            user = self.current_user
+            if user is None:
+                user = self.get_anon_user()
+            action = Action('art_add', user, article=art)
+            self.session.add(art)
+            self.session.add(action)
+            self.session.commit()
+
+        # ok, now we can add the label!
+        if label not in [l.label for l in art.labels]:
+
+            artlabel = ArticleLabel(creator=self.current_user)
+            artlabel.label = label
+            artlabel.article = art
+            art.labels.append(artlabel)
+
+            self.session.add(Action('label_add', self.current_user, article=art, label=label))
+
+        self.session.commit()
+
+        # all done
+        self.redirect("/art/%d" % (art.id,))
+        return
  
 handlers = [
     (r"/art/([0-9]+)/addlabel", AddLabelHandler),
     (r"/art/([0-9]+)/removelabel/([_a-z]+)", RemoveLabelHandler),
+    (r"/addlabel", AddLabelByURLHandler),
     ]
 

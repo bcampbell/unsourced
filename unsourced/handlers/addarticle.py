@@ -7,13 +7,12 @@ import tornado.web
 import tornado.gen
 from tornado import httpclient
 
-from unsourced import util,analyser,highlight,scrape
+from unsourced import util,analyser,highlight,scrape,config
 from base import BaseHandler
 from unsourced.models import Article,ArticleURL,Action
 from unsourced.util import TornadoMultiDict, fix_url
 
 from unsourced.forms import EnterArticleForm,SubmitArticleForm
-
 
 
 
@@ -40,12 +39,13 @@ class AddArticleHandler(BaseHandler):
         # article already in db?
         art = self.session.query(Article).join(ArticleURL).\
                 filter(ArticleURL.url==url).first()
+        print "ART: ",art
 
         if art is None:
             
             # nope. try scraping it.
             params = {'url': url}
-            scrape_url = 'http://localhost:8889/scrape?' + urllib.urlencode(params)
+            scrape_url = config.settings.scrapeomat + '/scrape?' + urllib.urlencode(params)
             http = tornado.httpclient.AsyncHTTPClient()
 
             response = yield tornado.gen.Task(http.fetch, scrape_url)
