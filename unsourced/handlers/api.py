@@ -92,8 +92,17 @@ class LabelHandler(BaseHandler):
             ) )
         self.finish({'status':'success','labels':labels});
 
+class LoggedInHandler(BaseHandler):
+    """ """
+    def get(self):
+        logged_in = (self.current_user is not None)
+        self.finish({'status':'success','logged_in':logged_in})
+
+
+
 
 handlers = [
     (r'/api/lookup', LookupHandler),
     (r'/api/labels', LabelHandler),
+    (r'/api/loggedin', LoggedInHandler),
     ]
