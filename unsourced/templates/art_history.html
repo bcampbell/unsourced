@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}History: {{art.headline}}{% end %}
+{% block title %}History: {{art.headline_or_url()}}{% end %}
 
 
 {% block main %}
@@ -16,7 +16,7 @@
   </div>
 
   <div class="art-text">
-    <h2>{{art.headline}}</h2>
+    <h2>{{art.headline_or_url()}}</h2>
   </div>
 
 {% if paged_results.total_pages > 1 %}

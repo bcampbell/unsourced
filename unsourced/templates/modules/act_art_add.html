@@ -2,6 +2,6 @@
 {% block act %}
 {% if user_display is not None %}<a class="user" href="{{act.user.profile_url()}}">{{act.user.username}}</a>{% end %}
 {% block desc %}added article{% end %}
-{% if show_article %}<a href="{{act.article.art_url()}}">{{act.article.headline}}</a>{% end %}
+{% if show_article %}<a href="{{act.article.art_url()}}">{{act.article.headline_or_url()}}</a>{% end %}
 {% if show_timestamp %}<span class="timestamp">{% module fmt_datetime(act.performed) %}</span>{% end %}
 {% end %}

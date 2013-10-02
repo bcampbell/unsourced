@@ -160,6 +160,13 @@ class Article(Base):
         return "/art/%d" % (self.id)
 
 
+    def headline_or_url(self):
+        headline = self.headline
+        if headline=="":
+            return self.permalink
+        return headline
+
+
 class SourceKind(object):
     PAPER = 'paper'
     PR = 'pr'

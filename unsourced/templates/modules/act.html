@@ -4,7 +4,7 @@
 {% block desc %}{{act.what}}{% end %}
 
 <br/>
-{% if show_article %}on <a href="{{act.article.art_url()}}">{{act.article.headline}}</a>{% end %}
+{% if show_article %}on <a href="{{act.article.art_url()}}">{{act.article.headline_or_url()}}</a>{% end %}
 {% if show_timestamp %}<span class="timestamp">{% module fmt_datetime(act.performed) %}</span>{% end %}
 {% end %}
 </li>

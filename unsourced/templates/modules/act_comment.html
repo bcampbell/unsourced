@@ -4,5 +4,5 @@
 <a class="user" href="{{act.user.profile_url()}}">{{act.user.username}}</a>
 {% if show_timestamp %}<span class="timestamp">{% module fmt_datetime(act.performed) %}</span>{% end %}
 <blockquote>"{% raw act.comment.format() %}"</blockquote>
-{% if show_article %}on <a href="{{act.article.art_url()}}">{{act.article.headline}}</a>{% end %}
+{% if show_article %}on <a href="{{act.article.art_url()}}">{{act.article.headline_or_url()}}</a>{% end %}
 {% end %}

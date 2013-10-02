@@ -5,7 +5,7 @@
   <img class="icon favicon" src="{{art.publisher_favicon_url()}}" />
   {% if len(art.help_reqs)>0 %} <img class="icon icon-help" src="/static/icon/help.png" alt="help requested" />{% end %}
   {% if len(art.labels)>0 %}<img class="icon icon-warning" src="/static/icon/warning.png" alt="warning label" />{% end %}
-  <a href="/art/{{art.id}}" title="{%module domain(art.permalink)%}">{{art.headline}}</a>
+  <a href="/art/{{art.id}}" title="{%module domain(art.permalink)%}">{{art.headline_or_url()}}</a>
   {% if art.comments %}
   <span class="comment-cnt">{{len(art.comments)}}</span>
   {% end %}
