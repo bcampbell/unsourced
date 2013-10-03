@@ -2,6 +2,7 @@ import urllib
 
 import tornado.auth
 from wtforms import Form, SelectField, HiddenField, BooleanField, TextField, PasswordField, FileField, validators
+import datetime
 
 from base import BaseHandler
 from unsourced.models import Article,ArticleURL,ArticleLabel,Label,Action
@@ -95,19 +96,10 @@ class AddLabelByURLHandler(BaseHandler):
             try:
                 art = scrape.process_scraped(url,response);
             except Exception as err:
-                # uhoh... we weren't able to scrape it. If user wants article, they'll have to log
-                # in and enter the details themselves...
-                # BUG: the label details will be lost going through the manual entry process...
-
-                login_next_url = None
-                enter_form = EnterArticleForm(url=url)
-                if self.current_user is None:
-                    params = {'url': url}
-                    login_next_url = '/enterarticle?' + urllib.urlencode(params)
-                notice = unicode(err)
-                notice += " Please enter the details manually (or try again later)."
-                self.render("enterarticle.html", form=enter_form, notice=notice, login_next_url=login_next_url)
-                return
+                # uhoh... we weren't able to scrape it.
+                # enter the article with just the url and a fudged datetime
+                url_objs = [ArticleURL(url=url),]
+                art = Article("", url, datetime.datetime.utcnow(), url_objs)
 
             # ok, add the new article to the db (with an action)
             user = self.current_user
