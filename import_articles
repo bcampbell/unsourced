@@ -22,13 +22,12 @@ from unsourced import db
 from tornado.options import define, options
 
 
-def get_arts(num_days=1):
+def get_arts_OLD(num_days=1):
     date_from = datetime.date.today() - datetime.timedelta(days = num_days-1)
     date_to = datetime.date.today()
 
     phrases = ("scientists have", "scientists say",  "paper published", "research suggests", "latest research", "researchers", "the study")
 
-    searchtxt = " OR ".join(['"'+s+'"' for s in phrases])
 
     search = '(%s) %s..%s' % (
             " OR ".join(['"'+s+'"' for s in phrases]),
@@ -44,6 +43,34 @@ def get_arts(num_days=1):
     print url
     foo = json.load(urllib2.urlopen(url), encoding='utf-8')
     articles = foo['results']
+    return articles
+
+
+
+
+def get_arts(num_days=1):
+    articles = []
+    date_from = datetime.date.today() - datetime.timedelta(days = num_days-1)
+    date_to = datetime.date.today()
+
+    phrases = ("scientists have", "scientists say",  "paper published", "research suggests", "latest research", "researchers", "the study")
+
+    for phrase in phrases:
+        search = '"%s" %s..%s' % (phrase,
+            date_from.strftime('%Y%m%d'),
+            date_to.strftime('%Y%m%d'))
+
+        print search
+        params = {'search': search,
+            'limit': 1000,
+            'output': 'js',
+            }
+        url = "http://journalisted.com/api/findArticles?" + urllib.urlencode(params)
+        print url
+        foo = json.load(urllib2.urlopen(url), encoding='utf-8')
+        print "got %d" % (len(foo['results']),)
+        articles += foo['results']
+        # TODO: dedupe the list!
     return articles
 
 
