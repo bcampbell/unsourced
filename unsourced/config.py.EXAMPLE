@@ -10,7 +10,7 @@ here = os.path.dirname(__file__)
 settings = Settings(
     site_name = "unsourced.org",
     root_url="http://localhost:8888",
-    scrapomat="http://localhost:8889",
+    scrapeomat="http://localhost:8889",
 
     # from addr used for any emails the site sends
     site_email = "team@unsourced.org",
